@@ -1,6 +1,3 @@
-<div align='center'>
-    <img src='./images/logo.png' width='700' alt='logo'/>
-</div>
 
 <div align='center'>
   <img src='https://img.shields.io/badge/Hammerspoon-0.9.93-FFB100' alt='icon'/>
@@ -8,84 +5,98 @@
   <img src='https://img.shields.io/badge/Shell-417DDE' alt='icon'/>
 </div>
 
-English | [简体中文](./README-CN.md) | [日本語](./README-JP.md)
+[English](./README-EN.md) | 简体中文 | [日本語](./README-JP.md)
 
 ---
 
-[![](./images/bilibili.png)](https://www.bilibili.com/video/BV1VR4y1N7TS?share_source=copy_web&vd_source=a06ac1449f22652843e9948a04dc214a)
+- 如果你觉得本工程提供的功能对你有用，请帮忙点一个 Star，不胜感激，谢谢！
+- 若 README 图片无法显示，请确保挂了梯子，并且 PAC 文件中配置 `||githubusercontent.com`，或者直接使用全局模式
 
 ---
 
-- If you think the functions provided by this project are useful to you, please help to click a Star, it would be greatly appreciated, thank you!
-- If the README image cannot be displayed, please make sure that the ladder is hung and `||githubusercontent.com` is configured in the PAC file, or directly use the global mode
-
+### TODO
+1. 按键组, 序列键(LEADKey + W + M)
+  * G[U, S], 打开指定网站 URL 或系统设置项
+  * W[{HJKL}], 窗口快速调整大小与布局      ✅ 
+  * ...
+2. 快捷启禁用
+  * 指定的模块功能
+  * 指定的配置文件, 根据 wifi 变更
+3. 查询当前应用的菜单并模拟点击执行
+4. 优化展示当前应用的所有快捷键 Sheet 
+  * 模态层美化
+  * item 格式美化
+  * 查询
+  * 展示 HS 定义的热键
+5. 显示HammerSpoon 定义的顶级快捷键
+6. 一组热键在不同的应用中有不同的作用
 ---
 
-## How to install
+## 如何安装
 
-All scripts in this project are based on Hammerspoon. Please download and install [Hammerspoon](https://github.com/Hammerspoon/hammerspoon/releases), and then execute the following commands:
+本工程所有脚本都基于 Hammerspoon 运行，请先下载安装 [Hammerspoon](https://github.com/Hammerspoon/hammerspoon/releases)，然后再执行如下命令：
 
 ```shell
-curl -fsSL https://raw.githubusercontent.com/KURANADO2/hammerspoon-kuranado/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/boomker/spacehammer/main/install.sh | sh
 ```
 
-If the above `curl` command cannot download `install.sh`, please open the terminal agent and try again or manually download `install.sh` and execute it
+如上面这条 `curl` 命令下载不了 `install.sh`，则请打开终端代理后重试或手动下载 `install.sh` 后执行
 
-Finally, click the Hammerspoon `Reload Config` button in the Menubar
+最后，Menubar 中点击 Hammerspoon `Reload Config` 按钮即可
 
 ---
 
-## Manual update
+## 手动更新
 
-To install updates manually:
+手动安装更新：
 
 ```shell
 cd ~/.hammerspoon
 git pull origin main
 ```
 
-If a conflict is found, resolve the conflict and then execute `git pull origin main`
+如果发现冲突，请解决冲突后再执行 `git pull origin main`
 
 ---
 
-## Auto update
+## 自动更新
 
-In addition to manual update, this project also supports automatic update check and installation, and automatic update can be turned off in the function menu (not recommended)
+除手动更新外，本工程还支持自动检查更新并安装，可在功能菜单中关闭自动更新（不建议）
 
-The automatic update principle is as follows:
-- .config file (user configuration file) added to .gitignore file
-- Periodically execute `git pull origin main`
-- If a conflict is found, the console will print the information about the failure of automatic update. In this case, please install the update manually, refer to: [Manual update](https://github.com/KURANADO2/hammerspoon-kuranado#%E6%89%8B%E5%8A%A8%E6%9B%B4%E6%96%B0)
-- If it is found that the default configuration version number > the configuration version number of the user's local .config file, the new configuration will be merged into the user's local .config file on the basis of retaining the user's original configuration, and the configuration version number will be updated
+自动更新原理如下：
+- .config 文件（用户配置文件）加入到 .gitignore 文件中
+- 定期执行 `git pull origin main`
+- 如果发现冲突，则 console 打印自动更新失败相关提示信息，此时请手动安装更新，参考：[手动更新](https://github.com/boomker/spacehammer#%E6%89%8B%E5%8A%A8%E6%9B%B4%E6%96%B0)
+- 如果发现默认配置版本号 > 用户本地 .config 文件的配置版本号，则在保留用户原有配置的基础上，将新增配置合并到用户本地 .config 文件中，并更新配置版本号
 
 ---
 
-## This project provides functions
-### Function menu
+## 本工程提供功能
+### 功能菜单
 
-Click the function item with the mouse to enable/disable the function item
+鼠标单击功能项，即可启用/禁用功能项
 
 <div align='center'>
-  <img src='./images/menu-doc.png' width='600'/>
+  <img src='./images/hs-menu.png' width='600'/>
 </div>
 
 ---
 
-### Window move
+### 窗口移动
 
-Alternative to [Magnet](https://apps.apple.com/us/app/magnet/id441258766?mt=12) for window movement
+替代 [Magnet](https://apps.apple.com/us/app/magnet/id441258766?mt=12) 进行窗口移动
 
 <div align='center'>
   <img src='./images/window_move.gif' width='700'/>
 </div>
 
-Grid evenly divided (2, 4, 6, 9, 12, 16, etc.):
+网格均分（2、4、6、9、12、16 等分）：
 
 <div align='center'>
   <img src='./images/window_grid.gif' width='700'/>
 </div>
 
-Swap left and right:
+左右交换：
 
 <div align='center'>
   <img src='./images/window_swap.gif' width='700'/>
@@ -93,27 +104,25 @@ Swap left and right:
 
 ---
 
-### Application switch
+### 应用切换
 
-Configure shortcut keys for applications, which is more efficient than `⌘` `⇥` and Alfred switching programs (it is recommended to assign shortcut keys only to some software that are frequently used)
+为应用配置快捷键，比 `⌘` `⇥` 和 Alfred 切换程序更高效（建议只为高频使用的一些软件分配快捷键）
 
 ---
 
-### Emoji search
+### 表情包搜索
 
-Shortcut keys `⌥` `K` to wake up the emoji search function, enter keywords, **up and down** keys are used to select and preview emoji packages; **left and right** keys are used to turn pages; **Enter key** Used to send emojis; `Esc` closes the search window
+快捷键 `⌥` `K` 唤醒表情包搜索功能，输入关键词，**上下**键用于选择、预览表情包；**左右**键用于翻页；**回车键**用于发送表情包；`Esc` 关闭搜索窗口
 
 <div align='center'>
   <img src='./images/emoji.gif' width='600'/>
 </div>
 
-**Note:** I have implemented this function in Alfred Workflow: [https://github.com/KURANADO2/emoji-alfredworkflow](https://github.com/KURANADO2/emoji-alfredworkflow). But it has not been maintained for a long time, if you are interested in Alfred, you can also take a look
-
 ---
 
-### Real-time internet speed display
+### 实时网速显示
 
-Replaces [NetWorker Pro](https://apps.apple.com/us/app/networker-pro/id1163602886?mt=12) Display network speed in real time (refresh every two seconds)
+替代 [NetWorker Pro](https://apps.apple.com/us/app/networker-pro/id1163602886?mt=12) 实时显示网速（每两秒刷新一次）
 
 <div align='center'>
   <img src='./images/network.png' width='700'/>
@@ -121,49 +130,50 @@ Replaces [NetWorker Pro](https://apps.apple.com/us/app/networker-pro/id116360288
 
 ---
 
-### Password paste
+### 密码粘贴
 
-Solve the problem that some websites prohibit pasting passwords, and SSH login requires manual password input.
-First use `⌘` `C` to copy the password, then in the password input box, press `⌃` `⌘` `V` to paste the password into the input box.
-The principle is to read the latest record of the clipboard, and simulate a key event for each character read.
+解决某些网站禁止粘贴密码、SSH 登陆需要手动输入密码等问题。
+首先使用 `⌘` `C` 复制密码，然后在密码输入框内，按 `⌃` `⌘` `V` 即可将密码粘贴到输入框内。
+原理为读取剪贴板最新一条记录，针对读取到的每一个字符，模拟按键事件。
 
 ---
 
-### Input method switch
+### 输入法切换
 
-The three most commonly used input methods for individuals:
-- The system comes with ABC
-- The system comes with Simplified Pinyin
-- The system commes with Japanese Input
+个人最常用的三个输入法：
+- 系统自带 ABC
+- 系统自带简体拼音
 
-Shortcut | Function
+默认分配了如下快捷键：
+
+快捷键|功能
 -|-
 `⌥` `J`|ABC
-`⌥` `K`|Simplified Pinyin
-`⌥` `L`|Japanese Input Method
+`⌥` `K`|简体中文
+`⌥` `L`|Hiragana
 
 ---
 
-### Key echo
+### 按键回显
 
-Alternative to [KeyCastr](https://github.com/keycastr/keycastr)
+替代 [KeyCastr](https://github.com/keycastr/keycastr)
 
 <div align='center'>
-   <img src='./images/keystroke-visualizer.gif' width='500'/>
+  <img src='./images/keystroke-visualizer.gif' width='500'/>
 </div>
 
-Note: At present, a simple key echo has been implemented, which is still far from KeyCastr in function, such as:
-- Multi-canvas is not supported
-- Canvas does not support drag and drop
-- lack of animation effects
+注：目前暂且实现了简单的按键回显，和 KeyCastr 相比在功能上仍相差甚远，如：
+- 不支持多画布
+- 画布不支持拖拽
+- 缺少动画效果
 - ...
-Interested guys are welcome to propose implementation ideas, or directly contribute code (do not understand Objective-C very well, and the implementation source code of KeyCastr cannot be understood personally)
+感兴趣的同学欢迎提出实现思路，或直接贡献代码（不太懂 Objective-C，KeyCastr 的实现源码个人看不太懂）
 
 ---
 
-### Shortcut list view
+### 快捷键列表查看
 
-Press `⌥` `/` in any interface to show/hide the shortcut key list
+任意界面下按 `⌥` `/` 显示/隐藏快捷键列表
 
 <div align='center'>
   <img src='./images/shortcut.png' width='700'/>
@@ -171,9 +181,9 @@ Press `⌥` `/` in any interface to show/hide the shortcut key list
 
 ---
 
-### Reminder after get off work
+### 下班提醒
 
-Remind to get off work at 18:00 every day (modify the script according to the actual off-duty time), click the mouse to close the animation
+每天 18:00 提醒下班（根据实际下班时间自行修改脚本），鼠标点击可关闭动画
 
 <div align='center'>
   <img src='./images/after-work.png' width='700'/>
@@ -181,28 +191,28 @@ Remind to get off work at 18:00 every day (modify the script according to the ac
 
 ---
 
-## Default shortcut list
+## 默认快捷键列表
 
-To customize shortcut keys, please modify the shortcut.lua file. If the shortcut.lua file does not exist, execute the following command to create a copy
+如需自定义快捷键，请修改 shortcut.lua 文件，如 shortcut.lua 文件不存在，则执行如下命令创建一份
 
 ```shell
 cp shortcut.lua.example shortcut.lua
 ```
 
-Shortcut | Function
+快捷键|功能
 -|-
-`⌃` `⌥` `Z`|Automatic grid layout of multiple Windows of the same application
-`⌃` `⌥` `X`|Automatic grid layout of all windows in the same workspace（What is [workspace?](https://support.apple.com/guide/mac-help/work-in-multiple-spaces-mh14112/mac)？）
-`⌃` `⌥` `A`|All windows of the same app are automatically divided horizontally or vertically
-`⌃` `⌥` `S`|All windows in the same workspace are automatically divided horizontally or vertically
-`⌃` `⌥` `←`|Left half screen
-`⌃` `⌥` `→`|Right half screen
-`⌃` `⌥` `↑`|Top half screen
-`⌃` `⌥` `↓`|Lower half screen
-`⌃` `⌥` `U`|Top left corner
-`⌃` `⌥` `I`|Top right corner
-`⌃` `⌥` `J`|Lower left
-`⌃` `⌥` `K`|Bottom right corner
+`⌃` `⌥` `Z`|同一应用的所有窗口自动网格式布局
+`⌃` `⌥` `X`|同一工作空间下的所有窗口自动网格式布局（什么是 [工作空间？](https://support.apple.com/zh-cn/guide/mac-help/mh14112/mac)？）
+`⌃` `⌥` `A`|同一应用的所有窗口自动水平均分或垂直均分
+`⌃` `⌥` `S`|同一工作空间下的所有窗口自动水平均分或垂直均分
+`⌃` `⌥` `←`|左半屏
+`⌃` `⌥` `→`|右半屏
+`⌃` `⌥` `↑`|上半屏
+`⌃` `⌥` `↓`|下半屏
+`⌃` `⌥` `U`|左上角
+`⌃` `⌥` `I`|右上角
+`⌃` `⌥` `J`|左下角
+`⌃` `⌥` `K`|右下角
 `⌃` `⌥` `1`|1/9
 `⌃` `⌥` `2`|2/9
 `⌃` `⌥` `3`|3/9
@@ -212,46 +222,46 @@ Shortcut | Function
 `⌃` `⌥` `7`|7/9
 `⌃` `⌥` `8`|8/9
 `⌃` `⌥` `9`|9/9
-`⌃` `⌥` `C`|Center
-`⌃` `⌥` `D`|Left 1/3 (landscape) or top 1/3 (portrait)
-`⌃` `⌥` `F`|Medium 1/3
-`⌃` `⌥` `G`|Right 1/3 (landscape) or bottom 1/3 (portrait)
-`⌃` `⌥` `E`|Left 2/3 (landscape) or top 2/3 (portrait)
-`⌃` `⌥` `T`|Right 2/3 (landscape) or bottom 2/3 (portrait)
-`⌃` `⌥` `=`|Enlarge the window in equal proportion
-`⌃` `⌥` `-`|Reduce the window proportionally
-`⌃` `⌥` `↩︎`|Maximize
-`⌃` `⌥` `⌘` `↑`|Move the window to the upper screen
-`⌃` `⌥` `⌘` `↓`|Move the window to the lower screen
-`⌃` `⌥` `⌘` `←`|Move the window to the left screen
-`⌃` `⌥` `⌘` `→`|Move the window to the right screen
+`⌃` `⌥` `C`|居中
+`⌃` `⌥` `D`|左 1/3（横屏）或上 1/3（竖屏）
+`⌃` `⌥` `F`|中 1/3
+`⌃` `⌥` `G`|右 1/3（横屏）或下 1/3（竖屏）
+`⌃` `⌥` `E`|左 2/3（横屏）或上 2/3（竖屏）
+`⌃` `⌥` `T`|右 2/3（横屏）或下 2/3（竖屏）
+`⌃` `⌥` `=`|等比例放大窗口
+`⌃` `⌥` `-`|等比例缩小窗口
+`⌃` `⌥` `↩︎`|最大化
+`⌃` `⌥` `⌘` `↑`|将窗口移动到上方屏幕
+`⌃` `⌥` `⌘` `↓`|将窗口移动到下方屏幕
+`⌃` `⌥` `⌘` `←`|将窗口移动到左侧屏幕
+`⌃` `⌥` `⌘` `→`|将窗口移动到右侧屏幕
 `⌘` &#96; |在同一应用的多个窗口之间切换（此为 Mac 系统自带快捷键）
-`⌥` `Q` |Open QQ
-`⌥` `W` |Open WeChat
-`⌥` `V` |Open Visual Studio Code
-`⌥` `F` |Open Finder
-`⌥` `C` |Open Chrome
-`⌥` `J` |Open Intellij IDEA
-`⌥` `N` |Open WizNote
-`⌥` `D` |Open DataGrip
-`⌥` `T` |Open iTerm2
-`⌥` `M` |Open MailMaster
-`⌥` `P` |Open Postman
-`⌥` `O` |Open Word
-`⌥` `E` |Open Excel
-`⌥` `Y` |Open PyCharm
-`⌥` `R` |Open Another Redis Desktop Manager
-`⌥` `K` |Emoji search
-`⌃` `⌘` `V`|Paste the characters in the clipboard by simulating keystrokes (to solve the problem that some websites prohibit pasting passwords)
-`⌥` `L` |Switch between Simplified Pinyin and Japanese input methods
-`⌥` `/` |Show/hide shortcut list
+`⌥` `Q` |打开 QQ
+`⌥` `W` |打开 WeChat
+`⌥` `V` |打开 Visual Studio Code
+`⌥` `F` |打开 Finder
+`⌥` `C` |打开 Chrome
+`⌥` `J` |打开 Intellij IDEA
+`⌥` `N` |打开 WizNote
+`⌥` `D` |打开 DataGrip
+`⌥` `T` |打开 iTerm2
+`⌥` `M` |打开 MailMaster
+`⌥` `P` |打开 Postman
+`⌥` `O` |打开 Word
+`⌥` `E` |打开 Excel
+`⌥` `Y` |打开 PyCharm
+`⌥` `R` |打开 Another Redis Desktop Manager
+`⌥` `K` |表情包搜索
+`⌃` `⌘` `V`|以模拟按键方式将剪贴板中的字符粘贴出来（解决某些网站禁止粘贴密码问题）
+`⌥` `L` |在简体拼音和日语输入法间切换
+`⌥` `/` |显示/隐藏快捷键列表
 
 ---
 
-## About
-### About app-bundle-id
+## 关于
+### 关于应用 bundle id
 
-In the above configuration, use shortcut keys to switch applications, you need to get the bundle id of the application (please note that the bundle id configured in hammerspoon needs to be case-sensitive, otherwise the console will report an error), which can be obtained as follows:
+上面配置中使用快捷键切换应用，需要拿到应用的 bundle id（请注意 bundle id 配置到 hammerspoon 中需要区分大小写，否则 console 会报错），可通过如下方式拿到：
 ```shell
 osascript -e 'id of app "Name of App"'
 ```
@@ -260,64 +270,46 @@ osascript -e 'id of app "Name of App"'
   <img src='./images/bundleid.png' width='500'/>
 </div>
 
-In addition, if you are using a relatively new Mac system, enter `ls /Applications` in the terminal, you may not see the application that comes with the system, as shown below, `ll` cannot see the mail application that comes with the Mac, but the Finder Open the /Applications directory to see the mail application
-
-<div align='center'>
-  <img src='./images/applications.png' width='500'/>
-</div>
-
-At this point, we can select the mail application in the Finder, right-click: show package content -> Contents -> open the info.plist file, find the CFBundleIdentifier configuration item, the value of this configuration item is the bundle id, of course, this method is also suitable for own installation. Applications
-
-<div align='center'>
-  <img src='./images/mail.png' width='400'/>
-</div>
-
 ---
 
-### About the project directory structure
+### 关于工程目录结构
 
 ```shell
 .hammerspoon
-├── .config User local configuration file, which saves the enabled/disabled status of each functional module of the user
-├── .emoji Emoji cache directory
+├── .config 用户本地配置文件，保存了用户每个功能模块的启用/禁用状态
+├── .emoji 表情包缓存目录
 ├── .git
 ├── .gitignore
 ├── LICENSE
 ├── README.md
-├── images Pictures needed for function modules and README
-├── init.lua Script entry
-└── modules Each functional module
-    ├── application.lua Application switch module
-    ├── base.lua Encapsulates basic Lua tools
-    ├── config.lua Menu default configuration, which records the default enabled/disabled status of each function
-    ├── emoji.lua Emoji search module
-    ├── hotkey.lua Shortcut list view module
-    ├── input-method.lua Input method switch
-    ├── keystroke-visualizer.lua Key echo module
-    ├── menu.lua Menu module
-    ├── network.lua Real-time internet speed module
-    ├── password.lua Password paste module
-    ├── reload.lua Reload the configuration module (when any .lua file in the ~/.hammerspoon directory changes, the Hammerspoon configuration is automatically reloaded)
-    ├── remind.lua Off-duty reminder module
-    ├── shortcut.lua Used for user-defined shortcut keys, this file has been added to .gitignore, if there is no such file, execute the command cp shortcut.lua.example shortcut.lua to create a copy
-    ├── shortcut.lua.example Example of shortcut key configuration file, users should not modify this file
-    ├── update.lua Automatically update modules
-    └── window.lua Window management module
+├── images 功能模块及 README 需要用到的图片
+├── init.lua 脚本入口
+└── modules 各个功能模块
+    ├── application.lua 应用切换模块
+    ├── base.lua 封装了 Lua 基本工具
+    ├── config.lua 菜单默认配置，记录了每一项功能的默认启用/禁用状态
+    ├── emoji.lua 表情包搜索模块
+    ├── hotkey.lua 快捷键列表查看模块
+    ├── input-method.lua 输入法切换
+    ├── keystroke-visualizer.lua 按键回显模块
+    ├── menu.lua 菜单模块
+    ├── network.lua 实时网速模块
+    ├── password.lua 密码粘贴模块
+    ├── reload.lua 重载配置模块（当 ～/.hammerspoon 目录下任意 .lua 文件发生变动时，自动重新加载 Hammerspoon 配置）
+    ├── remind.lua 下班提醒模块
+    ├── shortcut.lua 用于用户自定义快捷键，此文件已加入 .gitignore，若无该文件，则执行命令 cp shortcut.lua.example shortcut.lua 创建一份即可
+    ├── shortcut.lua.example 快捷键配置文件示例，用户请勿修改此文件
+    ├── update.lua 自动更新模块
+    └── window.lua 窗口管理模块
 ```
 
 ---
 
-## Thanks
-
-- [JetBRAINS- Licenses for Open Source Development](https://www.jetbrains.com/community/opensource/#support)
-
----
-
-## Refer
+## 参考
 
 - [学长博客 - OSX--OSX应用快速切换方案](https://mrdear.cn/posts/osx_app_switcher.html)
-- [Official Quick Start](https://www.hammerspoon.org/go/)
-- [Official Document](http://www.hammerspoon.org/docs/)
+- [官方 Quick Start](https://www.hammerspoon.org/go/)
+- [官方文档](http://www.hammerspoon.org/docs/)
 - [hammerspoon-init](https://github.com/rtoshiro/hammerspoon-init)
 - [Easily see any app’s bundle identifier](https://robservatory.com/easily-see-any-apps-bundle-identifier/)
 - [GitHub - wangshub/hammerspoon-config](https://github.com/wangshub/hammerspoon-config)
