@@ -5,8 +5,6 @@
   <img src='https://img.shields.io/badge/Shell-417DDE' alt='icon'/>
 </div>
 
-[English](./README-EN.md) | 简体中文 | [日本語](./README-JP.md)
-
 ---
 
 - 如果你觉得本工程提供的功能对你有用，请帮忙点一个 Star，不胜感激，谢谢！
