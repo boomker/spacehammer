@@ -1,0 +1,406 @@
+[
+  {
+    "Constant" : [
+
+    ],
+    "submodules" : [
+
+    ],
+    "Function" : [
+
+    ],
+    "Variable" : [
+      {
+        "doc" : "An integer specifying how many gridparts the screen should be divided into. Defaults to 30.",
+        "stripped_doc" : [
+          "An integer specifying how many gridparts the screen should be divided into. Defaults to 30."
+        ],
+        "def" : "WinMan.gridparts",
+        "parameters" : [
+
+        ],
+        "notes" : [
+
+        ],
+        "signature" : "WinMan.gridparts",
+        "type" : "Variable",
+        "returns" : [
+
+        ],
+        "name" : "gridparts",
+        "desc" : "An integer specifying how many gridparts the screen should be divided into. Defaults to 30."
+      }
+    ],
+    "stripped_doc" : [
+
+    ],
+    "desc" : "Windows manipulation",
+    "Deprecated" : [
+
+    ],
+    "type" : "Module",
+    "Constructor" : [
+
+    ],
+    "items" : [
+      {
+        "doc" : "An integer specifying how many gridparts the screen should be divided into. Defaults to 30.",
+        "stripped_doc" : [
+          "An integer specifying how many gridparts the screen should be divided into. Defaults to 30."
+        ],
+        "def" : "WinMan.gridparts",
+        "parameters" : [
+
+        ],
+        "notes" : [
+
+        ],
+        "signature" : "WinMan.gridparts",
+        "type" : "Variable",
+        "returns" : [
+
+        ],
+        "name" : "gridparts",
+        "desc" : "An integer specifying how many gridparts the screen should be divided into. Defaults to 30."
+      },
+      {
+        "doc" : "Center the cursor on the focused window.",
+        "stripped_doc" : [
+          "Center the cursor on the focused window."
+        ],
+        "def" : "WinMan:centerCursor()",
+        "parameters" : [
+
+        ],
+        "notes" : [
+
+        ],
+        "signature" : "WinMan:centerCursor()",
+        "type" : "Method",
+        "returns" : [
+
+        ],
+        "name" : "centerCursor",
+        "desc" : "Center the cursor on the focused window."
+      },
+      {
+        "doc" : "Move and resize the focused window.\n\nParameters:\n * option - A string specifying the option, valid strings are: `halfleft`, `halfright`, `halfup`, `halfdown`, `cornerNW`, `cornerSW`, `cornerNE`, `cornerSE`, `center`, `fullscreen`, `expand`, `shrink`.",
+        "stripped_doc" : [
+          "Move and resize the focused window.",
+          ""
+        ],
+        "def" : "WinMan:moveAndResize(option)",
+        "parameters" : [
+          " * option - A string specifying the option, valid strings are: `halfleft`, `halfright`, `halfup`, `halfdown`, `cornerNW`, `cornerSW`, `cornerNE`, `cornerSE`, `center`, `fullscreen`, `expand`, `shrink`."
+        ],
+        "notes" : [
+
+        ],
+        "signature" : "WinMan:moveAndResize(option)",
+        "type" : "Method",
+        "returns" : [
+
+        ],
+        "name" : "moveAndResize",
+        "desc" : "Move and resize the focused window."
+      },
+      {
+        "doc" : "Move the focused window between all of the screens in the `direction`.\n\nParameters:\n * direction - A string specifying the direction, valid strings are: `left`, `right`, `up`, `down`, `next`.",
+        "stripped_doc" : [
+          "Move the focused window between all of the screens in the `direction`.",
+          ""
+        ],
+        "def" : "WinMan:cMoveToScreen(direction)",
+        "parameters" : [
+          " * direction - A string specifying the direction, valid strings are: `left`, `right`, `up`, `down`, `next`."
+        ],
+        "notes" : [
+
+        ],
+        "signature" : "WinMan:cMoveToScreen(direction)",
+        "type" : "Method",
+        "returns" : [
+
+        ],
+        "name" : "cMoveToScreen",
+        "desc" : "Move the focused window between all of the screens in the `direction`."
+      },
+      {
+        "doc" : "Redo the window manipulation. Only those \"moveAndResize\" manipulations can be undone.",
+        "stripped_doc" : [
+          "Redo the window manipulation. Only those \"moveAndResize\" manipulations can be undone."
+        ],
+        "def" : "WinMan:redo()",
+        "parameters" : [
+
+        ],
+        "notes" : [
+
+        ],
+        "signature" : "WinMan:redo()",
+        "type" : "Method",
+        "returns" : [
+
+        ],
+        "name" : "redo",
+        "desc" : "Redo the window manipulation. Only those \"moveAndResize\" manipulations can be undone."
+      },
+      {
+        "doc" : "Stash current windows's position and size.",
+        "stripped_doc" : [
+          "Stash current windows's position and size."
+        ],
+        "def" : "WinMan:stash()",
+        "parameters" : [
+
+        ],
+        "notes" : [
+
+        ],
+        "signature" : "WinMan:stash()",
+        "type" : "Method",
+        "returns" : [
+
+        ],
+        "name" : "stash",
+        "desc" : "Stash current windows's position and size."
+      },
+      {
+        "doc" : "Move the focused window in the `direction` by on step. The step scale equals to the width\/height of one gridpart.\n\nParameters:\n * direction - A string specifying the direction, valid strings are: `left`, `right`, `up`, `down`.",
+        "stripped_doc" : [
+          "Move the focused window in the `direction` by on step. The step scale equals to the width\/height of one gridpart.",
+          ""
+        ],
+        "def" : "WinMan:stepMove(direction)",
+        "parameters" : [
+          " * direction - A string specifying the direction, valid strings are: `left`, `right`, `up`, `down`."
+        ],
+        "notes" : [
+
+        ],
+        "signature" : "WinMan:stepMove(direction)",
+        "type" : "Method",
+        "returns" : [
+
+        ],
+        "name" : "stepMove",
+        "desc" : "Move the focused window in the `direction` by on step. The step scale equals to the width\/height of one gridpart."
+      },
+      {
+        "doc" : "Resize the focused window in the `direction` by on step.\n\nParameters:\n * direction - A string specifying the direction, valid strings are: `left`, `right`, `up`, `down`.",
+        "stripped_doc" : [
+          "Resize the focused window in the `direction` by on step.",
+          ""
+        ],
+        "def" : "WinMan:stepResize(direction)",
+        "parameters" : [
+          " * direction - A string specifying the direction, valid strings are: `left`, `right`, `up`, `down`."
+        ],
+        "notes" : [
+
+        ],
+        "signature" : "WinMan:stepResize(direction)",
+        "type" : "Method",
+        "returns" : [
+
+        ],
+        "name" : "stepResize",
+        "desc" : "Resize the focused window in the `direction` by on step."
+      },
+      {
+        "doc" : "Undo the last window manipulation. Only those \"moveAndResize\" manipulations can be undone.",
+        "stripped_doc" : [
+          "Undo the last window manipulation. Only those \"moveAndResize\" manipulations can be undone."
+        ],
+        "def" : "WinMan:undo()",
+        "parameters" : [
+
+        ],
+        "notes" : [
+
+        ],
+        "signature" : "WinMan:undo()",
+        "type" : "Method",
+        "returns" : [
+
+        ],
+        "name" : "undo",
+        "desc" : "Undo the last window manipulation. Only those \"moveAndResize\" manipulations can be undone."
+      }
+    ],
+    "doc" : "Windows manipulation\n\nDownload: [https:\/\/github.com\/Hammerspoon\/Spoons\/raw\/master\/Spoons\/WinMan.spoon.zip](https:\/\/github.com\/Hammerspoon\/Spoons\/raw\/master\/Spoons\/WinMan.spoon.zip)",
+    "Method" : [
+      {
+        "doc" : "Move the focused window in the `direction` by on step. The step scale equals to the width\/height of one gridpart.\n\nParameters:\n * direction - A string specifying the direction, valid strings are: `left`, `right`, `up`, `down`.",
+        "stripped_doc" : [
+          "Move the focused window in the `direction` by on step. The step scale equals to the width\/height of one gridpart.",
+          ""
+        ],
+        "def" : "WinMan:stepMove(direction)",
+        "parameters" : [
+          " * direction - A string specifying the direction, valid strings are: `left`, `right`, `up`, `down`."
+        ],
+        "notes" : [
+
+        ],
+        "signature" : "WinMan:stepMove(direction)",
+        "type" : "Method",
+        "returns" : [
+
+        ],
+        "name" : "stepMove",
+        "desc" : "Move the focused window in the `direction` by on step. The step scale equals to the width\/height of one gridpart."
+      },
+      {
+        "doc" : "Resize the focused window in the `direction` by on step.\n\nParameters:\n * direction - A string specifying the direction, valid strings are: `left`, `right`, `up`, `down`.",
+        "stripped_doc" : [
+          "Resize the focused window in the `direction` by on step.",
+          ""
+        ],
+        "def" : "WinMan:stepResize(direction)",
+        "parameters" : [
+          " * direction - A string specifying the direction, valid strings are: `left`, `right`, `up`, `down`."
+        ],
+        "notes" : [
+
+        ],
+        "signature" : "WinMan:stepResize(direction)",
+        "type" : "Method",
+        "returns" : [
+
+        ],
+        "name" : "stepResize",
+        "desc" : "Resize the focused window in the `direction` by on step."
+      },
+      {
+        "doc" : "Stash current windows's position and size.",
+        "stripped_doc" : [
+          "Stash current windows's position and size."
+        ],
+        "def" : "WinMan:stash()",
+        "parameters" : [
+
+        ],
+        "notes" : [
+
+        ],
+        "signature" : "WinMan:stash()",
+        "type" : "Method",
+        "returns" : [
+
+        ],
+        "name" : "stash",
+        "desc" : "Stash current windows's position and size."
+      },
+      {
+        "doc" : "Move and resize the focused window.\n\nParameters:\n * option - A string specifying the option, valid strings are: `halfleft`, `halfright`, `halfup`, `halfdown`, `cornerNW`, `cornerSW`, `cornerNE`, `cornerSE`, `center`, `fullscreen`, `expand`, `shrink`.",
+        "stripped_doc" : [
+          "Move and resize the focused window.",
+          ""
+        ],
+        "def" : "WinMan:moveAndResize(option)",
+        "parameters" : [
+          " * option - A string specifying the option, valid strings are: `halfleft`, `halfright`, `halfup`, `halfdown`, `cornerNW`, `cornerSW`, `cornerNE`, `cornerSE`, `center`, `fullscreen`, `expand`, `shrink`."
+        ],
+        "notes" : [
+
+        ],
+        "signature" : "WinMan:moveAndResize(option)",
+        "type" : "Method",
+        "returns" : [
+
+        ],
+        "name" : "moveAndResize",
+        "desc" : "Move and resize the focused window."
+      },
+      {
+        "doc" : "Move the focused window between all of the screens in the `direction`.\n\nParameters:\n * direction - A string specifying the direction, valid strings are: `left`, `right`, `up`, `down`, `next`.",
+        "stripped_doc" : [
+          "Move the focused window between all of the screens in the `direction`.",
+          ""
+        ],
+        "def" : "WinMan:cMoveToScreen(direction)",
+        "parameters" : [
+          " * direction - A string specifying the direction, valid strings are: `left`, `right`, `up`, `down`, `next`."
+        ],
+        "notes" : [
+
+        ],
+        "signature" : "WinMan:cMoveToScreen(direction)",
+        "type" : "Method",
+        "returns" : [
+
+        ],
+        "name" : "cMoveToScreen",
+        "desc" : "Move the focused window between all of the screens in the `direction`."
+      },
+      {
+        "doc" : "Undo the last window manipulation. Only those \"moveAndResize\" manipulations can be undone.",
+        "stripped_doc" : [
+          "Undo the last window manipulation. Only those \"moveAndResize\" manipulations can be undone."
+        ],
+        "def" : "WinMan:undo()",
+        "parameters" : [
+
+        ],
+        "notes" : [
+
+        ],
+        "signature" : "WinMan:undo()",
+        "type" : "Method",
+        "returns" : [
+
+        ],
+        "name" : "undo",
+        "desc" : "Undo the last window manipulation. Only those \"moveAndResize\" manipulations can be undone."
+      },
+      {
+        "doc" : "Redo the window manipulation. Only those \"moveAndResize\" manipulations can be undone.",
+        "stripped_doc" : [
+          "Redo the window manipulation. Only those \"moveAndResize\" manipulations can be undone."
+        ],
+        "def" : "WinMan:redo()",
+        "parameters" : [
+
+        ],
+        "notes" : [
+
+        ],
+        "signature" : "WinMan:redo()",
+        "type" : "Method",
+        "returns" : [
+
+        ],
+        "name" : "redo",
+        "desc" : "Redo the window manipulation. Only those \"moveAndResize\" manipulations can be undone."
+      },
+      {
+        "doc" : "Center the cursor on the focused window.",
+        "stripped_doc" : [
+          "Center the cursor on the focused window."
+        ],
+        "def" : "WinMan:centerCursor()",
+        "parameters" : [
+
+        ],
+        "notes" : [
+
+        ],
+        "signature" : "WinMan:centerCursor()",
+        "type" : "Method",
+        "returns" : [
+
+        ],
+        "name" : "centerCursor",
+        "desc" : "Center the cursor on the focused window."
+      }
+    ],
+    "Field" : [
+
+    ],
+    "Command" : [
+
+    ],
+    "name" : "WinMan"
+  }
+]
