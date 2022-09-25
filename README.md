@@ -75,7 +75,7 @@ git pull origin main
 鼠标单击功能项，即可启用/禁用功能项
 
 <div align='center'>
-  <img src='./images/hs-menu.png' width='600'/>
+  <img src='./images/hs-menu.png'/>
 </div>
 
 ---
