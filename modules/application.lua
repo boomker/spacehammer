@@ -2,28 +2,50 @@
 
 require 'modules.shortcut'
 
+local app_info = {
+    app_bundle_id = nil,
+    app_name = nil
+}
+
 hs.fnutils.each(applications, function(item)
     hs.hotkey.bind(item.prefix, item.key, item.message, function()
-        toggleAppByBundleId(item.bundleId)
+        if item.bundleId then
+            app_info.app_bundle_id = item.bundleId
+        else
+            app_info.app_name = item.name
+        end
+        launchOrFocusApp(app_info)
     end)
 end)
 
 -- 存储鼠标位置
 local mousePositions = {}
 
-function toggleAppByBundleId(appBundleID)
+function launchOrFocusApp(app_info)
 
     local previousFocusedWindow = hs.window.focusedWindow()
     if previousFocusedWindow ~= nil then
         mousePositions[previousFocusedWindow:id()] = hs.mouse.absolutePosition()
     end
 
-    hs.application.launchOrFocusByBundleID(appBundleID)
+    local appBundleID = app_info.app_bundle_id
+    local appName = app_info.app_name
+    if appBundleID ~= nil then
+        hs.application.launchOrFocusByBundleID(appBundleID)
+    else
+        -- hs.application.launchOrFocus(appName)
+        local osaScriptCodeStr =  string.format('id of app "%s"', appName)
+        local ok, bundleID, _ = hs.osascript.applescript(osaScriptCodeStr)
+        if ok then
+            appBundleID = bundleID
+            hs.application.launchOrFocusByBundleID(appBundleID)
+        end
+    end
 
     -- 获取 application 对象
     local applications = hs.application.applicationsForBundleID(appBundleID)
     local application = nil
-    for k, v in ipairs(applications) do
+    for _, v in ipairs(applications) do
         application = v
     end
 

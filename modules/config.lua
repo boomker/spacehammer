@@ -1,12 +1,13 @@
+---@diagnostic disable: lowercase-global
 -- 默认加载的功能模块
 defaultConfig = {{
     -- 配置版本号
     -- 每次新增功能项，需将版本号加 1
-    configVersion = '6'
+    configVersion = '7'
 }, {
-    module = 'modules.window',
+    module = 'modules.winman',
     name = '窗口管理',
-    enable = false 
+    enable = true 
 }, {
     module = 'modules.application',
     name = '应用切换',
@@ -37,13 +38,21 @@ defaultConfig = {{
     name = '快捷键列表查看',
     enable = true
 }, {
+    module = 'modules.clipboardtool',
+    name = '剪贴板工具',
+    enable = true
+}, {
     module = 'modules.remapkey',
-    name = '映射组合键',
+    name = '自定义按键映射',
     enable = true
 }, {
     module = 'modules.remind',
     name = '提醒下班',
     enable = false
+}, {
+    module = 'modules.jsonFormat',
+    name = 'JSON格式化',
+    enable = true
 }, {
     module = 'modules.update',
     name = '自动检查更新',

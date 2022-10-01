@@ -1,7 +1,7 @@
 -- 窗口管理
 
 -- require("modules.shortcuts-window")
-require("modules.base")
+-- require("modules.base")
 
 -- 关闭动画持续时间
 hs.window.animationDuration = 0
@@ -42,42 +42,20 @@ function same_application(auto_layout_type)
     layout_auto(visibleWindows, auto_layout_type)
 end
 
-function kill_same_application(auto_layout_type)
-    local focusedWindow = hs.window.focusedWindow()
-    local application = focusedWindow:application()
-    -- 当前屏幕
-    local focusedScreen = focusedWindow:screen()
-    -- 同一应用的所有窗口
-    application:kill()
-end
-
-function close_same_application_other_windows(auto_layout_type)
-    local focusedWindow = hs.window.focusedWindow()
-    local application = focusedWindow:application()
-    -- 当前屏幕
-    local focusedScreen = focusedWindow:screen()
-    -- 同一应用的所有窗口
-    local visibleWindows = application:visibleWindows()
-    for k, visibleWindow in ipairs(visibleWindows) do
-        if not visibleWindow:isStandard() then
-            table.remove(visibleWindows, k)
-        end
-        if visibleWindow ~= focusedWindow then
-            -- 将同一应用的其他窗口移动到当前屏幕
-            -- visibleWindow:moveToScreen(focusedScreen)
-            visibleWindow:close()
-        end
-    end
-end
-
 function same_space(auto_layout_type)
-    local spaceId = hs.spaces.focusedSpace()
-    -- 该空间下的所有 window 的 id，注意这里的 window 概念和 Hammerspoon 的 window 概念并不同，详请参考：http://www.hammerspoon.org/docs/hs.spaces.html#windowsForSpace
-    local windowIds = hs.spaces.windowsForSpace(spaceId)
+    local window_filter = hs.window.filter.new():setOverrideFilter({
+        visible = true,
+        fullscreen = false,
+        hasTitlebar = true,
+        currentSpace=true,
+        allowRoles = "AXStandardWindow"
+    })
+
+    local all_windows = window_filter:getWindows()
+
     local windows = {}
-    for k, windowId in ipairs(windowIds) do
-        local window = hs.window.get(windowId)
-        if window ~= nil then
+    for _, window in ipairs(all_windows) do
+        if window ~= nil and window:isStandard() and not window:isMinimized() then
             table.insert(windows, window)
         end
     end
@@ -181,8 +159,8 @@ function layout_grid(windows)
                     local windowFrame = window:frame()
                     windowFrame.x = focusedScreenFrame.x + i * widthForPerWindow
                     windowFrame.y = focusedScreenFrame.y + j * heightForPerWindow
-                    windowFrame.w = widthForPerWindow
-                    windowFrame.h = heightForPerWindow
+                    windowFrame.w = widthForPerWindow - 2
+                    windowFrame.h = heightForPerWindow - 2
                     window:setFrame(windowFrame)
                     -- 让窗口获取焦点以将窗口置前
                     window:focus()
@@ -217,7 +195,7 @@ function layout_horizontal(windows, focusedScreenFrame)
         windowFrame.x = focusedScreenFrame.x
         windowFrame.y = focusedScreenFrame.y + heightForPerWindow * (i - 1)
         windowFrame.w = focusedScreenFrame.w
-        windowFrame.h = heightForPerWindow
+        windowFrame.h = heightForPerWindow - 2
         window:setFrame(windowFrame)
         window:focus()
     end
@@ -231,7 +209,7 @@ function layout_vertical(windows, focusedScreenFrame)
         local windowFrame = window:frame()
         windowFrame.x = focusedScreenFrame.x + widthForPerWindow * (i - 1)
         windowFrame.y = focusedScreenFrame.y
-        windowFrame.w = widthForPerWindow
+        windowFrame.w = widthForPerWindow - 2
         windowFrame.h = focusedScreenFrame.h
         window:setFrame(windowFrame)
         window:focus()
@@ -258,5 +236,33 @@ function isWhatLayout()
         return "horizontal"
     else
         return "vertical"
+    end
+end
+
+function kill_same_application()
+    local focusedWindow = hs.window.focusedWindow()
+    local application = focusedWindow:application()
+    -- 当前屏幕
+    -- local focusedScreen = focusedWindow:screen()
+    -- 同一应用的所有窗口
+    application:kill()
+end
+
+function close_same_application_other_windows()
+    local focusedWindow = hs.window.focusedWindow()
+    local application = focusedWindow:application()
+    -- 当前屏幕
+    -- local focusedScreen = focusedWindow:screen()
+    -- 同一应用的所有窗口
+    local visibleWindows = application:visibleWindows()
+    for k, visibleWindow in ipairs(visibleWindows) do
+        if not visibleWindow:isStandard() then
+            table.remove(visibleWindows, k)
+        end
+        if visibleWindow ~= focusedWindow then
+            -- 将同一应用的其他窗口移动到当前屏幕
+            -- visibleWindow:moveToScreen(focusedScreen)
+            visibleWindow:close()
+        end
     end
 end

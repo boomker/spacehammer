@@ -4,6 +4,7 @@ hs.loadSpoon("ModalMgr")
 hs.loadSpoon("WinMan")
 require 'modules.shortcut'
 require 'modules.window'
+-- require 'modules.remapkey'
 
 -- 窗口枚举
 local AUTO_LAYOUT_TYPE = {
@@ -20,52 +21,82 @@ if spoon.WinMan then
     local cmodal = spoon.ModalMgr.modal_list["windowM"]
     cmodal:bind('', 'escape', '退出 ', function() spoon.ModalMgr:deactivate({"windowM"}) end)
     cmodal:bind('', 'Q', '退出', function() spoon.ModalMgr:deactivate({"windowM"}) end)
+
+    cmodal:bind('', 'tab', '键位提示', function() spoon.ModalMgr:toggleCheatsheet() end)
     hs.fnutils.each(winman_keys , function(item)
         local wfn = item.func
         if wfn == 'moveAndResize' then
-            cmodal:bind('', item.key, item.message, function()
+            cmodal:bind(item.prefix, item.key, item.message, function()
                 spoon.WinMan:stash()
                 spoon.WinMan:moveAndResize(item.location)
                 spoon.ModalMgr:deactivate({"windowM"})
             end)
         elseif wfn == 'wMoveToScreen' then
-            cmodal:bind('', item.key, item.message, function()
+            cmodal:bind(item.prefix, item.key, item.message, function()
                 spoon.WinMan:stash()
                 spoon.WinMan:cMoveToScreen(item.location)
                 spoon.ModalMgr:deactivate({"windowM"})
             end)
         elseif wfn == 'moveToSpace' then
-            cmodal:bind('', item.key, item.message, function()
+            cmodal:bind(item.prefix, item.key, item.message, function()
                 spoon.WinMan:stash()
-                spoon.WinMan:moveToSpace(item.location)
+                spoon.WinMan:moveToSpace(item.direction)
                 spoon.ModalMgr:deactivate({"windowM"})
             end)
+        elseif wfn == 'moveAndFocusToSpace' then
+            cmodal:bind(item.prefix, item.key, item.message, function()
+                spoon.WinMan:stash()
+                -- spoon.WinMan:moveAndFocusToSpace(item.direction)
+                spoon.WinMan:moveToSpace(item.direction)
+                spoon.ModalMgr:deactivate({"windowM"})
+                -- execTargetFunc('goToNextSpace')
+            end)
         elseif wfn == 'killSameAppAllWindow' then
-            cmodal:bind('', item.key, item.message, function()
+            cmodal:bind(item.prefix, item.key, item.message, function()
                 kill_same_application()
                 spoon.ModalMgr:deactivate({"windowM"})
             end)
         elseif wfn == 'closeSameAppOtherWindows' then
-            cmodal:bind('', item.key, item.message, function()
+            cmodal:bind(item.prefix, item.key, item.message, function()
                 close_same_application_other_windows()
                 spoon.ModalMgr:deactivate({"windowM"})
             end)
         elseif wfn == 'gridWindow' then
-            cmodal:bind('', item.key, item.message, function()
+            cmodal:bind(item.prefix, item.key, item.message, function()
                 same_application(AUTO_LAYOUT_TYPE.GRID)
                 spoon.ModalMgr:deactivate({"windowM"})
             end)
         elseif wfn == 'flattenWindow' then
-            cmodal:bind('', item.key, item.message, function()
+            cmodal:bind(item.prefix, item.key, item.message, function()
                 same_application(AUTO_LAYOUT_TYPE.HORIZONTAL_OR_VERTICAL)
                 spoon.ModalMgr:deactivate({"windowM"})
             end)
-        else
-            cmodal:bind('', item.key, item.message, function()
+        elseif wfn == 'rotateLayout' then
+            cmodal:bind(item.prefix, item.key, item.message, function()
                 same_application(AUTO_LAYOUT_TYPE.HORIZONTAL_OR_VERTICAL_R)
                 spoon.ModalMgr:deactivate({"windowM"})
             end)
-        spoon.ModalMgr:deactivateAll()
+        elseif wfn == 'flattenWindowsForSpace' then
+            cmodal:bind(item.prefix, item.key, item.message, function()
+                same_space(AUTO_LAYOUT_TYPE.HORIZONTAL_OR_VERTICAL)
+                spoon.ModalMgr:deactivate({"windowM"})
+            end)
+        elseif wfn == 'gridWindowsForSpace' then
+            cmodal:bind(item.prefix, item.key, item.message, function()
+                same_space(AUTO_LAYOUT_TYPE.GRID)
+                spoon.ModalMgr:deactivate({"windowM"})
+            end)
+        elseif wfn == 'rotateLayoutWindowsForSpace' then
+            cmodal:bind(item.prefix, item.key, item.message, function()
+                same_space(AUTO_LAYOUT_TYPE.HORIZONTAL_OR_VERTICAL_R)
+                spoon.ModalMgr:deactivate({"windowM"})
+            end)
+        else
+            cmodal:bind(item.prefix, item.key, item.message, function()
+                spoon.WinMan:undo()
+                spoon.ModalMgr:deactivate({"windowM"})
+            end)
+        -- spoon.ModalMgr:deactivateAll()
         end
     end)
 
@@ -82,9 +113,6 @@ end
 
 spoon.ModalMgr.supervisor:enter()
 
-    -- cmodal:bind('', 'left', '窗口移至左边屏幕', function() spoon.WinMan:stash() spoon.WinMan:moveToScreen("left") end)
-
-    -- cmodal:bind('', 'tab', '键位提示', function() spoon.ModalMgr:toggleCheatsheet() end)
 
     -- cmodal:bind('', 'A', '向左移动', function() spoon.WinMan:stepMove("left") end, nil, function() spoon.WinMan:stepMove("left") end)
     -- cmodal:bind('', 'D', '向右移动', function() spoon.WinMan:stepMove("right") end, nil, function() spoon.WinMan:stepMove("right") end)
@@ -109,8 +137,10 @@ spoon.ModalMgr.supervisor:enter()
 
     -- cmodal:bind('', 'X', '二分之一居中分屏', function() spoon.WinMan:stash() spoon.WinMan:moveAndResize("center-2") end)
 
-    -- cmodal:bind('', '=', '窗口放大', function() spoon.WinMan:moveAndResize("expand") end, nil, function() spoon.WinMan:moveAndResize("expand") end)
-    -- cmodal:bind('', '-', '窗口缩小', function() spoon.WinMan:moveAndResize("shrink") end, nil, function() spoon.WinMan:moveAndResize("shrink") end)
+    -- cmodal:bind('', '=', '窗口放大', function() spoon.WinMan:moveAndResize("expand") end, nil,
+                                    -- function() Spoon.WinMan:spoon.WinMan:moveAndResize("expand") end)
+    -- cmodal:bind('', '-', '窗口缩小', function() spoon.WinMan:moveAndResize("shrink") end, nil,
+                                    -- function() spoon.WinMan:moveAndResize("shrink") end)
 
     -- cmodal:bind('ctrl', 'H', '向左收缩窗口', function() spoon.WinMan:stepResize("left") end, nil, function() spoon.WinMan:stepResize("left") end)
     -- cmodal:bind('ctrl', 'L', '向右扩展窗口', function() spoon.WinMan:stepResize("right") end, nil, function() spoon.WinMan:stepResize("right") end)

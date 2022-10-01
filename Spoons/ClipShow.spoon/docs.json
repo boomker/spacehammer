@@ -1,0 +1,141 @@
+[
+  {
+    "Command": [],
+    "Constant": [],
+    "Constructor": [],
+    "Deprecated": [],
+    "Field": [],
+    "Function": [],
+    "Method": [
+      {
+        "def": "ClipShow:openInBrowserWithRef(refstr)",
+        "desc": "Open content of the clipboard in default browser with specific refstr.",
+        "doc": "Open content of the clipboard in default browser with specific refstr.\n\nParameters:\n * refstr - A optional string specifying which refstr to use. If nil, then open this content in browser directly. The \"refstr\" could be something like this: `https://www.bing.com/search?q=`.",
+        "name": "openInBrowserWithRef",
+        "parameters": [
+          " * refstr - A optional string specifying which refstr to use. If nil, then open this content in browser directly. The \"refstr\" could be something like this: `https://www.bing.com/search?q=`."
+        ],
+        "signature": "ClipShow:openInBrowserWithRef(refstr)",
+        "stripped_doc": "",
+        "type": "Method"
+      },
+      {
+        "def": "ClipShow:openWithCommand(command)",
+        "desc": "Open local file with specific command.",
+        "doc": "Open local file with specific command.\n\nParameters:\n * command - A string specifying which command to use. The \"command\" is something like this: `/usr/local/bin/mvim`.",
+        "name": "openWithCommand",
+        "parameters": [
+          " * command - A string specifying which command to use. The \"command\" is something like this: `/usr/local/bin/mvim`."
+        ],
+        "signature": "ClipShow:openWithCommand(command)",
+        "stripped_doc": "",
+        "type": "Method"
+      },
+      {
+        "def": "ClipShow:restoreLastSession()",
+        "desc": "Restore the lastsession of system clipboard",
+        "doc": "Restore the lastsession of system clipboard\n",
+        "name": "restoreLastSession",
+        "signature": "ClipShow:restoreLastSession()",
+        "stripped_doc": "",
+        "type": "Method"
+      },
+      {
+        "def": "ClipShow:saveToFile()",
+        "desc": "Save content of current canvas to a file, the default location is `~/Desktop/`.",
+        "doc": "Save content of current canvas to a file, the default location is `~/Desktop/`.\n",
+        "name": "saveToFile",
+        "signature": "ClipShow:saveToFile()",
+        "stripped_doc": "",
+        "type": "Method"
+      },
+      {
+        "def": "ClipShow:saveToSession()",
+        "desc": "Save clipboard session so we can restore it later",
+        "doc": "Save clipboard session so we can restore it later\n",
+        "name": "saveToSession",
+        "signature": "ClipShow:saveToSession()",
+        "stripped_doc": "",
+        "type": "Method"
+      },
+      {
+        "def": "ClipShow:toggleShow()",
+        "desc": "Process the content of system clipboard and show/hide the canvas",
+        "doc": "Process the content of system clipboard and show/hide the canvas\n",
+        "name": "toggleShow",
+        "signature": "ClipShow:toggleShow()",
+        "stripped_doc": "",
+        "type": "Method"
+      }
+    ],
+    "Variable": [],
+    "desc": "Show the content of system clipboard",
+    "doc": "Show the content of system clipboard\n\nDownload: [https://github.com/Hammerspoon/Spoons/raw/master/Spoons/ClipShow.spoon.zip](https://github.com/Hammerspoon/Spoons/raw/master/Spoons/ClipShow.spoon.zip)",
+    "items": [
+      {
+        "def": "ClipShow:openInBrowserWithRef(refstr)",
+        "desc": "Open content of the clipboard in default browser with specific refstr.",
+        "doc": "Open content of the clipboard in default browser with specific refstr.\n\nParameters:\n * refstr - A optional string specifying which refstr to use. If nil, then open this content in browser directly. The \"refstr\" could be something like this: `https://www.bing.com/search?q=`.",
+        "name": "openInBrowserWithRef",
+        "parameters": [
+          " * refstr - A optional string specifying which refstr to use. If nil, then open this content in browser directly. The \"refstr\" could be something like this: `https://www.bing.com/search?q=`."
+        ],
+        "signature": "ClipShow:openInBrowserWithRef(refstr)",
+        "stripped_doc": "",
+        "type": "Method"
+      },
+      {
+        "def": "ClipShow:openWithCommand(command)",
+        "desc": "Open local file with specific command.",
+        "doc": "Open local file with specific command.\n\nParameters:\n * command - A string specifying which command to use. The \"command\" is something like this: `/usr/local/bin/mvim`.",
+        "name": "openWithCommand",
+        "parameters": [
+          " * command - A string specifying which command to use. The \"command\" is something like this: `/usr/local/bin/mvim`."
+        ],
+        "signature": "ClipShow:openWithCommand(command)",
+        "stripped_doc": "",
+        "type": "Method"
+      },
+      {
+        "def": "ClipShow:restoreLastSession()",
+        "desc": "Restore the lastsession of system clipboard",
+        "doc": "Restore the lastsession of system clipboard\n",
+        "name": "restoreLastSession",
+        "signature": "ClipShow:restoreLastSession()",
+        "stripped_doc": "",
+        "type": "Method"
+      },
+      {
+        "def": "ClipShow:saveToFile()",
+        "desc": "Save content of current canvas to a file, the default location is `~/Desktop/`.",
+        "doc": "Save content of current canvas to a file, the default location is `~/Desktop/`.\n",
+        "name": "saveToFile",
+        "signature": "ClipShow:saveToFile()",
+        "stripped_doc": "",
+        "type": "Method"
+      },
+      {
+        "def": "ClipShow:saveToSession()",
+        "desc": "Save clipboard session so we can restore it later",
+        "doc": "Save clipboard session so we can restore it later\n",
+        "name": "saveToSession",
+        "signature": "ClipShow:saveToSession()",
+        "stripped_doc": "",
+        "type": "Method"
+      },
+      {
+        "def": "ClipShow:toggleShow()",
+        "desc": "Process the content of system clipboard and show/hide the canvas",
+        "doc": "Process the content of system clipboard and show/hide the canvas\n",
+        "name": "toggleShow",
+        "signature": "ClipShow:toggleShow()",
+        "stripped_doc": "",
+        "type": "Method"
+      }
+    ],
+    "name": "ClipShow",
+    "stripped_doc": "\nDownload: [https://github.com/Hammerspoon/Spoons/raw/master/Spoons/ClipShow.spoon.zip](https://github.com/Hammerspoon/Spoons/raw/master/Spoons/ClipShow.spoon.zip)",
+    "submodules": [],
+    "type": "Module"
+  }
+]

@@ -2,21 +2,22 @@
 ---
 --- Windows manipulation
 ---
---- Download: [https://github.com/Hammerspoon/Spoons/raw/master/Spoons/WinWin.spoon.zip](https://github.com/Hammerspoon/Spoons/raw/master/Spoons/WinWin.spoon.zip)
+--- Download: [原 WinWin Spoon 地址](https://github.com/Hammerspoon/Spoons/raw/master/Spoons/WinWin.spoon.zip)
 
 local obj={}
 obj.__index = obj
 
 -- Metadata
--- obj.name = "WinMan"
 obj.name = "WinMan"
-obj.version = "1.0"
-obj.author = "ashfinal <ashfinal@gmail.com>"
-obj.homepage = "https://github.com/Hammerspoon/Spoons"
+obj.version = "1.1"
+obj.author = "shingo <gmboomker@gmail.com>"
+obj.homepage = "https://github.com/boomker/spacehammer"
 obj.license = "MIT - https://opensource.org/licenses/MIT"
 
 -- Windows manipulation history. Only the last operation is stored.
 obj.history = {}
+
+obj.alreadyFocusedWindowsID = {}
 
 --- WinMan.gridparts
 --- Variable
@@ -127,7 +128,8 @@ end
 --- Move and resize the focused window.
 ---
 --- Parameters:
----  * option - A string specifying the option, valid strings are: `halfleft`, `halfright`, `halfup`, `halfdown`, `cornerNW`, `cornerSW`, `cornerNE`, `cornerSE`, `center`, `fullscreen`, `expand`, `shrink`.
+---  * option - A string specifying the option, valid strings are: `halfleft`, `halfright`, `halfup`, `halfdown`,
+--    `cornerNW`, `cornerSW`, `cornerNE`, `cornerSE`, `center`, `fullscreen`, `expand`, `shrink`.
 -- 增加 mostleft、mostright、lesshalfleft、onethird、lesshalfright
 
 function obj:moveAndResize(option)
@@ -142,8 +144,6 @@ function obj:moveAndResize(option)
             cwin:setFrame({x=cres.x, y=cres.y, w=cres.w/2, h=cres.h})
         elseif option == "halfright" then
             cwin:setFrame({x=cres.x+cres.w/2, y=cres.y, w=cres.w/2, h=cres.h})
-
-
         -- 定义  lesshalfleft、onethird、lesshalfright
         elseif option == "lesshalfleft" then
             cwin:setFrame({x=cres.x, y=cres.y, w=cres.w/3, h=cres.h})
@@ -165,7 +165,7 @@ function obj:moveAndResize(option)
             
         -- 定义 show 
         -- 宽度为24 分之 22
-         elseif option == "show" then
+        elseif option == "show" then
             -- cwin:setFrame({x=cres.x+cres.w/3/2/2/2/2, y=cres.h/96, w=cres.w/48*46, h=cres.h})
             cwin:setFrame({x=cres.x+cres.w/3/2/2/2/2, y=cres.y, w=cres.w/48*46, h=cres.h})
         
@@ -197,6 +197,24 @@ function obj:moveAndResize(option)
             cwin:maximize()
         elseif option == "center" then
             cwin:centerOnScreen()
+        elseif option == "screenRB" then
+            cwin:setFrame({x=cres.w-wf.w, y=wf.y, w=wf.w, h=wf.h})
+        elseif option == "screenLB" then
+            cwin:setFrame({x=cres.x, y=cres.y, w=wf.w, h=wf.h})
+            cwin:setFrame({x=cres.x, y=wf.y, w=wf.w, h=wf.h})
+        elseif option == "screenDB" then
+            cwin:setFrame({x=wf.x, y=cres.y+(cres.h-wf.h), w=wf.w, h=wf.h})
+        elseif option == "screenUB" then
+            cwin:setFrame({x=wf.x, y=cres.y, w=wf.w, h=wf.h})
+
+        elseif option == "screenCornerNW" then
+            cwin:setFrame({x=cres.x, y=cres.y, w=wf.w, h=wf.h})
+        elseif option == "screenCornerNE" then
+            cwin:setFrame({x=cres.w-wf.w, y=cres.y, w=wf.w, h=wf.h})
+        elseif option == "screenCornerSW" then
+            cwin:setFrame({x=cres.x, y=cres.y+(cres.h-wf.h), w=wf.w, h=wf.h})
+        elseif option == "screenCornerSE" then
+            cwin:setFrame({x=cres.x+(cres.w-wf.w), y=cres.y+(cres.h-wf.h), w=wf.w, h=wf.h})
         elseif option == "expand" then
             cwin:setFrame({x=wf.x-stepw, y=wf.y-steph, w=wf.w+(stepw*2), h=wf.h+(steph*2)})
         elseif option == "shrink" then
@@ -233,20 +251,120 @@ function obj:cMoveToScreen(direction)
     end
 end
 
-function obj:moveToSpace(spaceId)
-    local wid = hs.window.focusedWindow()
-    if wid then
-        -- local sid = hs.spaces.focusedSpace()
-        if spaceId == "NS" then
-            -- local tgtSID = sid + 1
-            hs.spaces.moveWindowToSpace(wid, 3)
-        elseif spaceId == "PS" then
-            -- local tgtSID = sid - 1
-            hs.spaces.moveWindowToSpace(wid, 1)
+local function getNextSID(direction)
+    local curSpaceID = hs.spaces.focusedSpace()
+    local curScreenAllSpaceIDs = hs.spaces.spacesForScreen()
+    local nextSpaceID = 0
+    if direction == "right" then
+        for _, v in ipairs(curScreenAllSpaceIDs) do
+            if curSpaceID < v then
+                nextSpaceID = v
+                break
+            end
+        end
+        if nextSpaceID == 0 then
+            nextSpaceID = 1
+        end
+    else
+        for i, v in ipairs(curScreenAllSpaceIDs) do
+            if curSpaceID == v then
+                local nextSpaceIndex = i - 1
+                if nextSpaceIndex == 0 then
+                    nextSpaceID = curScreenAllSpaceIDs[#curScreenAllSpaceIDs]
+                else
+                    nextSpaceID = curScreenAllSpaceIDs[nextSpaceIndex]
+                end
+            end
+        end
+    end
+    return nextSpaceID
+end
+
+function obj:moveToSpace(direction)
+    local windowObj = hs.window.focusedWindow()
+    if windowObj then
+        if direction == "right" then
+            local nextSpaceID = getNextSID("right")
+            hs.spaces.moveWindowToSpace(windowObj, nextSpaceID)
+        elseif direction == "left" then
+            local nextSpaceID = getNextSID("left")
+            hs.spaces.moveWindowToSpace(windowObj, nextSpaceID)
         end
     else
         hs.alert.show("No focused window!")
     end
+end
+
+-- function obj:moveAndFocusToSpace(direction)
+--     local windowObj = hs.window.focusedWindow()
+--     self:moveToSpace(direction)
+--     local nsid = getNextSID(direction)
+--     print(nsid)
+--     hs.spaces.gotoSpace(nsid)
+--     windowObj:focus()
+-- end
+
+
+function obj:jumpToWindowAndFocus()
+    local windowObj = hs.window.focusedWindow()
+    local curWindowID = nil
+    if windowObj then
+        curWindowID = windowObj:id()
+    else
+        hs.alert.show("当前没有聚焦到任何窗口", 0.5)
+        return false
+    end
+
+    local nextFocusedWindowID = nil
+    table.insert(obj.alreadyFocusedWindowsID, curWindowID)
+
+    local window_filter = hs.window.filter.new():setOverrideFilter({
+        visible = true,
+        fullscreen = false,
+        hasTitlebar = true,
+        currentSpace=true,
+        allowRoles = "AXStandardWindow"
+    })
+
+    local _curSpaceAllWindows = window_filter:getWindows()
+
+    local curSpaceAllWindowsID = {}
+    for _, window in ipairs(_curSpaceAllWindows) do
+        if window ~= nil and window:isStandard() and not window:isMinimized() then
+            table.insert(curSpaceAllWindowsID, window:id())
+        end
+    end
+
+    if #obj.alreadyFocusedWindowsID == #curSpaceAllWindowsID then
+        nextFocusedWindowID = obj.alreadyFocusedWindowsID[1]
+        local nextFocusWindow = hs.window.get(nextFocusedWindowID)
+        nextFocusWindow:focus()
+        obj.alreadyFocusedWindowsID = {}
+        return
+    end
+
+    for _, awindowID in ipairs(obj.alreadyFocusedWindowsID) do
+        for i, cwindowID in ipairs(curSpaceAllWindowsID) do
+            if cwindowID == awindowID then
+                table.remove(curSpaceAllWindowsID, i)
+                break
+            end
+        end
+    end
+    -- print(hs.inspect(curSpaceAllWindowsID))
+    if #curSpaceAllWindowsID ~= 0 then
+        nextFocusedWindowID = curSpaceAllWindowsID[1]
+    else
+        nextFocusedWindowID = obj.alreadyFocusedWindowsID[2]
+    end
+    local nextFocusWindow = hs.window.get(nextFocusedWindowID)
+    if nextFocusWindow then
+        nextFocusWindow:focus()
+    else
+        hs.alert.show("No focused window!")
+        return false
+    end
+
 end
 
 --- WinMan:undo()

@@ -1,3 +1,4 @@
+
 --- === KSheet ===
 ---
 --- Keybindings cheatsheet for current application
@@ -24,13 +25,27 @@ obj.commandEnum = {
     ctrl = '⌃',
 }
 
+--- KSheet:init()
+--- Method
+--- Initialize the spoon
+---
+--- Parameters:
+---  * None
 function obj:init()
     self.sheetView = hs.webview.new({x=0, y=0, w=0, h=0})
     self.sheetView:windowTitle("CheatSheets")
     self.sheetView:windowStyle("utility")
     self.sheetView:allowGestures(true)
     self.sheetView:allowNewWindows(false)
-    self.sheetView:level(hs.drawing.windowLevels.modalPanel)
+    self.sheetView:level(hs.drawing.windowLevels.tornOffMenu)
+    local cscreen = hs.screen.mainScreen()
+    local cres = cscreen:fullFrame()
+    self.sheetView:frame({
+        x = cres.x+cres.w*0.15/2,
+        y = cres.y+cres.h*0.25/2,
+        w = cres.w*0.85,
+        h = cres.h*0.75
+    })
 end
 
 local function processMenuItems(menustru)
@@ -52,7 +67,7 @@ local function processMenuItems(menustru)
                         local CmdChar = val.AXMenuItemCmdChar
                         local CmdGlyph = hs.application.menuGlyphs[val.AXMenuItemCmdGlyph] or ''
                         local CmdKeys = CmdChar .. CmdGlyph
-                        menu = menu .. "<li><div class='cmdModwifiers'>" .. CmdModifiers .. " " .. CmdKeys .. "</div><div class='cmdtext'>" .. " " .. val.AXTitle .. "</div></li>"
+                        menu = menu .. "<li><div class='cmdModifiers'>" .. CmdModifiers .. " " .. CmdKeys .. "</div><div class='cmdtext'>" .. " " .. val.AXTitle .. "</div></li>"
                     end
                 elseif val.AXRole == "AXMenuItem" and type(val.AXChildren) == "table" then
                     menu = menu .. processMenuItems(val.AXChildren[1])
@@ -162,7 +177,7 @@ local function generateHtml(application)
             <hr />
               <div class="content" >
                 <div class="col">
-                   <a >  快捷键显示面板 </a>
+                  by <a href="https://github.com/dharmapoudel" target="_parent">dharma poudel</a>
                 </div>
               </div>
           </footer>
@@ -184,19 +199,12 @@ end
 
 --- KSheet:show()
 --- Method
---- Show current application's keybindings in a webview
+--- Show current application's keybindings in a view.
 ---
-
+--- Parameters:
+---  * None
 function obj:show()
     local capp = hs.application.frontmostApplication()
-    local cscreen = hs.screen.mainScreen()
-    local cres = cscreen:fullFrame()
-    self.sheetView:frame({
-        x = cres.x+cres.w*0.15/2,
-        y = cres.y+cres.h*0.25/2,
-        w = cres.w*0.85,
-        h = cres.h*0.75
-    })
     local webcontent = generateHtml(capp)
     self.sheetView:html(webcontent)
     self.sheetView:show()
@@ -204,11 +212,45 @@ end
 
 --- KSheet:hide()
 --- Method
---- Hide the cheatsheet webview
+--- Hide the cheatsheet view.
 ---
-
+--- Parameters:
+---  * None
 function obj:hide()
     self.sheetView:hide()
 end
 
+--- KSheet:toggle()
+--- Method
+--- Alternatively show/hide the cheatsheet view.
+---
+--- Parameters:
+---  * None
+function obj:toggle()
+  if self.sheetView and self.sheetView:hswindow() and self.sheetView:hswindow():isVisible() then
+    self:hide()
+  else
+    self:show()
+  end
+end
+
+--- KSheet:bindHotkeys(mapping)
+--- Method
+--- Binds hotkeys for KSheet
+---
+--- Parameters:
+---  * mapping - A table containing hotkey modifier/key details for the following items:
+---   * show - Show the keybinding view
+---   * hide - Hide the keybinding view
+---   * toggle - Show if hidden, hide if shown
+function obj:bindHotkeys(mapping)
+  local actions = {
+    toggle = hs.fnutils.partial(self.toggle, self),
+    show = hs.fnutils.partial(self.show, self),
+    hide = hs.fnutils.partial(self.hide, self)
+  }
+  hs.spoons.bindHotkeysToSpec(actions, mapping)
+end
+
 return obj
+
