@@ -172,7 +172,7 @@ select_key = hs.eventtap.new({hs.eventtap.event.types.keyDown}, function(event)
     preview(row_contents.path)
 end):start()
 
-hs.hotkey.bind(emoji_search.prefix, emoji_search.key, function()
+hs.hotkey.bind(emoji_search.prefix, emoji_search.key, emoji_search.message, function()
     page = 1
     chooser:query('')
     chooser:show()

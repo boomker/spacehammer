@@ -7,27 +7,27 @@ defaultConfig = {{
 }, {
     module = 'modules.winman',
     name = '窗口管理',
-    enable = true 
+    enable = true
 }, {
     module = 'modules.application',
     name = '应用切换',
     enable = true
 }, {
     module = 'modules.emoji',
-    name = '表情包搜索',
+    name = '快发表情 😄 ',
     enable = true
 }, {
     module = 'modules.password',
     name = '密码粘贴',
-    enable = true
+    enable = false
 }, {
     module = 'modules.input-method',
-    name = '输入法切换',
-    enable = false
+    name = '输入法自动切换',
+    enable = true
 }, {
     module = 'modules.network',
     name = '实时网速',
-    enable = true
+    enable = false
 }, {
     module = 'modules.keystroke-visualizer',
     name = '按键回显',
@@ -35,7 +35,7 @@ defaultConfig = {{
 }, {
     -- module = 'modules.hotkey',
     module = 'modules.ksheet',
-    name = '快捷键列表查看',
+    name = 'KSheet快捷键',
     enable = true
 }, {
     module = 'modules.clipboardtool',
@@ -46,13 +46,13 @@ defaultConfig = {{
     name = '自定义按键映射',
     enable = true
 }, {
-    module = 'modules.remind',
-    name = '提醒下班',
-    enable = false
-}, {
     module = 'modules.jsonFormat',
     name = 'JSON格式化',
     enable = true
+}, {
+    module = 'modules.remind',
+    name = '提醒下班',
+    enable = false
 }, {
     module = 'modules.update',
     name = '自动检查更新',

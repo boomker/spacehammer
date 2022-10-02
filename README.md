@@ -12,7 +12,7 @@
 ---
 
 ### 项目背景
-* 之前长期使用的一款快捷键启动 APP [spacelauncher](https://spacelauncherapp.com/), 时不时弹窗提示"我不免费, 请购买", 然而它长期来没有新添加功能, 购买欲望不大, 于是想到用 **Hammerspoon** 来实现
+之前长期使用的一款快捷键启动 APP [spacelauncher](https://spacelauncherapp.com/), 时不时弹窗提示"老兄用了这么久, 要不要考虑购买, 不买也说点什么吧", 然而它长期来没有新添加功能, 购买欲望不大, 于是想到用 **Hammerspoon** 来实现
 
 ---
 
@@ -66,8 +66,7 @@
 4. 优化展示当前应用的所有快捷键 Sheet 
   * item 格式美化                       ✅
   * 查询
-  * 展示 HS 定义的热键
-5. 显示HammerSpoon 定义的顶级快捷键
+5. 显示HammerSpoon HS 定义的热键         ✅
 6. 一组热键在不同的应用中有不同的作用
 7. 剪贴板工具, 附加文本处理               ✅
 8. 增强型PopClip, 按字母键触发
@@ -118,7 +117,7 @@ git pull origin main
 鼠标单击功能项，即可启用/禁用功能项
 
 <div align='center'>
-  <img src='./images/hs_menu.png'/>
+  <img src='./images/hsmenu.png'/>
 </div>
 
 ---
@@ -177,7 +176,9 @@ git pull origin main
 `Hyper` `C`|搜狗拼音输入法
 `Hyper` `X`|ABC
 
-以上快捷键是手动切换, 还可以配置在聚焦指定 APP 窗口后自动切换输入法(同类 APP 可以丢掉了)
+以上快捷键是手动切换, 还可以配置在聚焦指定 APP 窗口后**自动切换**输入法(同类 APP 可以丢掉了)
+TODO:
+ * Bugfix: 在使用快捷键切换 space 时可能会无法自动切换输入法
 
 ---
 
@@ -197,10 +198,18 @@ git pull origin main
 
 ### 快捷键列表查看
 
+* 查看当前APP应用的快捷键
 任意界面下按 `Hyper` `S` 显示/隐藏快捷键列表
 
 <div align='center'>
   <img src='./images/ksheet.png' width='700'/>
+</div>
+
+* 查看本项目配置的所有快捷键列表
+任意界面下按 ` Option` `S` 显示/隐藏快捷键列表
+
+<div align='center'>
+  <img src='./images/hsheet.png' width='700'/>
 </div>
 
 ---
@@ -365,7 +374,7 @@ git pull origin main
 ```shell
 osascript -e 'id of app "Name of App"'
 ```
-当然你可以直接使用应用的名称, 注意不是中文的
+当然你可以直接使用应用的名称, 注意不是**中文**的
 
 ---
 
@@ -410,6 +419,12 @@ osascript -e 'id of app "Name of App"'
     ├── ModalMgr.spoon 模态管理模块(可实现按键组)
     └── WinMan.spoon 窗口管理模块(原为WinWin, 二改版)
 ``` 
+
+### 关于按键冲突 HS(Hammerspoon) Console 报错
+当在 HS 控制台看到的报错类似如下:
+> ERROR:   LuaSkin: This hotkey is already registered. It may be a duplicate in your Hammerspoon config, or it may be registered by macOS. See System Preferences->Keyboard->Shortcuts
+
+这种情况是 多半是和你的 台前调度 快捷键(或其他快捷键)**冲突**了
 
 ---
 

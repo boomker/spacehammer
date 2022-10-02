@@ -28,7 +28,19 @@ if spoon.WinMan then
         if wfn == 'moveAndResize' then
             cmodal:bind(item.prefix, item.key, item.message, function()
                 spoon.WinMan:stash()
-                spoon.WinMan:moveAndResize(item.location)
+                if item.location ~= 'shrink' and item.location ~= 'expand' then
+                    spoon.WinMan:moveAndResize(item.location)
+                else
+                    spoon.WinMan:moveAndResize(item.location)
+                    spoon.WinMan:moveAndResize(item.location)
+                end
+                spoon.ModalMgr:deactivate({"windowM"})
+            end)
+        elseif wfn == 'stepResize' then
+            cmodal:bind(item.prefix, item.key, item.message, function()
+                spoon.WinMan:stash()
+                spoon.WinMan:stepResize(item.direction)
+                spoon.WinMan:stepResize(item.direction)
                 spoon.ModalMgr:deactivate({"windowM"})
             end)
         elseif wfn == 'wMoveToScreen' then
@@ -101,7 +113,7 @@ if spoon.WinMan then
     end)
 
     -- 定义窗口管理模式快捷键
-    winman_toggle  = winman_toggle  or {"alt", "R"}
+    local winman_toggle  = winman_toggle  or {"alt", "R"}
     if string.len(winman_toggle [2]) > 0 then
         spoon.ModalMgr.supervisor:bind(winman_toggle [1], winman_toggle [2], "进入窗口管理模式", function()
             spoon.ModalMgr:deactivateAll()

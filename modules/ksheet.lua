@@ -15,9 +15,9 @@ if spoon.KSheet then
     end)
 
     -- 定义快捷键
-    hscheats_keys = hscheats_keys or {"Option", "S"}
+    local hscheats_keys = hscheats_keys or {HyperKey, "S"}
     if string.len(hscheats_keys[2]) > 0 then
-        spoon.ModalMgr.supervisor:bind(hscheats_keys[1], hscheats_keys[2], "显示应用快捷键", function()
+        spoon.ModalMgr.supervisor:bind(hscheats_keys[1], hscheats_keys[2], "显示当前应用快捷键", function()
             spoon.KSheet:show()
             spoon.ModalMgr:deactivateAll()
             spoon.ModalMgr:activate({"cheatsheetM"})

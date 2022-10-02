@@ -16,11 +16,19 @@ local function switchToABC(_, eventType, appObject)
 
     local curApplication = hs.application.frontmostApplication()
     local curAppBundleID = curApplication:bundleID()
-    local curAppName = hs.application.nameForBundleID(curAppBundleID)
+    local curAppTitle = nil
+    local curAppName = nil
+    if curAppBundleID ~= nil then
+        curAppName = hs.application.nameForBundleID(curAppBundleID)
+    else
+        curAppTitle = curApplication:title()
+    end
+
+    -- print(hs.inspect(curAppBundleID,curAppTitle, curAppName))
 
     if input_method_config.abc_apps ~= nil then
         for _, v in ipairs(input_method_config.abc_apps) do
-            if v == curAppBundleID or v == curAppName then
+            if v == curAppBundleID or v == curAppName or v == curAppTitle then
                 hs.keycodes.currentSourceID(input_method_config.input_methods.abc.inputmethodId)
                 -- hs.alert.show("🅰️- ON", 0.5)
                 -- hs.alert.show(" 🔤️ - ON", 0.5)
@@ -34,14 +42,17 @@ local function switchToChinese(_, eventType, appObject)
 
     local curApplication = hs.application.frontmostApplication()
     local curAppBundleID = curApplication:bundleID()
-    local curAppName = hs.application.nameForBundleID(curAppBundleID)
+    local curAppTitle = nil
+    local curAppName = nil
+    if curAppBundleID ~= nil then
+        curAppName = hs.application.nameForBundleID(curAppBundleID)
+    else
+        curAppTitle = curApplication:title()
+    end
 
     if input_method_config.chinese_apps ~= nil then
         for _, v in ipairs(input_method_config.chinese_apps) do
-            -- print(hs.inspect(input_methods.chinese_apps))
-            -- print(v)
-            -- print(curAppBundleID)
-            if v == curAppBundleID or v == curAppName then
+            if v == curAppBundleID or v == curAppName or v == curAppTitle then
                 hs.keycodes.currentSourceID(input_method_config.input_methods.chinese.inputmethodId)
                 -- hs.alert.show(" 🇨🇳️ - ON", 0.5)
                 break
@@ -50,9 +61,11 @@ local function switchToChinese(_, eventType, appObject)
     end
 end
 
+
 local function appWatcher()
     hs.application.watcher.new(switchToABC):start()
     hs.application.watcher.new(switchToChinese):start()
+    -- hs.spaces.watcher.new(focusedAppWindow):start()
 end
 
 local interval = 10

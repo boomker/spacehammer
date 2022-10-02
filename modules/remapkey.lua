@@ -4,24 +4,15 @@
 hs.loadSpoon("WinMan")
 require 'modules.shortcut'
 
-hs.fnutils.each(remapkeys, function(item)
-    hs.hotkey.bind(item.prefix, item.key, item.message, function()
-        if item.targetKey then
-            pressTargetKey(item.targetKey)
-        else
-            execTargetFunc(item.targetFunc)
-        end
-    end)
-end)
-
-
-function pressTargetKey(tgtkey)
+local function pressTargetKey(tgtkey)
     hs.eventtap.keyStroke(tgtkey[1], tgtkey[2])
 end
+
 
 local function getTargetSpaceID(direction)
     local curSpaceID = hs.spaces.focusedSpace()
     local curScreenAllSpaceIDs = hs.spaces.spacesForScreen()
+    -- print(hs.inspect(curScreenAllSpaceIDs))
     local nextSpaceID = 0
     local nsi = 0
     if direction == 'next' then
@@ -45,14 +36,14 @@ local function getTargetSpaceID(direction)
 end
 
 
-function execTargetFunc(tgtfn)
+local function execTargetFunc(tgtfn)
     if tgtfn == "toggleShowDesktop" then
         hs.spaces.toggleShowDesktop()
     elseif tgtfn == "goToNextSpace" then
         local nextSpaceID, nsi  = getTargetSpaceID('next')
         if nextSpaceID == 0 and nsi == 0 then
-            nextSpaceID = 1
-            nsi = 1
+            -- nextSpaceID = 1
+            -- nsi = 1
             -- 仅能通过调用快捷键来切换到第一个桌面空间
             -- pressTargetKey({ { "cmd", "alt", "ctrl" }, "," })
             pressTargetKey(firstDesktopSpaceHotKey)
@@ -66,7 +57,28 @@ function execTargetFunc(tgtfn)
         if not nextSpaceID == 0 and not nsi == 0 then
             hs.spaces.gotoSpace(nextSpaceID)
         end
+    elseif tgtfn == "winwodGroupAutoLayout" then
+        -- hs.mjomatic.go(windowGroupIndex)
+        -- hs.mjomatic.go(window_group_layouts.chrome_iterm2)
+        hs.mjomatic.go(window_group_layouts.finder_iTerm2)
+
+        -- local curScreenAllSpaceIDs = hs.spaces.spacesForScreen()
+        -- local targetSpaceID = curScreenAllSpaceIDs[1]
+        -- if targetSpaceID ~= nil then
+        --     hs.spaces.gotoSpace(targetSpaceID)
+        -- end
     else
         spoon.WinMan:jumpToWindowAndFocus()
     end
 end
+
+
+hs.fnutils.each(remapkeys, function(item)
+    hs.hotkey.bind(item.prefix, item.key, item.message, function()
+        if item.targetKey then
+            pressTargetKey(item.targetKey)
+        else
+            execTargetFunc(item.targetFunc)
+        end
+    end)
+end)

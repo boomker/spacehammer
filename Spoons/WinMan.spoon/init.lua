@@ -63,6 +63,7 @@ function obj:stepResize(direction)
     if cwin then
         local cscreen = cwin:screen()
         local cres = cscreen:fullFrame()
+        local wf = cwin:frame()
         local stepw = cres.w/obj.gridparts
         local steph = cres.h/obj.gridparts
         local wsize = cwin:size()
@@ -74,6 +75,18 @@ function obj:stepResize(direction)
             cwin:setSize({w=wsize.w, h=wsize.h-steph})
         elseif direction == "down" then
             cwin:setSize({w=wsize.w, h=wsize.h+steph})
+        elseif direction == "expand" then
+            cwin:setSize({w=wsize.w+stepw, h=wsize.h+steph})
+        elseif direction == "shrink" then
+            cwin:setSize({w=wsize.w-stepw, h=wsize.h-steph})
+        elseif direction == "rightExpanToScreen" then
+            cwin:setSize({w=cres.w-wf.x, h=wsize.h})
+        elseif direction == "leftExpanToScreen" then
+            cwin:setFrame({x=cres.x, y=wf.y, w=wsize.w + wf.x, h=wf.h})
+        elseif direction == "upExpanToScreen" then
+            cwin:setFrame({x=wf.x, y=cres.y, w=wf.w, h=wf.h + wf.y})
+        elseif direction == "downExpanToScreen" then
+            cwin:setSize({w=wsize.w, h=cres.h})
         end
     else
         hs.alert.show("No focused window!")
@@ -137,8 +150,8 @@ function obj:moveAndResize(option)
     if cwin then
         local cscreen = cwin:screen()
         local cres = cscreen:fullFrame()
-        local stepw = cres.w/obj.gridparts
-        local steph = cres.h/obj.gridparts
+        -- local stepw = cres.w/obj.gridparts
+        -- local steph = cres.h/obj.gridparts
         local wf = cwin:frame()
         if option == "halfleft" then
             cwin:setFrame({x=cres.x, y=cres.y, w=cres.w/2, h=cres.h})
@@ -200,10 +213,9 @@ function obj:moveAndResize(option)
         elseif option == "screenRB" then
             cwin:setFrame({x=cres.w-wf.w, y=wf.y, w=wf.w, h=wf.h})
         elseif option == "screenLB" then
-            cwin:setFrame({x=cres.x, y=cres.y, w=wf.w, h=wf.h})
             cwin:setFrame({x=cres.x, y=wf.y, w=wf.w, h=wf.h})
         elseif option == "screenDB" then
-            cwin:setFrame({x=wf.x, y=cres.y+(cres.h-wf.h), w=wf.w, h=wf.h})
+            cwin:setFrame({x=wf.x, y=cres.h-wf.h, w=wf.w, h=wf.h})
         elseif option == "screenUB" then
             cwin:setFrame({x=wf.x, y=cres.y, w=wf.w, h=wf.h})
 
@@ -216,9 +228,11 @@ function obj:moveAndResize(option)
         elseif option == "screenCornerSE" then
             cwin:setFrame({x=cres.x+(cres.w-wf.w), y=cres.y+(cres.h-wf.h), w=wf.w, h=wf.h})
         elseif option == "expand" then
-            cwin:setFrame({x=wf.x-stepw, y=wf.y-steph, w=wf.w+(stepw*2), h=wf.h+(steph*2)})
+            -- cwin:setFrame({x=wf.x-stepw, y=wf.y-steph, w=wf.w+(stepw*2), h=wf.h+(steph*2)})
+            obj:stepResize("expand")
         elseif option == "shrink" then
-            cwin:setFrame({x=wf.x+stepw, y=wf.y+steph, w=wf.w-(stepw*2), h=wf.h-(steph*2)})
+            obj:stepResize("shrink")
+            -- cwin:setFrame({x=wf.x+stepw, y=wf.y+steph, w=wf.w-(stepw*2), h=wf.h-(steph*2)})
         end
     else
         hs.alert.show("No focused window!")
@@ -295,7 +309,7 @@ function obj:moveToSpace(direction)
     end
 end
 
--- function obj:moveAndFocusToSpace(direction)
+-- function obj:moveAndFocusToSpaceForWindow(direction)
 --     local windowObj = hs.window.focusedWindow()
 --     self:moveToSpace(direction)
 --     local nsid = getNextSID(direction)
