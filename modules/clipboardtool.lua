@@ -74,7 +74,7 @@ if spoon.ClipShow then
     end)
 
     -- 绑定功 clipshowM 快捷键
-    hsclipsM_keys = hsclipsM_keys or {"alt", "C"}
+    local hsclipsM_keys = clipBoardTools or {"alt", "C"}
     if string.len(hsclipsM_keys[2]) > 0 then
         spoon.ModalMgr.supervisor:bind(hsclipsM_keys[1], hsclipsM_keys[2], "打开剪切板面板", function()
             spoon.ClipShow:toggleShow()

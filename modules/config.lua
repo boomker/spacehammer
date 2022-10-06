@@ -16,11 +16,8 @@ defaultConfig = {{
     module = 'modules.emoji',
     name = '快发表情 😄 ',
     enable = true
-}, {
-    module = 'modules.password',
-    name = '密码粘贴',
-    enable = false
-}, {
+}
+, {
     module = 'modules.input-method',
     name = '输入法自动切换',
     enable = true
@@ -34,8 +31,8 @@ defaultConfig = {{
     enable = false
 }, {
     -- module = 'modules.hotkey',
-    module = 'modules.ksheet',
-    name = 'KSheet快捷键',
+    module = 'modules.superSKey',
+    name = '超级 S 键',
     enable = true
 }, {
     module = 'modules.clipboardtool',
@@ -43,7 +40,7 @@ defaultConfig = {{
     enable = true
 }, {
     module = 'modules.remapkey',
-    name = '自定义按键映射',
+    name = '自定按键映射',
     enable = true
 }, {
     module = 'modules.jsonFormat',

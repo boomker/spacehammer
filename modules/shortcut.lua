@@ -4,6 +4,9 @@ shortcut_config = {
     version = 1.1
 }
 
+hs.alert.defaultStyle.atScreenEdge = 2
+hs.alert.defaultStyle.textSize = 16
+
 HyperKey = { "Ctrl", "Option", "Shift" }
 -- prefix：表示快捷键前缀，可选值：Ctrl、Option、Shift, Cmd
 -- key：可选值 [A-Z]、[1-9]、Left、Right、Up、Down、-、=、/
@@ -14,7 +17,7 @@ HyperKey = { "Ctrl", "Option", "Shift" }
 -- bundleId: App唯一标识ID
 -- inputmethodId: 输入法唯一标示ID, 即对应输入法 App 的 BundleId
 
--- 窗口管理快捷键配置
+-- === 窗口管理配置 === --
 winman_toggle = { HyperKey, "W" }
 window_group_layouts = {
     -- 缺点: 只能将已经激活的窗口平铺
@@ -37,7 +40,7 @@ window_group_layouts = {
         "i iTerm2"
     }
 }
-
+winman_mode = "" -- 可选值[persistent]: 持久模式, 留空即为非持久模式
 winman_keys = {
     { -- quit
         prefix = {},
@@ -266,13 +269,17 @@ winman_keys = {
         key = "S",
         message = "窗口移至上一个Space",
         func = "moveToSpace",
-        direction = "left"
+        direction = "left",
+        -- 是否跟随窗口一起跳到新空间并聚焦
+        followWindow = true
     }, {
         prefix = {},
         key = "D",
         message = "窗口移至下一个Space",
         func = "moveToSpace",
-        direction = "right"
+        direction = "right",
+        -- 'false' : 不会跟随窗口移动, 并会在当前 space 自动点击最上层的窗口以获取焦点
+        followWindow = false
     },
     -- 无法跳到下一个桌面空间
     -- { prefix = {}, key = "[", message = "窗口聚焦下一个Space", func = "moveAndFocusToSpace", direction = "right" },
@@ -339,6 +346,12 @@ applications = { {
     bundleId = "com.microsoft.VSCode"
 }, {
     prefix = HyperKey,
+    key = "M",
+    message = "Typora",
+    name = "Typora",
+    -- bundleId = "abnerworks.Typora"
+}, {
+    prefix = HyperKey,
     key = "I",
     message = "iTerm2",
     bundleId = "com.googlecode.iterm2"
@@ -394,7 +407,17 @@ applications = { {
     bundleId = "com.netease.163music"
 } }
 
+-- HyperKey 按键自定义映射
 remapkeys = { -- trigger target combination key
+    -- 将系统设置的" 切换到桌面 1 "快捷键配置如下
+    switchToFirstDesktopSpaceHotKey = { { "cmd", "alt", "ctrl" }, "," },
+
+    {
+        prefix = HyperKey,
+        key = ",",
+        message = "切换到第一个桌面空间",
+        targetKey = { { "cmd", "alt", "ctrl" }, "," }
+    },
     {
         prefix = HyperKey,
         key = ".",
@@ -410,17 +433,8 @@ remapkeys = { -- trigger target combination key
         key = "Y",
         message = "EudicLightPeek",
         targetKey = { { "cmd", "alt", "ctrl" }, "L" }
-    }, {
-        prefix = HyperKey,
-        key = "M",
-        message = "Bartender",
-        targetKey = { { "cmd", "alt", "ctrl" }, "6" }
-    }, {
-        prefix = HyperKey,
-        key = "O",
-        message = "BobOCR",
-        targetKey = { { "cmd", "alt", "ctrl" }, "7" }
-    }, {
+    },
+    {
         prefix = HyperKey,
         key = "N",
         message = "Snipaste",
@@ -431,14 +445,26 @@ remapkeys = { -- trigger target combination key
         message = "Snipaste",
         targetKey = { { "cmd", "alt", "ctrl" }, "9" }
     },
+
     -- trigger function
     {
         prefix = HyperKey,
         key = "Z",
-        message = "ShowDesktop",
-        targetFunc = "toggleShowDesktop"
+        message = "窗口最大化",
+        targetFunc = "windowMaximze"
     },
-    { prefix = HyperKey, key = "G", message = "winwodGroupAutoLayout", targetFunc = "winwodGroupAutoLayout" },
+    {
+        prefix = HyperKey,
+        key = ";",
+        message = "窗口最小化",
+        targetFunc = "windowMinimize"
+    },
+    {
+        prefix = HyperKey,
+        key = "G",
+        message = "winwodGroupAutoLayout",
+        targetFunc = "winwodGroupAutoLayout"
+    },
     {
         prefix = HyperKey,
         key = "[",
@@ -456,19 +482,87 @@ remapkeys = { -- trigger target combination key
         key = "tab",
         message = "jumpToWindowAndFocus",
         targetFunc = "jumpToWindowAndFocus"
-    } }
+    },
+}
 
--- 将系统设置的"切换到桌面 1"快捷键配置如下
-firstDesktopSpaceHotKey = { { "cmd", "alt", "ctrl" }, "," }
+-- 剪贴板工具
+clipBoardTools = { HyperKey, "V" }
 
--- 弹出剪贴板工具
-hsclipsM_keys = { HyperKey, "V" }
+-- SuperSKey 配置
+superKey_toggle = { HyperKey, "S" }
+superKey_items = {
+    -- S: 弹出当前 APP 所有快捷键列表面板
+    -- H: 查看(canvas 浮层弹出)本项目所有快捷键配置
+    -- hshelp_keys = { prefix = { "Option" }, key = "S" }
+    bartenderMenuSearch = { { "cmd", "alt", "ctrl" }, "6" },
+    bobOCR = { { "cmd", "alt", "ctrl" }, "7" },
+    toggleDND = { { "cmd", "alt", "ctrl" }, "\\" },
+    favoriteBluetoothName = "小爱音箱-4099",
+    -- 可选填写代理服务器配置
+    httpProxy = "http://127.0.0.1:7890"
 
--- 弹出当前 APP 所有快捷键列表面板
-hscheats_keys = { HyperKey, "S" }
+}
 
--- 快捷键查看面板快捷键配置
-hshelp_keys = { prefix = { "Option" }, key = "S" }
+-- ===== 输入法自动切换和手动切换快捷键配置 ===== --
+input_method_config = {
+
+    input_methods = {
+        -- 输入法 BundleId 配置
+        -- sogouId = 'com.sogou.inputmethod.sogou.pinyin',
+        -- abcId = 'com.apple.keylayout.ABC',
+        -- shuangpinId = 'com.apple.inputmethod.SCIM.Shuangpin',
+
+        -- 以下键名(abc, chinese)不能改
+        abc = {
+            prefix = HyperKey,
+            key = "X",
+            message = "切换到英文输入法",
+            inputmethodId = 'com.apple.keylayout.ABC'
+        },
+        chinese = {
+            prefix = HyperKey,
+            key = "C",
+            message = "切换到搜狗输入法",
+            inputmethodId = 'com.sogou.inputmethod.sogou.pinyin'
+        }
+        -- chinese = { prefix = HyperKey, key = "D", message = "双拼", inputmethodId = shuangpinId },
+    },
+
+    --  以下 App 聚焦后自动切换到目标输入法, 需要配置目标应用名称或应用的 BundleId
+    abc_apps = {
+        -- "com.microsoft.VSCode", -- VSCode的应用名为"Code"
+        -- 从 CLI 启动的APP窗口程序, 如若是别名, 需将别名添加到下面
+        "Code", "PyCharm", "com.jetbrains.intellij", "Terminal", "com.googlecode.iterm2", "com.neovide.neovide", "nvide",
+        "com.kapeli.dashdoc", "com.runningwithcrayons.Alfred", "Raycast"
+    },
+
+
+    chinese_apps = {
+        -- "com.tencent.xinWeChat", -- 这是微信的 BundleId , 应用名称为"WeChat", 应用标题为 "微信", 均支持
+        "微信", "企业微信", "QQ", "网易云音乐",
+        "Typora", "com.yinxiang.Mac"
+    }
+
+}
+
+--  caffeine 配置
+caffConfig = {
+    caffeine = "on"
+}
+
+-- 表情包搜索配置
+emoji_search = {
+    prefix = HyperKey,
+    key = "E",
+    message = "Search emoji"
+}
+
+-- JSON 格式化
+jsonFormater = {
+    prefix = HyperKey,
+    key = "T",
+    message = "JSON 格式化"
+}
 
 -- 快捷显示 Hammerspoon 控制台
 ----------------------------------------------------------------------------------------------------
@@ -476,6 +570,7 @@ hsconsole_keys = hsconsole_keys or { "alt", "Z" }
 if string.len(hsconsole_keys[2]) > 0 then
     hs.hotkey.bind(hsconsole_keys[1], hsconsole_keys[2], "打开 Hammerspoon 控制台", function()
         hs.toggleConsole()
+        hs.application.launchOrFocusByBundleID('org.hammerspoon.Hammerspoon')
     end)
 end
 
@@ -488,66 +583,3 @@ if string.len(hsreload_keys[2]) > 0 then
     end)
     hs.alert.show("配置文件已经重新加载")
 end
-
--- ===== 输入法自动切换和手动切换快捷键配置 ===== --
--- 输入法 BundleId 配置
-sogouId = 'com.sogou.inputmethod.sogou.pinyin'
-abcId = 'com.apple.keylayout.ABC'
-shuangpinId = 'com.apple.inputmethod.SCIM.Shuangpin'
-
-input_method_config = {
-
-    input_methods = {
-        -- 以下键名(abc, chinese)不能改
-        abc = {
-            prefix = HyperKey,
-            key = "X",
-            message = "切换到ABC输入法",
-            inputmethodId = abcId
-        },
-        chinese = {
-            prefix = HyperKey,
-            key = "C",
-            message = "切换到搜狗输入法",
-            inputmethodId = sogouId
-        }
-        -- chinese = { prefix = HyperKey, key = "D", message = "双拼", inputmethodId = shuangpinId },
-    },
-
-    --  以下 App 聚焦后自动切换到目标输入法, 需要配置目标应用名称或应用的 BundleId
-    abc_apps = {
-        -- "com.microsoft.VSCode", -- VSCode的应用名为"Code"
-        -- 从 CLI 启动的APP窗口程序, 如若是别名, 需将别名添加到下面
-        "Code", "PyCharm", "Terminal", "com.googlecode.iterm2", "com.neovide.neovide", "nvide",
-        "com.kapeli.dashdoc",
-    },
-
-
-    chinese_apps = {
-        -- "com.tencent.xinWeChat", -- 微信的应用名称为"WeChat"
-        "WeChat", "com.tencent.WeWorkMac", "com.netease.163music", "QQ",
-        "com.yinxiang.Mac"
-    }
-
-}
-
--- 表情包搜索快捷键配置
-emoji_search = {
-    prefix = HyperKey,
-    key = "E",
-    message = "Search emoji"
-}
-
--- JSON 格式化快捷键
-jsonFormatKey = {
-    prefix = HyperKey,
-    key = "T",
-    message = "JSON 格式化"
-}
-
--- 密码粘贴快捷键配置
-password_paste = {
-    prefix = { "Ctrl", "Command" },
-    key = "V",
-    message = "Password Paste"
-}

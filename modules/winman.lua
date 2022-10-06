@@ -17,12 +17,18 @@ local AUTO_LAYOUT_TYPE = {
 
 -- 定义窗口管理模式快捷键
 if spoon.WinMan then
+    local handleMode = function()
+        if winman_mode ~= "persistent" then
+            spoon.ModalMgr:deactivate({"windowM"})
+        end
+    end
+
     spoon.ModalMgr:new("windowM")
     local cmodal = spoon.ModalMgr.modal_list["windowM"]
     cmodal:bind('', 'escape', '退出 ', function() spoon.ModalMgr:deactivate({"windowM"}) end)
     cmodal:bind('', 'Q', '退出', function() spoon.ModalMgr:deactivate({"windowM"}) end)
-
     cmodal:bind('', 'tab', '键位提示', function() spoon.ModalMgr:toggleCheatsheet() end)
+
     hs.fnutils.each(winman_keys , function(item)
         local wfn = item.func
         if wfn == 'moveAndResize' then
@@ -34,81 +40,92 @@ if spoon.WinMan then
                     spoon.WinMan:moveAndResize(item.location)
                     spoon.WinMan:moveAndResize(item.location)
                 end
-                spoon.ModalMgr:deactivate({"windowM"})
+                -- spoon.ModalMgr:deactivate({"windowM"})
+                handleMode()
             end)
         elseif wfn == 'stepResize' then
             cmodal:bind(item.prefix, item.key, item.message, function()
                 spoon.WinMan:stash()
                 spoon.WinMan:stepResize(item.direction)
                 spoon.WinMan:stepResize(item.direction)
-                spoon.ModalMgr:deactivate({"windowM"})
+                -- spoon.ModalMgr:deactivate({"windowM"})
+                handleMode()
             end)
         elseif wfn == 'wMoveToScreen' then
             cmodal:bind(item.prefix, item.key, item.message, function()
                 spoon.WinMan:stash()
                 spoon.WinMan:cMoveToScreen(item.location)
-                spoon.ModalMgr:deactivate({"windowM"})
+                -- spoon.ModalMgr:deactivate({"windowM"})
+                handleMode()
             end)
         elseif wfn == 'moveToSpace' then
             cmodal:bind(item.prefix, item.key, item.message, function()
                 spoon.WinMan:stash()
-                spoon.WinMan:moveToSpace(item.direction)
-                spoon.ModalMgr:deactivate({"windowM"})
+                spoon.WinMan:moveToSpace(item.direction, item.followWindow)
+                -- spoon.ModalMgr:deactivate({"windowM"})
+                handleMode()
             end)
         elseif wfn == 'moveAndFocusToSpace' then
             cmodal:bind(item.prefix, item.key, item.message, function()
                 spoon.WinMan:stash()
-                -- spoon.WinMan:moveAndFocusToSpace(item.direction)
                 spoon.WinMan:moveToSpace(item.direction)
-                spoon.ModalMgr:deactivate({"windowM"})
-                -- execTargetFunc('goToNextSpace')
+                -- spoon.ModalMgr:deactivate({"windowM"})
+                handleMode()
             end)
         elseif wfn == 'killSameAppAllWindow' then
             cmodal:bind(item.prefix, item.key, item.message, function()
                 kill_same_application()
-                spoon.ModalMgr:deactivate({"windowM"})
+                -- spoon.ModalMgr:deactivate({"windowM"})
+                handleMode()
             end)
         elseif wfn == 'closeSameAppOtherWindows' then
             cmodal:bind(item.prefix, item.key, item.message, function()
                 close_same_application_other_windows()
-                spoon.ModalMgr:deactivate({"windowM"})
+                -- spoon.ModalMgr:deactivate({"windowM"})
+                handleMode()
             end)
         elseif wfn == 'gridWindow' then
             cmodal:bind(item.prefix, item.key, item.message, function()
                 same_application(AUTO_LAYOUT_TYPE.GRID)
-                spoon.ModalMgr:deactivate({"windowM"})
+                -- spoon.ModalMgr:deactivate({"windowM"})
+                handleMode()
             end)
         elseif wfn == 'flattenWindow' then
             cmodal:bind(item.prefix, item.key, item.message, function()
                 same_application(AUTO_LAYOUT_TYPE.HORIZONTAL_OR_VERTICAL)
-                spoon.ModalMgr:deactivate({"windowM"})
+                -- spoon.ModalMgr:deactivate({"windowM"})
+                handleMode()
             end)
         elseif wfn == 'rotateLayout' then
             cmodal:bind(item.prefix, item.key, item.message, function()
                 same_application(AUTO_LAYOUT_TYPE.HORIZONTAL_OR_VERTICAL_R)
-                spoon.ModalMgr:deactivate({"windowM"})
+                -- spoon.ModalMgr:deactivate({"windowM"})
+                handleMode()
             end)
         elseif wfn == 'flattenWindowsForSpace' then
             cmodal:bind(item.prefix, item.key, item.message, function()
                 same_space(AUTO_LAYOUT_TYPE.HORIZONTAL_OR_VERTICAL)
-                spoon.ModalMgr:deactivate({"windowM"})
+                -- spoon.ModalMgr:deactivate({"windowM"})
+                handleMode()
             end)
         elseif wfn == 'gridWindowsForSpace' then
             cmodal:bind(item.prefix, item.key, item.message, function()
                 same_space(AUTO_LAYOUT_TYPE.GRID)
-                spoon.ModalMgr:deactivate({"windowM"})
+                -- spoon.ModalMgr:deactivate({"windowM"})
+                handleMode()
             end)
         elseif wfn == 'rotateLayoutWindowsForSpace' then
             cmodal:bind(item.prefix, item.key, item.message, function()
                 same_space(AUTO_LAYOUT_TYPE.HORIZONTAL_OR_VERTICAL_R)
-                spoon.ModalMgr:deactivate({"windowM"})
+                -- spoon.ModalMgr:deactivate({"windowM"})
+                handleMode()
             end)
         else
             cmodal:bind(item.prefix, item.key, item.message, function()
                 spoon.WinMan:undo()
-                spoon.ModalMgr:deactivate({"windowM"})
+                -- spoon.ModalMgr:deactivate({"windowM"})
+                handleMode()
             end)
-        -- spoon.ModalMgr:deactivateAll()
         end
     end)
 
@@ -116,6 +133,17 @@ if spoon.WinMan then
     local winman_toggle  = winman_toggle  or {"alt", "R"}
     if string.len(winman_toggle [2]) > 0 then
         spoon.ModalMgr.supervisor:bind(winman_toggle [1], winman_toggle [2], "进入窗口管理模式", function()
+
+            local message = require('modules.status-message')
+            cmodal.statusMessage = message.new('WinMan Mode')
+            cmodal.entered = function()
+                cmodal.statusMessage:show()
+            end
+
+            cmodal.exited = function()
+                cmodal.statusMessage:hide()
+            end
+
             spoon.ModalMgr:deactivateAll()
             -- 显示状态指示器，方便查看所处模式
             spoon.ModalMgr:activate({"windowM"}, "#B22222")

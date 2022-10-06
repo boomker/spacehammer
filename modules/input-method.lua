@@ -1,95 +1,66 @@
 -- 输入法切换
 
 require 'modules.shortcut'
+-- require 'modules.status-message'
 
--- local INPUT_CHINESE = 'com.sogou.inputmethod.sogou.pinyin'
--- local INPUT_ABC = 'com.apple.keylayout.ABC'
--- local INPUT_HIRAGANA = 'com.apple.inputmethod.Kotoeri.RomajiTyping.Japanese'
+local message = require('modules.status-message')
+local messageABC = message.new(' 🔤️  - ON')
+local messageSogou = message.new(' 🇨🇳️ - ON')
 
 hs.fnutils.each(input_method_config.input_methods, function(item)
-    hs.hotkey.bind(item.prefix, item.key, item.message, function()
-        hs.keycodes.currentSourceID(item.inputmethodId)
-    end)
+    if type(item) ~= 'string' then
+        hs.hotkey.bind(item.prefix, item.key, item.message, function()
+            if string.match(item.inputmethodId, 'abc') then
+                messageABC:notify()
+            else
+                messageSogou:notify()
+            end
+            hs.keycodes.currentSourceID(item.inputmethodId)
+        end)
+    end
 end)
 
-local function switchToABC(_, eventType, appObject)
+local function switchToTgtInputMethod(appTitle, appObject)
 
-    local curApplication = hs.application.frontmostApplication()
-    local curAppBundleID = curApplication:bundleID()
-    local curAppTitle = nil
+    local curAppBundleID = appObject:bundleID()
     local curAppName = nil
+    local curAppTitle = appTitle
     if curAppBundleID ~= nil then
         curAppName = hs.application.nameForBundleID(curAppBundleID)
-    else
-        curAppTitle = curApplication:title()
+        -- curAppName = appObject:name()
     end
+    local abc_apps = input_method_config.abc_apps
+    local chinese_apps = input_method_config.chinese_apps
 
-    -- print(hs.inspect(curAppBundleID,curAppTitle, curAppName))
+    local curAppIdentifiers = {curAppName, curAppBundleID, curAppTitle}
+    local isExistABC = hs.fnutils.some(curAppIdentifiers, function(identifier)
+        return hs.fnutils.contains(abc_apps, identifier)
+    end)
 
-    if input_method_config.abc_apps ~= nil then
-        for _, v in ipairs(input_method_config.abc_apps) do
-            if v == curAppBundleID or v == curAppName or v == curAppTitle then
-                hs.keycodes.currentSourceID(input_method_config.input_methods.abc.inputmethodId)
-                -- hs.alert.show("🅰️- ON", 0.5)
-                -- hs.alert.show(" 🔤️ - ON", 0.5)
-                break
-            end
+    if isExistABC then
+        hs.keycodes.currentSourceID(input_method_config.input_methods.abc.inputmethodId)
+        messageABC:notify()
+    else
+        local isExistChinese = hs.fnutils.some(curAppIdentifiers, function(identifier)
+            return hs.fnutils.contains(chinese_apps, identifier)
+        end)
+        if isExistChinese then
+            hs.keycodes.currentSourceID(input_method_config.input_methods.chinese.inputmethodId)
+            messageSogou:notify()
         end
     end
 end
 
-local function switchToChinese(_, eventType, appObject)
-
-    local curApplication = hs.application.frontmostApplication()
-    local curAppBundleID = curApplication:bundleID()
-    local curAppTitle = nil
-    local curAppName = nil
-    if curAppBundleID ~= nil then
-        curAppName = hs.application.nameForBundleID(curAppBundleID)
-    else
-        curAppTitle = curApplication:title()
-    end
-
-    if input_method_config.chinese_apps ~= nil then
-        for _, v in ipairs(input_method_config.chinese_apps) do
-            if v == curAppBundleID or v == curAppName or v == curAppTitle then
-                hs.keycodes.currentSourceID(input_method_config.input_methods.chinese.inputmethodId)
-                -- hs.alert.show(" 🇨🇳️ - ON", 0.5)
-                break
-            end
-        end
+local function appWatcher(appName, eventType, appObject)
+    if eventType == hs.application.watcher.activated then
+        switchToTgtInputMethod(appName, appObject)
     end
 end
 
+local inputmethodWatcher = function() hs.application.watcher.new(appWatcher):start() end
 
-local function appWatcher()
-    hs.application.watcher.new(switchToABC):start()
-    hs.application.watcher.new(switchToChinese):start()
-    -- hs.spaces.watcher.new(focusedAppWindow):start()
-end
+-- inputmethodWatcher()
+local interval = 2
 
-local interval = 10
-
-AppTimer = hs.timer.new(interval, appWatcher)
+AppTimer = hs.timer.new(interval, inputmethodWatcher)
 AppTimer:start()
-
--- 简体拼音
--- local function chinese()
---     hs.keycodes.currentSourceID(input_methods.INPUT_CHINESE)
--- end
-
--- -- ABC
--- local function abc()
---     hs.keycodes.currentSourceID(input_methods.INPUT_ABC)
--- end
-
--- 平假名
--- local function hiragana()
---     hs.keycodes.currentSourceID(INPUT_HIRAGANA)
--- end
-
--- if (input_methods ~= nil) then
---     hs.hotkey.bind(input_methods.abc.prefix, input_methods.abc.key, input_methods.abc.message, abc)
---     hs.hotkey.bind(input_methods.chinese.prefix, input_methods.chinese.key, input_methods.chinese.message, chinese)
---     -- hs.hotkey.bind(input_methods.japanese.prefix, input_methods.japanese.key, input_methods.japanese.message, hiragana)
--- end

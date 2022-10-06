@@ -58,6 +58,6 @@ init()
 -- end
 
 -- 添加片段（按下快捷键时做一个复制操作，并记录复制的内容到片段列表中）
-hs.hotkey.bind(jsonFormatKey.prefix, jsonFormatKey.key, jsonFormatKey.message, function()
+hs.hotkey.bind(jsonFormater.prefix, jsonFormater.key, jsonFormater.message, function()
     toggle()
 end)

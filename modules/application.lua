@@ -19,15 +19,16 @@ local function setMouseToCenter(foucusedWindow)
     hs.mouse.absolutePosition(centerPosition)
 end
 
-local function launchOrFocusApp(app_info)
+local function launchOrFocusApp(appInfo)
 
     local previousFocusedWindow = hs.window.focusedWindow()
     if previousFocusedWindow ~= nil then
         mousePositions[previousFocusedWindow:id()] = hs.mouse.absolutePosition()
     end
 
-    local appBundleID = app_info.app_bundle_id
-    local appName = app_info.app_name
+    local appBundleID = appInfo.app_bundle_id
+    local appName = appInfo.app_name
+    -- print(hs.inspect(appInfo))
     if appBundleID ~= nil then
         hs.application.launchOrFocusByBundleID(appBundleID)
     else
@@ -43,9 +44,7 @@ local function launchOrFocusApp(app_info)
     -- 获取 application 对象
     local applications = hs.application.applicationsForBundleID(appBundleID)
     local application = nil
-    for _, v in ipairs(applications) do
-        application = v
-    end
+    for _, v in ipairs(applications) do application = v end
 
     local currentFocusedWindow = application:focusedWindow()
     if currentFocusedWindow ~= nil and mousePositions[currentFocusedWindow:id()] ~= nil then
@@ -59,8 +58,10 @@ hs.fnutils.each(applications, function(item)
     hs.hotkey.bind(item.prefix, item.key, item.message, function()
         if item.bundleId then
             app_info.app_bundle_id = item.bundleId
+            app_info.app_name = nil
         else
             app_info.app_name = item.name
+            app_info.app_bundle_id = nil
         end
         launchOrFocusApp(app_info)
     end)

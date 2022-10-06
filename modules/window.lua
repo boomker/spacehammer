@@ -226,10 +226,10 @@ function isVerticalScreen(screen)
 end
 
 function isWhatLayout()
-    gCount = LAYOUT_COUNT.grid
-    hCount = LAYOUT_COUNT.hflatten
-    vCount = LAYOUT_COUNT.vflatten
-    minVal = math.min(gCount, hCount, vCount)
+    local gCount = LAYOUT_COUNT.grid
+    local hCount = LAYOUT_COUNT.hflatten
+    local vCount = LAYOUT_COUNT.vflatten
+    local minVal = math.min(gCount, hCount, vCount)
     if gCount == minVal then
         return "grid"
     elseif hCount == minVal then
@@ -251,17 +251,12 @@ end
 function close_same_application_other_windows()
     local focusedWindow = hs.window.focusedWindow()
     local application = focusedWindow:application()
-    -- 当前屏幕
-    -- local focusedScreen = focusedWindow:screen()
-    -- 同一应用的所有窗口
     local visibleWindows = application:visibleWindows()
     for k, visibleWindow in ipairs(visibleWindows) do
         if not visibleWindow:isStandard() then
             table.remove(visibleWindows, k)
         end
         if visibleWindow ~= focusedWindow then
-            -- 将同一应用的其他窗口移动到当前屏幕
-            -- visibleWindow:moveToScreen(focusedScreen)
             visibleWindow:close()
         end
     end

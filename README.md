@@ -56,20 +56,23 @@
 ---
 
 ### TODO
-1. 按键组, 序列键(HyperKey + W + M)
-  * G[U, S], 打开指定网站 URL 或系统设置项
-  * W[{HJKL}], 窗口快速调整大小与布局      ✅ 
-2. 快捷启禁用
-  * 指定的模块功能
-  * 指定的配置文件, 根据 wifi 变更自动切换
-3. 查询当前应用的菜单并模拟点击执行
-4. 优化展示当前应用的所有快捷键 Sheet 
-  * item 格式美化                       ✅
-  * 查询
-5. 显示HammerSpoon HS 定义的热键         ✅
-6. 一组热键在不同的应用中有不同的作用
-7. 剪贴板工具, 附加文本处理               ✅
-8. 增强型PopClip, 按字母键触发
+- [x] 按键组, 序列键(HyperKey + W + M)
+
+    * S[S, D]: 打开系统设置项或弹出快捷键 Sheet 面板  ✅
+    * W[{HJKL}], 窗口快速调整大小与布局      ✅ 
+- [ ] 快捷启禁用
+
+    * 指定的模块功能
+    * 指定的配置文件, 根据 wifi 变更自动切换
+- [ ] 查询当前应用的菜单并模拟点击执行
+- [ ] 优化展示当前应用的所有快捷键 Sheet 
+
+    * item 格式美化                       ✅
+    * 查询
+- [x] 显示HammerSpoon 定义的热键            ✅
+- [ ] 一组热键在不同的应用中有不同的作用
+- [x] 剪贴板工具, 附加文本处理               ✅
+- [ ] 增强型PopClip, 按字母键触发
 ---
 
 ## 如何安装
@@ -117,14 +120,27 @@ git pull origin main
 鼠标单击功能项，即可启用/禁用功能项
 
 <div align='center'>
-  <img src='./images/hsmenu.png'/>
+  <img src='./images/hsmenuitem.png'/>
 </div>
+
 
 ---
 
 ### 窗口管理
 
 你可以丢掉大多数同类收费 App 了
+
+Hyper+W，进入窗口管理模式。按下`Tab`键查看按键提示
+
+* 支持两种模式(持久和非持久)，可配置任选其一
+* 支持同类 APP 多个窗口网格布局，水平垂直平铺布局，可轮转布局
+* 支持同一 Space 不同 APP 的多个窗口网格布局，水平垂直平铺布局，可轮转布局
+* 支持一键关闭同类 APP 所有窗口
+* 支持一键关闭除当前APP 窗口外的其他窗口
+* 支持窗口组(不同 APP 窗口) 自动布局(需预配置)
+
+ 
+
 <div align='center'>
   <img src='./images/windowman.gif'>
 </div>
@@ -149,23 +165,34 @@ git pull origin main
 
 ---
 
-### 实时网速显示
+### iStatuMenus
 
-实时显示网速(每两秒刷新一次)
+实时显示CPU，Mem，SSD，网速(每三秒刷新一次)，点击还有其他信息
 
 <div align='center'>
-  <img src='./images/network.png'>
+  <img src='./images/istatMenus.png'>
 </div>
 
----
-
-### 密码粘贴
-
-解决某些网站禁止粘贴密码、SSH 登陆需要手动输入密码等问题。
-首先使用 `⌘` `C` 复制密码，然后在密码输入框内，按 `⌃` `⌘` `V` 即可将密码粘贴到输入框内。
-原理为读取剪贴板最新一条记录，针对读取到的每一个字符，模拟按键事件。
 
 ---
+
+### 超级 S 键
+
+Hyper+S 进入该模式。该模式可执行如下操作
+
+* System 级操作
+* 鼠标在 Screen 位置移动操作
+* Space 新增和移除操作
+
+<div align='center'>
+  <img src='./images/superSKey.png'>
+</div>
+
+其中的「F: 开启专注模式」效果如下：
+
+<div align='center'>
+  <img src='./images/focusWorkMode.gif'>
+</div>
 
 ### 输入法切换
 
@@ -176,8 +203,16 @@ git pull origin main
 `Hyper` `C`|搜狗拼音输入法
 `Hyper` `X`|ABC
 
-以上快捷键是手动切换, 还可以配置在聚焦指定 APP 窗口后**自动切换**输入法(同类 APP 可以丢掉了)
+以上快捷键是手动切换, 还可以配置在聚焦指定 APP 窗口后**==自动切换==**输入法(同类 APP 可以丢掉了)
+
+输入法切换成功后，右下角会有提示徽标
+
+<div align='center'>
+  <img src='./images/inputMethodSwitchBadage.png', height=50px>
+</div>
+
 TODO:
+
  * Bugfix: 在使用快捷键切换 space 时可能会无法自动切换输入法
 
 ---
@@ -199,14 +234,14 @@ TODO:
 ### 快捷键列表查看
 
 * 查看当前APP应用的快捷键
-任意界面下按 `Hyper` `S` 显示/隐藏快捷键列表
+任意界面下按 `Hyper`  + `S` + `S` 显示/隐藏快捷键列表
 
 <div align='center'>
   <img src='./images/ksheet.png' width='700'/>
 </div>
 
 * 查看本项目配置的所有快捷键列表
-任意界面下按 ` Option` `S` 显示/隐藏快捷键列表
+任意界面下按 ` Hyper`  +`S` + `H` 显示/隐藏快捷键列表
 
 <div align='center'>
   <img src='./images/hsheet.png' width='700'/>
@@ -418,9 +453,9 @@ osascript -e 'id of app "Name of App"'
     ├── kSheet.spoon 查看当前应用快捷键 
     ├── ModalMgr.spoon 模态管理模块(可实现按键组)
     └── WinMan.spoon 窗口管理模块(原为WinWin, 二改版)
-``` 
+```
 
-### 关于按键冲突 HS(Hammerspoon) Console 报错
+### 关于按键冲突 HS Console 报错
 当在 HS 控制台看到的报错类似如下:
 > ERROR:   LuaSkin: This hotkey is already registered. It may be a duplicate in your Hammerspoon config, or it may be registered by macOS. See System Preferences->Keyboard->Shortcuts
 

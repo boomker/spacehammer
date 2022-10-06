@@ -17,7 +17,6 @@ obj.license = "MIT - https://opensource.org/licenses/MIT"
 -- Windows manipulation history. Only the last operation is stored.
 obj.history = {}
 
-obj.alreadyFocusedWindowsID = {}
 
 --- WinMan.gridparts
 --- Variable
@@ -294,29 +293,34 @@ local function getNextSID(direction)
     return nextSpaceID
 end
 
-function obj:moveToSpace(direction)
+function obj:moveToSpace(direction, followWindow)
     local windowObj = hs.window.focusedWindow()
+    local mousePosition = hs.mouse.absolutePosition()
     if windowObj then
         if direction == "right" then
             local nextSpaceID = getNextSID("right")
             hs.spaces.moveWindowToSpace(windowObj, nextSpaceID)
+            -- 跟随窗口一起移动到下一个 space
+            if followWindow then
+                local newwindowObj = hs.window.frontmostWindow()
+                newwindowObj:focus()
+            else
+                hs.eventtap.leftClick(mousePosition)
+            end
         elseif direction == "left" then
             local nextSpaceID = getNextSID("left")
             hs.spaces.moveWindowToSpace(windowObj, nextSpaceID)
+            if followWindow then
+                local newwindowObj = hs.window.frontmostWindow()
+                newwindowObj:focus()
+            else
+                hs.eventtap.leftClick(mousePosition)
+            end
         end
     else
         hs.alert.show("No focused window!")
     end
 end
-
--- function obj:moveAndFocusToSpaceForWindow(direction)
---     local windowObj = hs.window.focusedWindow()
---     self:moveToSpace(direction)
---     local nsid = getNextSID(direction)
---     print(nsid)
---     hs.spaces.gotoSpace(nsid)
---     windowObj:focus()
--- end
 
 
 function obj:jumpToWindowAndFocus()
@@ -328,9 +332,6 @@ function obj:jumpToWindowAndFocus()
         hs.alert.show("当前没有聚焦到任何窗口", 0.5)
         return false
     end
-
-    local nextFocusedWindowID = nil
-    table.insert(obj.alreadyFocusedWindowsID, curWindowID)
 
     local window_filter = hs.window.filter.new():setOverrideFilter({
         visible = true,
@@ -349,28 +350,17 @@ function obj:jumpToWindowAndFocus()
         end
     end
 
-    if #obj.alreadyFocusedWindowsID == #curSpaceAllWindowsID then
-        nextFocusedWindowID = obj.alreadyFocusedWindowsID[1]
-        local nextFocusWindow = hs.window.get(nextFocusedWindowID)
-        nextFocusWindow:focus()
-        obj.alreadyFocusedWindowsID = {}
-        return
+    table.sort(curSpaceAllWindowsID)
+    local curWinIDIndex = hs.fnutils.indexOf(curSpaceAllWindowsID, curWindowID)
+    local nextFocusedWindowIndex = nil
+    if curWinIDIndex == #curSpaceAllWindowsID then
+        nextFocusedWindowIndex = 1
+    else
+        nextFocusedWindowIndex = curWinIDIndex + 1
     end
 
-    for _, awindowID in ipairs(obj.alreadyFocusedWindowsID) do
-        for i, cwindowID in ipairs(curSpaceAllWindowsID) do
-            if cwindowID == awindowID then
-                table.remove(curSpaceAllWindowsID, i)
-                break
-            end
-        end
-    end
-    -- print(hs.inspect(curSpaceAllWindowsID))
-    if #curSpaceAllWindowsID ~= 0 then
-        nextFocusedWindowID = curSpaceAllWindowsID[1]
-    else
-        nextFocusedWindowID = obj.alreadyFocusedWindowsID[2]
-    end
+    local nextFocusedWindowID = curSpaceAllWindowsID[nextFocusedWindowIndex]
+
     local nextFocusWindow = hs.window.get(nextFocusedWindowID)
     if nextFocusWindow then
         nextFocusWindow:focus()
