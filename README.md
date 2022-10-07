@@ -9,14 +9,17 @@
 - 如果你觉得本项目提供的功能对你有用，请帮忙点一个 Star，不胜感激，谢谢！
 - 若 README 图片无法显示，请确保挂了梯子，并且 PAC 文件中配置 `||githubusercontent.com`，或者直接使用全局模式
 
----
+ 
 
-### 项目背景
+[TOC]
+
+## 项目背景
+
 之前长期使用的一款快捷键启动 APP [spacelauncher](https://spacelauncherapp.com/), 时不时弹窗提示"老兄用了这么久, 要不要考虑购买, 不买也说点什么吧", 然而它长期来没有新添加功能, 购买欲望不大, 于是想到用 **Hammerspoon** 来实现
 
 ---
 
-### Hyper键理念
+## Hyper键理念
 * 受到上述 `spacelauncher` 使用习惯的影响, 使用 `Space` + `字母键` 来启动/切换应用. 另外我有两个 `Space` 键(XDM, 了解下分裂式空格客制化键盘), 多余的空格键不利用太可惜了. 
 * 如何实现 `Space` 作为 `Hyper` 键? 改键神器 [Karabiner-Elements](https://karabiner-elements.pqrs.org/) 申请出战. 添加如下配置到 `~/.config/karabiner/karabiner.json` 即可.
 ```json
@@ -55,7 +58,7 @@
 
 ---
 
-### TODO
+## TODO
 - [x] 按键组, 序列键(HyperKey + W + M)
 
     * S[S, D]: 打开系统设置项或弹出快捷键 Sheet 面板  ✅
@@ -180,9 +183,14 @@ Hyper+W，进入窗口管理模式。按下`Tab`键查看按键提示
 
 Hyper+S 进入该模式。该模式可执行如下操作
 
+* Sheet，`S`查看当前 APP 的所有快捷键，`H`查看[本项目的所有快捷键](#快捷键列表查看)
+
 * System 级操作
-* 鼠标在 Screen 位置移动操作
+* Screen 多个位置的鼠标光标移动操作
 * Space 新增和移除操作
+* Secret(密码)粘贴到当前编辑区，解决一些网站不能输入密码问题
+
+详细功能请按`Tab`键查看，如下图类似：
 
 <div align='center'>
   <img src='./images/superSKey.png'>

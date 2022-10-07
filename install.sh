@@ -17,3 +17,6 @@ echo "工作目录：$WORKING_DIR"
 git init
 git remote add origin git@github.com:boomker/spacehammer.git
 git pull origin main --depth=1
+
+# copy blueutil to bin directory
+cp ./bin/blueutil /usr/local/bin/ && chmod +x /usr/local/bin/blueutil

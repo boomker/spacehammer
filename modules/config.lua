@@ -3,14 +3,14 @@
 defaultConfig = {{
     -- 配置版本号
     -- 每次新增功能项，需将版本号加 1
-    configVersion = '7'
+    configVersion = '8'
 }, {
     module = 'modules.winman',
     name = '窗口管理',
     enable = true
 }, {
     module = 'modules.application',
-    name = '应用切换',
+    name = '应用快启快切 🚀 ',
     enable = true
 }, {
     module = 'modules.emoji',
@@ -22,15 +22,14 @@ defaultConfig = {{
     name = '输入法自动切换',
     enable = true
 }, {
-    module = 'modules.network',
-    name = '实时网速',
-    enable = false
+    module = 'modules.systemInfo',
+    name = 'iStatMenus',
+    enable = true
 }, {
     module = 'modules.keystroke-visualizer',
     name = '按键回显',
     enable = false
 }, {
-    -- module = 'modules.hotkey',
     module = 'modules.superSKey',
     name = '超级 S 键',
     enable = true

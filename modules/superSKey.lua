@@ -217,7 +217,7 @@ if spoon.ModalMgr then
         hs.application.launchOrFocusByBundleID("com.apple.ActivityMonitor")
 		spoon.ModalMgr:deactivate({"SuperKey"})
 	end)
-	skmodal:bind('', 'V', 'pastePasswords', function()
+	skmodal:bind('', 'V', '粘贴密码', function()
         hs.eventtap.keyStrokes(hs.pasteboard.getContents())
 		spoon.ModalMgr:deactivate({"SuperKey"})
 	end)
