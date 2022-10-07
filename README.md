@@ -162,7 +162,12 @@ git pull origin main
 
 你可以丢掉大多数同类收费 App 了
 
-Hyper+W，进入窗口管理模式。按下`Tab`键查看按键提示
+实现了两种方式，总有一种适合你
+
+1. 每一种窗口的布局(size 和 location)对应一组快捷键，比较常见的一种方案，`Hyper+W` 进入
+2. 预配置多种窗口布局组，每组布局(Grid 方案) 对应一组快捷键轮切， `Hyper+G` 进入
+
+`Hyper+W`，进入窗口管理之传统模式。按下`Tab`键查看按键提示
 
 * 支持两种模式(持久和非持久)，可配置任选其一
 * 支持同类 APP 多个窗口网格布局，水平垂直平铺布局，可轮转布局
@@ -177,13 +182,23 @@ Hyper+W，进入窗口管理模式。按下`Tab`键查看按键提示
   <img src='./images/windowman.gif'>
 </div>
 
+
+`Hyper+G`，进入窗口管理之 Grid 轮切模式。按下`Tab`键查看按键提示
+
+<div align='center'>
+  <img src='./images/wingrid.gif'>
+</div>
+
+
 ---
 
-### 应用切换
+### 应用快启快切
 
-给指定的应用APP配置快捷键, 一键启动并前台聚焦
-按下`Hyper` `Tab` 还能在当前桌面空间轮切应用窗口
-(什么是 [工作空间?](https://support.apple.com/zh-cn/guide/mac-help/mh14112/mac))
+给指定的应用APP配置快捷键, 一键启动并前台聚焦， 指定的 APP 启动之后，再次按下对应的(启动键)可实现切换应用
+按下`Hyper` `Tab` 还能在当前桌面空间(什么是 [工作空间?](https://support.apple.com/zh-cn/guide/mac-help/mh14112/mac))轮切应用窗口
+
+* 支持APP 应用名称，应用ID配置
+* 支持配置应用窗口初始布局(启动时) 和全局布局(每次切换时)，以及指定屏幕显示
 
 ---
 
@@ -462,6 +477,8 @@ osascript -e 'id of app "Name of App"'
 ├── README.md
 ├── images 功能模块及 README 需要用到的图片
 ├── install.sh 一键拉取本工程脚本(需要提前安装 Git)
+├── bin 二进制包
+	├── blueutil 蓝牙开源工具
 ├── init.lua 脚本入口
 └── modules 各个功能模块
     ├── application.lua 应用切换模块

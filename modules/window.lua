@@ -261,3 +261,42 @@ function close_same_application_other_windows()
         end
     end
 end
+
+----------------------------------------------------------------
+
+local lastSeenChain = nil
+local lastSeenWindow = nil
+local lastSeenAt = 0
+function rotateWinGrid(movements)
+    local chainResetInterval = 2 -- seconds
+    local cycleLength = #movements
+    local sequenceNumber = 1
+
+    local execSetGrid = function()
+        local win = hs.window.frontmostWindow()
+        local id = win:id()
+        local now = hs.timer.secondsSinceEpoch()
+        local screen = win:screen()
+        local winIDKey = string.format("w%d", id)
+
+        if lastSeenChain ~= movements or
+            lastSeenAt < now - chainResetInterval or
+            lastSeenWindow ~= id
+        then
+            sequenceNumber = 1
+            lastSeenChain = movements
+        -- elseif (sequenceNumber == 1) then
+            -- At end of chain, restart chain on next screen.
+            -- screen = screen:next()
+        end
+        lastSeenAt = now
+        lastSeenWindow = id
+        if hs.settings.get(winIDKey) then sequenceNumber = hs.settings.get(winIDKey) end
+
+        hs.grid.set(win, movements[sequenceNumber], screen)
+        sequenceNumber = sequenceNumber % cycleLength + 1
+        hs.settings.set(winIDKey, sequenceNumber)
+        if hs.settings.get(winIDKey) == #movements then sequenceNumber = 1 end
+    end
+    return execSetGrid()
+end
