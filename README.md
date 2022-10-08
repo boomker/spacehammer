@@ -10,16 +10,18 @@
 - 若 README 图片无法显示，请确保挂了梯子，并且 PAC 文件中配置 `||githubusercontent.com`，或者直接使用全局模式
 
 ## 目录
+- [目录](#目录)
 - [项目背景](#项目背景)
 - [Hyper键理念](#hyper键理念)
 - [TODO](#todo)
+- [- [ ] 增强型PopClip, 按字母键触发](#----增强型popclip-按字母键触发)
 - [如何安装](#如何安装)
 - [手动更新](#手动更新)
 - [自动更新](#自动更新)
 - [本工程提供功能](#本工程提供功能)
   - [功能菜单](#功能菜单)
   - [窗口管理](#窗口管理)
-  - [应用切换](#应用切换)
+  - [应用快启快切](#应用快启快切)
   - [表情包搜索](#表情包搜索)
   - [iStatuMenus](#istatumenus)
   - [超级 S 键](#超级-s-键)
@@ -478,7 +480,7 @@ osascript -e 'id of app "Name of App"'
 ├── images 功能模块及 README 需要用到的图片
 ├── install.sh 一键拉取本工程脚本(需要提前安装 Git)
 ├── bin 二进制包
-	├── blueutil 蓝牙开源工具
+    ├── blueutil 蓝牙开源工具
 ├── init.lua 脚本入口
 └── modules 各个功能模块
     ├── application.lua 应用切换模块

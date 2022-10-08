@@ -52,7 +52,8 @@ local function setWindowLayout(appName, eventType, appObject)
             if cwin then
                 local windowForApp = cwin:application()
                 local windowForAppID = windowForApp:bundleID()
-                return windowForAppID == appObject:bundleID()
+                -- return windowForAppID == appObject:bundleID()
+                return windowForAppID == app_info.app_bundle_id
             end
         end
 
@@ -67,11 +68,19 @@ local function setWindowLayout(appName, eventType, appObject)
         -- local windows = appObject:visibleWindows()
     end
 
+    local checkInitWindowLayoutExist = function()
+        if app_info.initWindowLayout then
+            return hs.settings.get(appIdentifier)
+        else
+            return true
+        end
+    end
+
     if
         app_info.alwaysWindowLayout and
         eventType == hs.application.watcher.activated and
         appObject:bundleID() == app_info.app_bundle_id and
-        hs.settings.get(appIdentifier)
+        checkInitWindowLayoutExist()
     then
         local layout = app_info.alwaysWindowLayout
         local window = hs.window.focusedWindow()
@@ -101,7 +110,7 @@ local function launchOrFocusApp(appInfo)
         if ok then
             appBundleID = bundleID
             hs.application.launchOrFocusByBundleID(bundleID)
-            appInfo.app_bundle_id = bundleID
+            app_info.app_bundle_id = bundleID
         end
     end
 

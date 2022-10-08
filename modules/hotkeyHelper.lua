@@ -93,13 +93,20 @@ local function formatText()
     end
 
     for i, v in ipairs(winman_keys) do
-        if #v.prefix == 0 then
-            v.prefix = "Hyper + W"
-        elseif #v.prefix == 1 then
-            v.prefix = "Hyper + W → " .. modifierKey2Symbol[v.prefix[1]]
+        if v.tag == "origin" then
+            if #v.prefix == 0 then
+                v.prefix = "Hyper + W"
+            elseif #v.prefix == 1 then
+                v.prefix = "Hyper + W → " .. modifierKey2Symbol[v.prefix[1]]
+            else
+                v.prefix = "Hyper + W → " .. modifierKey2Symbol[v.prefix[1]] .. modifierKey2Symbol[v.prefix[2]]
+            end
         else
-            v.prefix = "Hyper + W → " .. modifierKey2Symbol[v.prefix[1]] .. modifierKey2Symbol[v.prefix[2]]
+            if #v.prefix == 0 then
+                v.prefix = "Hyper + G"
+            end
         end
+
         table.insert(windowManagement, { msg = v.prefix .. " + " .. v.key .. ": " .. v.message })
         if i == #winman_keys then
             table.insert(windowManagement, { msg = "" })

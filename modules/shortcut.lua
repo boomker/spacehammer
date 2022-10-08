@@ -29,7 +29,8 @@ hs.grid.MARGINX = 0
 hs.grid.MARGINY = 0
 hs.window.animationDuration = 0 -- disable animations
 
-grid = {
+winman_mode = "persistent" -- 可选值[persistent]: 持久模式, 留空即为非持久模式
+window_grids = {
     topHalf = "0,0 16x6",
     topThird = "0,0 16x4",
     topTwoThirds = "0,0 16x8",
@@ -57,7 +58,41 @@ grid = {
     centerHorizontal = "1,0 14x12",
     centerVertical = "0,2 16x8",
 }
-
+window_grid_groups = {
+    LeftGrid = {
+        window_grids.leftHalf,
+        window_grids.leftThird,
+        window_grids.leftTwoThirds,
+    },
+    RightGrid = {
+        window_grids.rightHalf,
+        window_grids.rightThird,
+        window_grids.rightTwoThirds,
+    },
+    TopGrid = {
+        window_grids.topHalf,
+        window_grids.topThird,
+        window_grids.topTwoThirds,
+    },
+    BottomGrid = {
+        window_grids.bottomHalf,
+        window_grids.bottomThird,
+        window_grids.bottomTwoThirds,
+    },
+    CenterGrid = {
+        window_grids.fullScreen,
+        window_grids.centeredBig,
+        window_grids.centeredMedium,
+        window_grids.centerHorizontal,
+        window_grids.centerVertical,
+    },
+    cornerGrid = {
+        window_grids.topLeft,
+        window_grids.topRight,
+        window_grids.bottomRight,
+        window_grids.bottomLeft,
+    },
+}
 window_group_layouts = {
     -- 缺点: 只能将已经激活的窗口平铺
     -- ToDo: 激活聚焦配置中对应的 App 窗口, 并置于最前面
@@ -79,7 +114,6 @@ window_group_layouts = {
         "i iTerm2",
     },
 }
-winman_mode = "persistent" -- 可选值[persistent]: 持久模式, 留空即为非持久模式
 winman_keys = {
     { -- quit
         prefix = {},
@@ -93,6 +127,7 @@ winman_keys = {
         message = "Left Half",
         func = "moveAndResize",
         location = "halfleft",
+        tag = "origin",
     },
     { -- 右半屏
         prefix = {},
@@ -100,6 +135,7 @@ winman_keys = {
         message = "Right Half",
         func = "moveAndResize",
         location = "halfright",
+        tag = "origin",
     },
     { -- 上半屏
         prefix = {},
@@ -107,6 +143,7 @@ winman_keys = {
         message = "Up Half",
         func = "moveAndResize",
         location = "halfup",
+        tag = "origin",
     },
     { -- 下半屏
         prefix = {},
@@ -114,6 +151,7 @@ winman_keys = {
         message = "Down Half",
         func = "moveAndResize",
         location = "halfdown",
+        tag = "origin",
     },
     -- 窗口平移至当前屏幕四个角落, 不会改变窗口原来尺寸
     {
@@ -122,6 +160,7 @@ winman_keys = {
         message = "窗口移到屏幕左上角 ↖️ ",
         func = "moveAndResize",
         location = "screenCornerNW",
+        tag = "origin",
     },
     {
         prefix = {},
@@ -129,6 +168,7 @@ winman_keys = {
         message = "窗口移到屏幕右上角 ↗️ ",
         func = "moveAndResize",
         location = "screenCornerNE",
+        tag = "origin",
     },
     {
         prefix = {},
@@ -136,6 +176,7 @@ winman_keys = {
         message = "窗口移到屏幕左下角 ↙️ ",
         func = "moveAndResize",
         location = "screenCornerSW",
+        tag = "origin",
     },
     {
         prefix = {},
@@ -143,6 +184,7 @@ winman_keys = {
         message = "窗口移到屏幕右下角 ↘️ ",
         func = "moveAndResize",
         location = "screenCornerSE",
+        tag = "origin",
     },
     {
         prefix = {},
@@ -150,6 +192,7 @@ winman_keys = {
         message = "开关全屏",
         func = "moveAndResize",
         location = "fullscreen",
+        tag = "origin",
     },
     {
         prefix = {},
@@ -157,6 +200,7 @@ winman_keys = {
         message = "最大化",
         func = "moveAndResize",
         location = "max",
+        tag = "origin",
     },
     {
         prefix = {},
@@ -164,6 +208,7 @@ winman_keys = {
         message = "窗口移到屏幕正中",
         func = "moveAndResize",
         location = "center",
+        tag = "origin",
     },
     {
         prefix = {},
@@ -171,6 +216,7 @@ winman_keys = {
         message = "撤销窗口操作",
         func = "undo",
         location = "",
+        tag = "origin",
     },
     -- 窗口平移至当前屏幕左右顶底四边, 不会改变窗口原来尺寸
     {
@@ -179,6 +225,7 @@ winman_keys = {
         message = "窗口移到屏幕左边",
         func = "moveAndResize",
         location = "screenLB",
+        tag = "origin",
     },
     {
         prefix = { "Ctrl", "Shift" },
@@ -186,6 +233,7 @@ winman_keys = {
         message = "窗口移到屏幕底边",
         func = "moveAndResize",
         location = "screenDB",
+        tag = "origin",
     },
     {
         prefix = { "Ctrl", "Shift" },
@@ -193,6 +241,7 @@ winman_keys = {
         message = "窗口移到屏幕顶边",
         func = "moveAndResize",
         location = "screenUB",
+        tag = "origin",
     },
     {
         prefix = { "Ctrl", "Shift" },
@@ -200,6 +249,7 @@ winman_keys = {
         message = "窗口移到屏幕右边",
         func = "moveAndResize",
         location = "screenRB",
+        tag = "origin",
     },
     -- 改变原来窗口尺寸至 1/4 屏幕大小
     {
@@ -208,6 +258,7 @@ winman_keys = {
         message = "屏幕左上角 ↖️ ",
         func = "moveAndResize",
         location = "cornerNW",
+        tag = "origin",
     },
     {
         prefix = { "Ctrl", "Shift" },
@@ -215,6 +266,7 @@ winman_keys = {
         message = "屏幕右上角 ↗️ ",
         func = "moveAndResize",
         location = "cornerNE",
+        tag = "origin",
     },
     {
         prefix = { "Ctrl", "Shift" },
@@ -222,6 +274,7 @@ winman_keys = {
         message = "屏幕左下角 ↙️ ",
         func = "moveAndResize",
         location = "cornerSW",
+        tag = "origin",
     },
     {
         prefix = { "Ctrl", "Shift" },
@@ -229,6 +282,7 @@ winman_keys = {
         message = "屏幕右下角 ↘️ ",
         func = "moveAndResize",
         location = "cornerSE",
+        tag = "origin",
     },
     {
         prefix = { "Ctrl", "Shift" },
@@ -236,6 +290,7 @@ winman_keys = {
         message = "窗口拉伸",
         func = "moveAndResize",
         location = "expand",
+        tag = "origin",
     },
     {
         prefix = { "Ctrl", "Shift" },
@@ -243,6 +298,7 @@ winman_keys = {
         message = "窗口收缩",
         func = "moveAndResize",
         location = "shrink",
+        tag = "origin",
     },
     {
         prefix = {},
@@ -250,6 +306,7 @@ winman_keys = {
         message = "窗口向左收缩 ⬅️ ",
         func = "stepResize",
         direction = "left",
+        tag = "origin",
     },
     {
         prefix = {},
@@ -257,6 +314,7 @@ winman_keys = {
         message = "窗口向右扩展 ➡️ ",
         func = "stepResize",
         direction = "right",
+        tag = "origin",
     },
     {
         prefix = { "Ctrl" },
@@ -264,6 +322,7 @@ winman_keys = {
         message = "窗口向右扩展 ➡️ ",
         func = "stepResize",
         direction = "rightExpanToScreen",
+        tag = "origin",
     },
     {
         prefix = { "Ctrl" },
@@ -271,6 +330,7 @@ winman_keys = {
         message = "窗口向左扩展 ⬅️ ",
         func = "stepResize",
         direction = "leftExpanToScreen",
+        tag = "origin",
     },
     {
         prefix = { "Ctrl" },
@@ -278,6 +338,7 @@ winman_keys = {
         message = "窗口向上扩展 ⬆️ ",
         func = "stepResize",
         direction = "upExpanToScreen",
+        tag = "origin",
     },
     {
         prefix = { "Ctrl" },
@@ -285,6 +346,7 @@ winman_keys = {
         message = "窗口向下扩展 ⬇️ ",
         func = "stepResize",
         direction = "downExpanToScreen",
+        tag = "origin",
     },
     {
         prefix = {},
@@ -292,6 +354,7 @@ winman_keys = {
         message = "窗口向上收缩 ⬆️ ",
         func = "stepResize",
         direction = "up",
+        tag = "origin",
     },
     {
         prefix = {},
@@ -299,6 +362,7 @@ winman_keys = {
         message = "窗口向下扩展 ⬇️ ",
         func = "stepResize",
         direction = "down",
+        tag = "origin",
     },
     {
         prefix = {},
@@ -306,6 +370,7 @@ winman_keys = {
         message = "窗口移至左边屏幕",
         func = "wMoveToScreen",
         location = "left",
+        tag = "origin",
     },
     {
         prefix = {},
@@ -313,6 +378,7 @@ winman_keys = {
         message = "窗口移至上边屏幕",
         func = "wMoveToScreen",
         location = "up",
+        tag = "origin",
     },
     {
         prefix = {},
@@ -320,6 +386,7 @@ winman_keys = {
         message = "窗口移动下边屏幕",
         func = "wMoveToScreen",
         location = "down",
+        tag = "origin",
     },
     {
         prefix = {},
@@ -327,6 +394,7 @@ winman_keys = {
         message = "窗口移至右边屏幕",
         func = "wMoveToScreen",
         location = "right",
+        tag = "origin",
     },
     {
         prefix = {},
@@ -336,6 +404,7 @@ winman_keys = {
         direction = "left",
         -- 是否跟随窗口一起跳到新空间并聚焦
         followWindow = true,
+        tag = "origin",
     },
     {
         prefix = {},
@@ -345,9 +414,8 @@ winman_keys = {
         direction = "right",
         -- 'false' : 不会跟随窗口移动, 并会在当前 space 自动点击最上层的窗口以获取焦点
         followWindow = false,
+        tag = "origin",
     },
-    -- 无法跳到下一个桌面空间
-    -- { prefix = {}, key = "[", message = "窗口聚焦下一个Space", func = "moveAndFocusToSpace", direction = "right" },
     -- 对同一 APP 所有窗口
     {
         prefix = { "Ctrl", "Shift" },
@@ -355,6 +423,7 @@ winman_keys = {
         message = "同一APP所有窗口平铺",
         func = "flattenWindow",
         location = "",
+        tag = "origin",
     },
     {
         prefix = { "Ctrl", "Shift" },
@@ -362,6 +431,7 @@ winman_keys = {
         message = "同一APP所有窗口网格",
         func = "gridWindow",
         location = "",
+        tag = "origin",
     },
     {
         prefix = { "Ctrl", "Shift" },
@@ -369,6 +439,7 @@ winman_keys = {
         message = "切换同一APP窗口布局 🔄",
         func = "rotateLayout",
         location = "",
+        tag = "origin",
     },
     -- 对同一 Space 所有APP所有窗口
     {
@@ -377,6 +448,7 @@ winman_keys = {
         message = "所有窗口平铺",
         func = "flattenWindowsForSpace",
         location = "",
+        tag = "origin",
     },
     {
         prefix = {},
@@ -384,6 +456,7 @@ winman_keys = {
         message = "所有窗口网格",
         func = "gridWindowsForSpace",
         location = "",
+        tag = "origin",
     },
     {
         prefix = {},
@@ -391,6 +464,7 @@ winman_keys = {
         message = "切换所有窗口布局 🔄",
         func = "rotateLayoutWindowsForSpace",
         location = "",
+        tag = "origin",
     },
     {
         prefix = {},
@@ -398,6 +472,7 @@ winman_keys = {
         message = "killSameAppAllWindow",
         func = "killSameAppAllWindow",
         location = "",
+        tag = "origin",
     },
     {
         prefix = {},
@@ -406,6 +481,51 @@ winman_keys = {
         message = "关闭同应用其他窗口",
         func = "closeSameAppOtherWindows",
         location = "",
+        tag = "origin",
+    },
+
+    ------ Grid 模式键绑定配置 ------
+    {
+        prefix = {},
+        key = "H",
+        message = "窗口在屏幕左半部布局组",
+        mapGridGroup = window_grid_groups.LeftGrid,
+        tag = "grid",
+    },
+    {
+        prefix = {},
+        key = "L",
+        message = "窗口在屏幕右半部布局组",
+        mapGridGroup = window_grid_groups.RightGrid,
+        tag = "grid",
+    },
+    {
+        prefix = {},
+        key = "K",
+        message = "窗口在屏幕顶部布局组",
+        mapGridGroup = window_grid_groups.TopGrid,
+        tag = "grid",
+    },
+    {
+        prefix = {},
+        key = "J",
+        message = "窗口在屏幕底部布局组",
+        mapGridGroup = window_grid_groups.BottomGrid,
+        tag = "grid",
+    },
+    {
+        prefix = {},
+        key = "S",
+        message = "窗口在屏幕四角布局组",
+        mapGridGroup = window_grid_groups.cornerGrid,
+        tag = "grid",
+    },
+    {
+        prefix = {},
+        key = "C",
+        message = "窗口在屏幕中心部布局组",
+        mapGridGroup = window_grid_groups.CenterGrid,
+        tag = "grid",
     },
 }
 
@@ -416,8 +536,8 @@ applications = {
         key = "L",
         message = "VSCode",
         bundleId = "com.microsoft.VSCode",
-        alwaysWindowLayout = grid.fullScreen,
-        onPrimaryScreen = true
+        alwaysWindowLayout = window_grids.fullScreen,
+        onPrimaryScreen = true,
     },
     {
         prefix = HyperKey,
@@ -426,22 +546,22 @@ applications = {
         name = "Typora",
         -- bundleId = "abnerworks.Typora"
         -- initWindowLayout = grid.centeredMedium,
-        alwaysWindowLayout = grid.fullScreen,
+        alwaysWindowLayout = window_grids.fullScreen,
     },
     {
         prefix = HyperKey,
         key = "I",
         message = "iTerm2",
         bundleId = "com.googlecode.iterm2",
-        alwaysWindowLayout = grid.bottomTwoThirds,
+        alwaysWindowLayout = window_grids.bottomTwoThirds,
     },
     {
         prefix = HyperKey,
         key = "F",
         message = "Finder",
         bundleId = "com.cocoatech.PathFinder",
-        initWindowLayout = grid.centeredMedium,
-        alwaysWindowLayout = grid.centerHorizontal,
+        initWindowLayout = window_grids.centeredMedium,
+        alwaysWindowLayout = window_grids.centerHorizontal,
     },
     {
         prefix = HyperKey,
@@ -454,15 +574,15 @@ applications = {
         key = "B",
         message = "firefox",
         bundleId = "org.mozilla.firefox",
-        initWindowLayout = grid.centeredMedium,
-		alwaysWindowLayout = grid.fullScreen
+        initWindowLayout = window_grids.centeredMedium,
+        alwaysWindowLayout = window_grids.fullScreen,
     },
     {
         prefix = HyperKey,
         key = "K",
         message = "Chrome",
         bundleId = "com.google.Chrome",
-        alwaysWindowLayout = grid.fullScreen,
+        alwaysWindowLayout = window_grids.fullScreen,
     },
     {
         prefix = HyperKey,
@@ -475,7 +595,8 @@ applications = {
         key = "U",
         message = "FDM",
         name = "Free Download Manager",
-        alwaysWindowLayout = grid.centeredMedium,
+        initWindowLayout = window_grids.centeredMedium,
+        alwaysWindowLayout = window_grids.fullScreen,
     },
     {
         prefix = HyperKey,
@@ -494,15 +615,15 @@ applications = {
         key = "9",
         message = "WeChat",
         bundleId = "com.tencent.xinWeChat",
-        alwaysWindowLayout = grid.centeredMedium,
+        alwaysWindowLayout = window_grids.centeredMedium,
     },
     {
         prefix = HyperKey,
         key = "8",
         message = "Music",
         bundleId = "com.netease.163music",
-        initWindowLayout = grid.centeredMedium,
-        alwaysWindowLayout = grid.centeredBig,
+        initWindowLayout = window_grids.centeredMedium,
+        alwaysWindowLayout = window_grids.centeredBig,
     },
 }
 
