@@ -14,7 +14,6 @@
 - [项目背景](#项目背景)
 - [Hyper键理念](#hyper键理念)
 - [TODO](#todo)
-- [- [ ] 增强型PopClip, 按字母键触发](#----增强型popclip-按字母键触发)
 - [如何安装](#如何安装)
 - [手动更新](#手动更新)
 - [自动更新](#自动更新)
@@ -257,7 +256,7 @@ Hyper+S 进入该模式。该模式可执行如下操作
 `Hyper` `C`|搜狗拼音输入法
 `Hyper` `X`|ABC
 
-以上快捷键是手动切换, 还可以配置在聚焦指定 APP 窗口后**==自动切换==**输入法(同类 APP 可以丢掉了)
+以上快捷键是手动切换, 还可以配置在聚焦指定 APP 窗口后**自动切换**输入法(同类 APP 可以丢掉了)
 
 输入法切换成功后，右下角会有提示徽标
 
@@ -488,17 +487,19 @@ osascript -e 'id of app "Name of App"'
     ├── config.lua 菜单默认配置，记录了每一项功能的默认启用/禁用状态
     ├── clipboardtool.lua 剪贴板模块
     ├── emoji.lua 表情包搜索模块
-    ├── hotkey.lua 快捷键列表查看模块
+    ├── hotkeyHelper.lua 快捷键列表查看模块
     ├── input-method.lua 输入法切换
     ├── jsonFormat.lua json 格式化转换模块 
     ├── keystroke-visualizer.lua 按键回显模块
     ├── ksheet.lua 显示当前应用所有快捷键模块
     ├── menu.lua 菜单模块
-    ├── network.lua 实时网速模块
-    ├── password.lua 密码粘贴模块
+    ├── systeminfo.lua 系统信息模块
+    ├── superSKey.lua 超级 SKey 模块
+    ├── superCore.lua 超级 SKey 的核心实现
+    ├── status-message.lua 右下角状态提示栏模块
     ├── reload.lua 重载配置模块
     ├── remind.lua 下班提醒模块
-    ├── shortcut.lua 用户自定义快捷键
+    ├── shortcut.lua `用户自定义快捷键` # 最重要的配置文件
     ├── shortcut.lua.example 快捷键配置文件示例, 用户请勿修改此文件
     ├── shortcut-window.lua 窗口管理快捷键备份文件
     ├── update.lua 自动更新模块
