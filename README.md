@@ -208,6 +208,12 @@ git pull origin main
 </div>
 
 
+窗口管理之 Tile 模式，效果如下
+
+<div align='center'>
+  <img src='./images/windowTile.gif' height=400>
+</div>
+
 ---
 
 ### 应用快启快切
@@ -318,7 +324,7 @@ TODO:
 
 ---
 
-### 快捷键列表查看
+### 快捷键列表面板
 
 * 查看当前APP应用的快捷键
 任意界面下按 `Hyper`  + `S` + `S` 显示/隐藏快捷键列表
@@ -353,7 +359,7 @@ TODO:
 
 ---
 
-### JSON 格式化转换工具 
+### JSON 格式化转换
 
 * 任意界面下按 `Hyper` `T` 显示/隐藏 JSON 格式化窗口
 
