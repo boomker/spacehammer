@@ -1,10 +1,14 @@
+---@diagnostic disable: lowercase-global
 -- 窗口管理
 
--- require("modules.shortcuts-window")
 -- require("modules.base")
 
 -- 关闭动画持续时间
 hs.window.animationDuration = 0
+
+local lastSeenChain = nil
+local lastSeenWindow = nil
+local lastSeenAt = 0
 
 LAYOUT_COUNT = {
     grid = 0,
@@ -12,11 +16,15 @@ LAYOUT_COUNT = {
     vflatten = 0
 }
 
+alwaysAdjustAppWindowLayoutData = {
+    appNames = {}
+}
+
 -- 窗口枚举
-local AUTO_LAYOUT_TYPE = {
+AUTO_LAYOUT_TYPE = {
     -- 网格式布局
     GRID = "GRID",
-    -- 水平或垂直平分
+    -- 水平或垂直评分
     HORIZONTAL_OR_VERTICAL = "HORIZONTAL_OR_VERTICAL",
     HORIZONTAL_OR_VERTICAL_R = "ROTATE",
 }
@@ -263,15 +271,14 @@ function close_same_application_other_windows()
 end
 
 ----------------------------------------------------------------
-
-local lastSeenChain = nil
-local lastSeenWindow = nil
-local lastSeenAt = 0
+-- Grid 轮切模式实现
 function rotateWinGrid(movements)
+    -- print(hs.inspect(movements))
     local chainResetInterval = 2 -- seconds
     local cycleLength = #movements
     local sequenceNumber = 1
 
+    -- return function()
     local execSetGrid = function()
         local win = hs.window.frontmostWindow()
         local id = win:id()
@@ -293,10 +300,47 @@ function rotateWinGrid(movements)
         lastSeenWindow = id
         if hs.settings.get(winIDKey) then sequenceNumber = hs.settings.get(winIDKey) end
 
+        -- print(hs.inspect(movements[sequenceNumber]))
         hs.grid.set(win, movements[sequenceNumber], screen)
         sequenceNumber = sequenceNumber % cycleLength + 1
         hs.settings.set(winIDKey, sequenceNumber)
         if hs.settings.get(winIDKey) == #movements then sequenceNumber = 1 end
     end
     return execSetGrid()
+end
+
+----------------------------------------------------------------
+-- 全局任意方式切换后自动调整布局的实现
+function AppWindowAutoLayout()
+    hs.fnutils.each(applications, function(item)
+        hs.alert.show('!!!start: 即将自动调整窗口布局', 0.5)
+
+        if item.anytimeAdjustWindowLayout and item.alwaysWindowLayout then
+            local Appname = nil
+            if item.bundleId then
+                Appname = hs.application.nameForBundleID(item.bundleId)
+            else
+                Appname = item.name
+            end
+            local appMaplayout =  {[Appname] = item.alwaysWindowLayout }
+            table.insert(alwaysAdjustAppWindowLayoutData.appNames, Appname)
+            table.insert(alwaysAdjustAppWindowLayoutData, appMaplayout)
+        end
+
+        if #alwaysAdjustAppWindowLayoutData ~= 0 then
+            local awf = hs.window.filter.new(alwaysAdjustAppWindowLayoutData.appNames)
+            awf:subscribe(hs.window.filter.windowFocused, function(window, appName)
+                hs.alert.show('即将自动调整窗口布局', 0.5)
+                local layout = nil
+                for _, v in ipairs(alwaysAdjustAppWindowLayoutData) do
+                    if v[appName] then
+                        layout = v[appName]
+                    end
+                end
+
+                hs.grid.set(window, layout)
+            end)
+        end
+
+    end)
 end

@@ -1,7 +1,7 @@
 
 hs.loadSpoon("ModalMgr")
 hs.loadSpoon("ClipShow")
-require 'modules.shortcut'
+require 'configs.shortcuts'
 
 if spoon.ClipShow then
     spoon.ModalMgr:new("clipshowM")

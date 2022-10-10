@@ -1,3 +1,4 @@
+---@diagnostic disable: lowercase-global
 -- Reload config when the file changes
 function reloadConfig(files)
     doReload = false

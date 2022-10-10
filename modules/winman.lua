@@ -3,15 +3,17 @@
 hs.loadSpoon("ModalMgr")
 hs.loadSpoon("WinMan")
 hs.loadSpoon("TilingWindowManager")
-require("modules.shortcut")
+-- require("configs.shortcuts")
+require("configs.windowConfig")
+require("configs.winmanShortcuts")
 require("modules.window")
-require 'modules.application'
+-- require 'modules.application'
 
 local TWM = spoon.TilingWindowManager
 TWM:setLogLevel("debug")
 TWM:start({
         menubar = true,
-        dynamic = false,
+        dynamic = winman_dynamicAdjustWindowLayout,
         layouts = {
             spoon.TilingWindowManager.layouts.fullscreen,
             spoon.TilingWindowManager.layouts.tall,
@@ -24,17 +26,6 @@ TWM:start({
     })
 CurrentLayoutMode = nil
 
-local alwaysAdjustAppWindowLayoutData = {
-    appNames = {}
-}
--- 窗口自动布局方式枚举
-local AUTO_LAYOUT_TYPE = {
-    -- 网格式布局
-    GRID = "GRID",
-    -- 水平或垂直评分
-    HORIZONTAL_OR_VERTICAL = "HORIZONTAL_OR_VERTICAL",
-    HORIZONTAL_OR_VERTICAL_R = "ROTATE",
-}
 
 -- 定义窗口管理模式快捷键
 if spoon.WinMan then
@@ -287,8 +278,8 @@ if spoon.WinMan then
             if item.action then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     if item.action == 'showMode' then
-                        if not CurrentLayoutMode then CurrentLayoutMode = '未开始 Tile 模式' end
-                        local curModeName = '当前模式: ' .. CurrentLayoutMode
+                        -- if not CurrentLayoutMode then CurrentLayoutMode = '' end
+                        local curModeName = '当前模式: ' .. (CurrentLayoutMode or '未开始 Tile 模式')
                         hs.alert.show(curModeName)
                         handleMode()
                     else
@@ -388,40 +379,7 @@ end
 
 spoon.ModalMgr.supervisor:enter()
 
---- App 窗口开启全局切换后自动调整布局, 有一定程度性会下降!
-function AppWindowAutoLayout()
-    hs.fnutils.each(applications, function(item)
-        hs.alert.show('!!!start: 即将自动调整窗口布局', 0.5)
-
-        if item.anytimeAdjustWindowLayout and item.alwaysWindowLayout then
-            local Appname = nil
-            if item.bundleId then
-                Appname = hs.application.nameForBundleID(item.bundleId)
-            else
-                Appname = item.name
-            end
-            local appMaplayout =  {[Appname] = item.alwaysWindowLayout }
-            table.insert(alwaysAdjustAppWindowLayoutData.appNames, Appname)
-            table.insert(alwaysAdjustAppWindowLayoutData, appMaplayout)
-        end
-
-        if #alwaysAdjustAppWindowLayoutData ~= 0 then
-            local awf = hs.window.filter.new(alwaysAdjustAppWindowLayoutData.appNames)
-            awf:subscribe(hs.window.filter.windowFocused, function(window, appName)
-                hs.alert.show('即将自动调整窗口布局', 0.5)
-                local layout = nil
-                for _, v in ipairs(alwaysAdjustAppWindowLayoutData) do
-                    if v[appName] then
-                        layout = v[appName]
-                    end
-                end
-
-                hs.grid.set(window, layout)
-            end)
-        end
-
-    end)
-end
+--- App 窗口开启全局任意方式切换后自动调整布局, 有一定程度性会下降!
 
 local Count = 0
 local function execAppWindowAutoLayout()
@@ -432,8 +390,10 @@ local function execAppWindowAutoLayout()
     end
 end
 
--- AppWindowAutoLayoutTimer = hs.timer.new(2, execAppWindowAutoLayout)
--- AppWindowAutoLayoutTimer:start()
+if winman_dynamicAdjustWindowLayout then
+    AppWindowAutoLayoutTimer = hs.timer.new(2, execAppWindowAutoLayout)
+    AppWindowAutoLayoutTimer:start()
+end
 
 
 ----------------------------------------------------------------

@@ -1,7 +1,7 @@
 ---
 --- 控制空闲时是否允许屏幕睡眠
 ---
--- require 'modules.shortcut'
+-- require 'configs.shortcuts'
 
 local menuBarItem = nil
 setCaffeine = function()

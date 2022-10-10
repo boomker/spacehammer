@@ -2,7 +2,10 @@
 
 -- require 'modules.base'
 hs.loadSpoon("WinMan")
-require 'modules.shortcut'
+hs.loadSpoon("MenuChooser")
+local MC = spoon.MenuChooser
+
+require 'configs.remapingShortcuts'
 
 local function pressTargetKey(tgtkey)
     hs.eventtap.keyStroke(tgtkey[1], tgtkey[2])
@@ -33,12 +36,14 @@ local function getTargetSpaceID(direction)
 end
 
 local function execTargetFunc(tgtfn)
-    if tgtfn == "goToNextSpace" then
+    if tgtfn == 'menuchooser' then
+        MC.chooseMenuItem()
+    elseif tgtfn == "goToNextSpace" then
         local nextSpaceID, nextSpaceIndex = getTargetSpaceID('next')
         if nextSpaceIndex == 1 then
             -- 仅能通过调用快捷键来切换到第一个桌面空间
-            if remapkeys.switchToFirstDesktopSpaceHotKey then
-                pressTargetKey(remapkeys.switchToFirstDesktopSpaceHotKey)
+            if remapingKeys.switchToFirstDesktopSpaceHotKey then
+                pressTargetKey(remapingKeys.switchToFirstDesktopSpaceHotKey)
             end
         else
             hs.spaces.gotoSpace(nextSpaceID)
@@ -66,7 +71,7 @@ local function execTargetFunc(tgtfn)
     end
 end
 
-hs.fnutils.each(remapkeys, function(item)
+hs.fnutils.each(remapingKeys, function(item)
 
     if item.key then
         hs.hotkey.bind(item.prefix, item.key, item.message, function()
@@ -78,3 +83,7 @@ hs.fnutils.each(remapkeys, function(item)
         end)
     end
 end)
+
+-- hs.hotkey.bind({'Ctrl', 'Cmd', 'Option'}, 'm', 'menu', function()
+--     MC.chooseMenuItem()
+-- end)

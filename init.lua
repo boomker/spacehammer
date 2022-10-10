@@ -1,2 +1,2 @@
-require("modules.menu")
-require("modules.reload")
+require("configs.menu")
+require("configs.reload")

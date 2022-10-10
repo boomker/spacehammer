@@ -1,6 +1,7 @@
 -- 应用切换
 
-require 'modules.shortcut'
+-- require 'configs.shortcuts'
+require 'configs.applicationConfig'
 
 local app_info = {
     app_bundle_id = nil,
@@ -155,10 +156,8 @@ hs.fnutils.each(applications, function(item)
         app_info.initWindowLayout = nil
         if item.initWindowLayout then
             app_info.initWindowLayout = item.initWindowLayout
-            -- app_info.alwaysWindowLayout = nil
         else
             app_info.alwaysWindowLayout = item.alwaysWindowLayout
-            -- app_info.initWindowLayout = nil
         end
         if item.initWindowLayout and item.alwaysWindowLayout then
             app_info.initWindowLayout = item.initWindowLayout
@@ -169,25 +168,7 @@ hs.fnutils.each(applications, function(item)
             app_info.onPrimaryScreen = item.onPrimaryScreen
         end
 
-        -- if item.anytimeAdjustWindowLayout then
-        --     local Appname = nil
-        --     if item.bundleId then
-        --         Appname = hs.application.nameForBundleID(item.bundleId)
-        --     else
-        --         Appname = item.name
-        --     end
-        --     table.insert(alwaysWindowLayoutApps, Appname)
-        -- end
-
         launchOrFocusApp(app_info)
-
-        -- if #alwaysWindowLayoutApps ~= 0 and app_info.alwaysWindowLayout then
-        --     local awf = hs.window.filter.new(alwaysWindowLayoutApps)
-        --     awf:subscribe(hs.window.filter.windowFocused, function(window, appName)
-        --         hs.alert.show('即将自动调整窗口布局', 0.5)
-        --         hs.grid.set(window, app_info.alwaysWindowLayout)
-        --     end)
-        -- end
 
     end)
 end)

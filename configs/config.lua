@@ -3,7 +3,7 @@
 defaultConfig = {{
     -- 配置版本号
     -- 每次新增功能项，需将版本号加 1
-    configVersion = '8'
+    configVersion = '9'
 }, {
     module = 'modules.winman',
     name = '窗口管理',
@@ -16,8 +16,7 @@ defaultConfig = {{
     module = 'modules.emoji',
     name = '快发表情 😄 ',
     enable = true
-}
-, {
+}, {
     module = 'modules.input-method',
     name = '输入法自动切换',
     enable = true
@@ -38,7 +37,7 @@ defaultConfig = {{
     name = '剪贴板工具',
     enable = true
 }, {
-    module = 'modules.remapkey',
+    module = 'modules.remapingKey',
     name = '自定按键映射',
     enable = true
 }, {
@@ -64,7 +63,7 @@ function loadConfig()
     -- 以可读写方式打开文件
     local file = io.open(config_path, 'r+')
     -- 文件不存在
-    if file == nil then
+    if not file then
         -- 创建文件
         file = io.open(config_path, 'w+')
     end
