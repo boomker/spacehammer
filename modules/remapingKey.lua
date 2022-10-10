@@ -2,8 +2,8 @@
 
 -- require 'modules.base'
 hs.loadSpoon("WinMan")
-hs.loadSpoon("MenuChooser")
-local MC = spoon.MenuChooser
+hs.loadSpoon("MenuChooserMod")
+local MC = spoon.MenuChooserMod
 
 require 'configs.remapingShortcuts'
 
