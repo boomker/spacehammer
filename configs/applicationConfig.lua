@@ -28,7 +28,7 @@ applications = {
         key = "I",
         message = "iTerm2",
         bundleId = "com.googlecode.iterm2",
-        alwaysWindowLayout = window_grids.bottomTwoThirds,
+        alwaysWindowLayout = window_grids.fullScreen,
         anytimeAdjustWindowLayout = true,
     },
     {

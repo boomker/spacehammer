@@ -2,24 +2,24 @@
 
 hs.loadSpoon("ModalMgr")
 hs.loadSpoon("WinMan")
-hs.loadSpoon("TilingWindowManager")
+hs.loadSpoon("TilingWindowManagerMod")
 -- require("configs.shortcuts")
 require("configs.windowConfig")
 require("configs.winmanShortcuts")
 require("modules.window")
 -- require 'modules.application'
 
-local TWM = spoon.TilingWindowManager
+local TWM = spoon.TilingWindowManagerMod
 TWM:setLogLevel("debug")
 TWM:start({
         menubar = true,
         dynamic = winman_dynamicAdjustWindowLayout,
         layouts = {
-            spoon.TilingWindowManager.layouts.fullscreen,
-            spoon.TilingWindowManager.layouts.tall,
-            spoon.TilingWindowManager.layouts.talltwo,
-            spoon.TilingWindowManager.layouts.wide,
-            spoon.TilingWindowManager.layouts.floating,
+            spoon.TilingWindowManagerMod.layouts.fullscreen,
+            spoon.TilingWindowManagerMod.layouts.tall,
+            spoon.TilingWindowManagerMod.layouts.talltwo,
+            spoon.TilingWindowManagerMod.layouts.wide,
+            spoon.TilingWindowManagerMod.layouts.floating,
         },
         displayLayout = true,
         floatApps = {}
