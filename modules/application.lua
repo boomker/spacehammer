@@ -7,8 +7,10 @@ local app_info = {
     app_name = nil,
     initWindowLayout = nil,
     alwaysWindowLayout = nil,
-    onPrimaryScreen = true
+    onPrimaryScreen = true,
+    -- anytimeAdjustWindowLayout = false
 }
+
 
 -- 存储鼠标位置
 local mousePositions = {}
@@ -50,21 +52,23 @@ local function setWindowLayout(appName, eventType, appObject)
         local checkWindowFocused = function()
             local cwin = hs.window.focusedWindow()
             if cwin then
-                local windowForApp = cwin:application()
-                local windowForAppID = windowForApp:bundleID()
+                local windowForAppObj = cwin:application()
+                local windowForAppID = windowForAppObj:bundleID()
                 -- return windowForAppID == appObject:bundleID()
                 return windowForAppID == app_info.app_bundle_id
             end
         end
 
-        local execSetAppWindowGrid = function()
+        local execSetAppWindowGridLayout = function()
             local cwin = hs.window.focusedWindow()
-            hs.grid.set(cwin, layout, setAppWindowToSpecScreen())
-            hs.settings.set(appIdentifier, true)
+            if cwin then
+                hs.grid.set(cwin, layout, setAppWindowToSpecScreen())
+                hs.settings.set(appIdentifier, true)
+            end
             print('===end: initWindowlayout seted')
         end
 
-        hs.timer.waitUntil(checkWindowFocused, execSetAppWindowGrid)
+        hs.timer.waitUntil(checkWindowFocused, execSetAppWindowGridLayout)
         -- local windows = appObject:visibleWindows()
     end
 
@@ -83,12 +87,21 @@ local function setWindowLayout(appName, eventType, appObject)
         checkInitWindowLayoutExist()
     then
         local layout = app_info.alwaysWindowLayout
-        local window = hs.window.focusedWindow()
-        hs.grid.set(window, layout, setAppWindowToSpecScreen())
-        -- local windows = appObject:visibleWindows()
-        -- for _, window in pairs(windows) do
-        --     hs.grid.set(window, layout)
-        -- end
+        -- local window = hs.window.focusedWindow()
+        local windows = appObject:visibleWindows()
+        for _, window in pairs(windows) do
+            if window:isVisible() and window:isStandard() then
+                hs.grid.set(window, layout, setAppWindowToSpecScreen())
+            end
+        end
+    end
+end
+
+local function getAppID(appName)
+    local osaScriptCodeStr =  string.format('id of app "%s"', appName)
+    local ok, bundleID , _ = hs.osascript.applescript(osaScriptCodeStr)
+    if ok then
+        return bundleID
     end
 end
 
@@ -105,13 +118,9 @@ local function launchOrFocusApp(appInfo)
         hs.application.launchOrFocusByBundleID(appBundleID)
     else
         -- hs.application.launchOrFocus(appName)
-        local osaScriptCodeStr =  string.format('id of app "%s"', appName)
-        local ok, bundleID , _ = hs.osascript.applescript(osaScriptCodeStr)
-        if ok then
-            appBundleID = bundleID
-            hs.application.launchOrFocusByBundleID(bundleID)
-            app_info.app_bundle_id = bundleID
-        end
+        appBundleID = getAppID(appName)
+        hs.application.launchOrFocusByBundleID(appBundleID)
+        app_info.app_bundle_id = appBundleID
     end
 
     -- 获取 application 对象
@@ -159,6 +168,26 @@ hs.fnutils.each(applications, function(item)
         if item.onPrimaryScreen then
             app_info.onPrimaryScreen = item.onPrimaryScreen
         end
+
+        -- if item.anytimeAdjustWindowLayout then
+        --     local Appname = nil
+        --     if item.bundleId then
+        --         Appname = hs.application.nameForBundleID(item.bundleId)
+        --     else
+        --         Appname = item.name
+        --     end
+        --     table.insert(alwaysWindowLayoutApps, Appname)
+        -- end
+
         launchOrFocusApp(app_info)
+
+        -- if #alwaysWindowLayoutApps ~= 0 and app_info.alwaysWindowLayout then
+        --     local awf = hs.window.filter.new(alwaysWindowLayoutApps)
+        --     awf:subscribe(hs.window.filter.windowFocused, function(window, appName)
+        --         hs.alert.show('即将自动调整窗口布局', 0.5)
+        --         hs.grid.set(window, app_info.alwaysWindowLayout)
+        --     end)
+        -- end
+
     end)
 end)

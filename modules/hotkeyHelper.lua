@@ -93,6 +93,10 @@ local function formatText()
     end
 
     for i, v in ipairs(winman_keys) do
+        -- if v.tag == "origin" or v.tag == "tile" then
+        if v.tag == "tile" then
+            break
+        end
         if v.tag == "origin" then
             if #v.prefix == 0 then
                 v.prefix = "Hyper + W"
@@ -101,24 +105,25 @@ local function formatText()
             else
                 v.prefix = "Hyper + W → " .. modifierKey2Symbol[v.prefix[1]] .. modifierKey2Symbol[v.prefix[2]]
             end
-        else
+        elseif v.tag == "grid" then
             if #v.prefix == 0 then
                 v.prefix = "Hyper + G"
             end
+        else
+            print(hs.inspect(v))
         end
 
         table.insert(windowManagement, { msg = v.prefix .. " + " .. v.key .. ": " .. v.message })
-        if i == #winman_keys then
-            table.insert(windowManagement, { msg = "" })
-        end
+        -- if i == #winman_keys then
+        --     table.insert(windowManagement, { msg = "" })
+        -- end
     end
 
-    for _, v in ipairs(remapkeys) do
-        -- if #v.prefix == 0 then
-        --     v.prefix = "Hyper"
-        -- elseif v.prefix == HyperKey then
-        --     v.prefix = "Hyper"
-        -- end
+    for i, v in ipairs(remapkeys) do
+        if i == 1 then
+            table.insert(windowManagement, { msg = "" })
+            table.insert(customRemappings, { msg = "Hyper" .. " + " .. v.key .. ": " .. v.message })
+        end
 
         table.insert(customRemappings, { msg = "Hyper" .. " + " .. v.key .. ": " .. v.message })
     end
@@ -166,7 +171,7 @@ local function drawText(renderText)
     local w = 0
     local h = 0
     -- 文本距离分割线的距离
-    local SEPRATOR_W = 5;
+    local SEPRATOR_W = 3;
 
     -- 每一列需要显示的文本
     local column = ''
@@ -210,10 +215,11 @@ local function drawText(renderText)
             text = itemText,
             -- frame = { x = math.ceil(num / MAX_LINE_NUM - 1) * size.w + SEPRATOR_W, y = 0, w = size.w + SEPRATOR_W,
             frame = {
-                x = 2.0 * size.w + SEPRATOR_W,
+                x = 1.93 * size.w + SEPRATOR_W,
                 y = 0,
                 w = size.w + SEPRATOR_W,
-                h = size.h }
+                h = size.h
+            }
         })
         column = ''
     end

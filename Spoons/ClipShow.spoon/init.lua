@@ -278,7 +278,10 @@ end
 local function acquireText()
     if obj.canvas:isShowing() then
         if obj.canvas[4].type == "text" then
-            return obj.canvas[4].text
+            local cstr = obj.canvas[4].text
+            local res = string.gsub(cstr, "\r\n", "")
+            local result_str = string.gsub(res, "^%s*(.-)%s*$", "%1")
+            return result_str
         else
             return hs.pasteboard.readString() or ""
         end

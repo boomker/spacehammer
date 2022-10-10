@@ -69,10 +69,14 @@ function obj:toggleCheatsheet(iterList, force)
         local cscreen = hs.screen.mainScreen()
         local cres = cscreen:fullFrame()
         obj.which_key:frame({
-            x = cres.x + cres.w / 5,
-            y = cres.y + cres.h / 5,
-            w = cres.w / 5 * 3,
-            h = cres.h / 5 * 3
+            -- x = cres.x + cres.w / 5,
+            -- y = cres.y + cres.h / 5,
+            -- w = cres.w / 5 * 3,
+            -- h = cres.h / 5 * 3
+            x = cres.x + cres.w / 7,
+            y = cres.y + cres.h / 7,
+            w = cres.w / 3 * 2,
+            h = cres.h / 3 * 2
         })
         local keys_pool = {}
         local tmplist = iterList or obj.active_list

@@ -2,10 +2,31 @@
 
 hs.loadSpoon("ModalMgr")
 hs.loadSpoon("WinMan")
+hs.loadSpoon("TilingWindowManager")
 require("modules.shortcut")
 require("modules.window")
--- require 'modules.remapkey'
+require 'modules.application'
 
+local TWM = spoon.TilingWindowManager
+TWM:setLogLevel("debug")
+TWM:start({
+        menubar = true,
+        dynamic = false,
+        layouts = {
+            spoon.TilingWindowManager.layouts.fullscreen,
+            spoon.TilingWindowManager.layouts.tall,
+            spoon.TilingWindowManager.layouts.talltwo,
+            spoon.TilingWindowManager.layouts.wide,
+            spoon.TilingWindowManager.layouts.floating,
+        },
+        displayLayout = true,
+        floatApps = {}
+    })
+CurrentLayoutMode = nil
+
+local alwaysAdjustAppWindowLayoutData = {
+    appNames = {}
+}
 -- 窗口自动布局方式枚举
 local AUTO_LAYOUT_TYPE = {
     -- 网格式布局
@@ -23,6 +44,46 @@ if spoon.WinMan then
         end
     end
 
+    local function handleTileMode(mode)
+        local tilingConfig = TWM.tilingConfigCurrentSpace(true)
+        -- TWM.tilingStrategy[TWM.layouts.tall].tile(tilingConfig)
+        TWM.tilingStrategy[TWM.layouts[mode]].tile(tilingConfig)
+        CurrentLayoutMode = mode
+    end
+
+    local function handleWindowFlexOrResize(type, indexOrRatio)
+        local tilingConfig = TWM.tilingConfigCurrentSpace()
+        if type == "resizeWidth" then
+            tilingConfig.mainRatio = tilingConfig.mainRatio + indexOrRatio
+        else
+            tilingConfig.mainNumberWindows = tilingConfig.mainNumberWindows + indexOrRatio
+        end
+        tilingConfig.layout = CurrentLayoutMode
+        TWM.tilingStrategy[TWM.layouts[CurrentLayoutMode]].tile(tilingConfig)
+    end
+
+    local function handleWindowFocusOrSwap(type, index)
+
+        local windows = TWM.tilingConfigCurrentSpace().windows
+        if #windows > 1 then
+            local i = hs.fnutils.indexOf(windows, hs.window.focusedWindow())
+            if i and type == 'focus' then
+                local j = (i - 1 + index) % #windows + 1
+                windows[j]:focus():raise()
+            elseif i and type == 'swap' then
+                if index ~= 0 then
+                    local j = (i - 1 + index) % #windows + 1
+                    windows[i], windows[j] = windows[j], windows[i]
+                else
+                    windows[i], windows[1] = windows[1], windows[i]
+                end
+                local tilingConfig = TWM.tilingConfigCurrentSpace(windows)
+                tilingConfig.layout = CurrentLayoutMode
+                TWM.tilingStrategy[TWM.layouts[CurrentLayoutMode]].tile(tilingConfig)
+            end
+        end
+    end
+
     spoon.ModalMgr:new("windowM")
     local cmodal = spoon.ModalMgr.modal_list["windowM"]
     cmodal:bind("", "escape", "退出 ", function()
@@ -35,6 +96,85 @@ if spoon.WinMan then
         spoon.ModalMgr:toggleCheatsheet()
     end)
 
+    -- # {{{ 多 App 窗口多种布局轮切
+    -- 优先水平方向均分模式
+    -- cmodal:bind("", "t", "tallMode", function()
+    --     handleTileMode('tall')
+    --     handleMode()
+    -- end)
+    -- -- 双栏模式
+    -- cmodal:bind("", "m", "talltwoMode", function()
+    --     handleTileMode('talltwo')
+    --     handleMode()
+    -- end)
+    -- -- 优先垂直方向均分模式
+    -- cmodal:bind("", ",", "wideMode", function()
+    --     handleTileMode('wide')
+    --     handleMode()
+    -- end)
+    -- -- 全屏(最大化)模式
+    -- cmodal:bind("", ";", "fullscreenMode", function()
+    --     handleTileMode('fullscreen')
+    --     handleMode()
+    -- end)
+    -- 布局分割线右移伸展
+    -- cmodal:bind("", "E", "incMainRatio", function()
+    --     handleWindowFlexOrResize('windowRatio', 0.05)
+    --     handleMode()
+    -- end)
+    -- -- 布局分割线左移收缩
+    -- cmodal:bind("", "S", "decMainRatio", function()
+    --     handleWindowFlexOrResize('windowRatio', -0.05)
+    --     handleMode()
+    -- end)
+    -- -- cmodal:bind({"Ctrl"}, "E", "incMainWindows", function()
+    -- -- 当前聚焦窗口高度折半
+    -- cmodal:bind("", "R", "incMainWindows", function()
+    --     handleWindowFlexOrResize('windowRotate', 1)
+    --     handleMode()
+    -- end)
+    -- -- cmodal:bind({"Ctrl"}, "S", "decMainWindows", function()
+    -- -- 当前聚焦窗口高度增倍
+    -- cmodal:bind({"Ctrl"}, "R", "decMainWindows", function()
+    --     handleWindowFlexOrResize('windowRotate', -1)
+    --     handleMode()
+    -- end)
+    -- 聚焦下一个窗口
+    -- cmodal:bind({"Ctrl"}, "K", "focusNext", function()
+    --     handleWindowFocusOrSwap('focus', 1)
+    --     handleMode()
+    -- end)
+    -- -- 聚焦上一个窗口
+    -- cmodal:bind({"Ctrl"}, "J", "focusPrev", function()
+    --     handleWindowFocusOrSwap('focus', -1)
+    --     handleMode()
+    -- end)
+    -- -- 与上一个窗口交互位置
+    -- cmodal:bind({"Ctrl"}, "L", "swapPrev", function()
+    --     handleWindowFocusOrSwap('swap', 1)
+    --     handleMode()
+    -- end)
+    -- -- 与下一个窗口交互位置
+    -- cmodal:bind({"Ctrl"}, "H", "swapNext", function()
+    --     handleWindowFocusOrSwap('swap', -1)
+    --     handleMode()
+    -- end)
+    -- 与第一个窗口交互位置
+    -- cmodal:bind({"Ctrl"}, "I", "swapFirst", function()
+    --     handleWindowFocusOrSwap('swap', 0)
+    --     handleMode()
+    -- end)
+    -- 显示模式 
+    -- cmodal:bind({"Ctrl"}, "D", "displayMode", function()
+    --     local curModeName = '当前模式: ' .. CurrentLayoutMode
+    --     hs.alert.show(curModeName)
+    --     handleMode()
+    -- end)
+
+    -- # 多 App 窗口多种布局轮切 }}}
+
+
+    -- {{{ 窗口管理之 传统模式
     hs.fnutils.each(winman_keys, function(item)
         if item.tag == "origin" then
             local wfn = item.func
@@ -135,6 +275,38 @@ if spoon.WinMan then
                 end)
             end
         end
+
+        if item.tag == "tile" then
+            if item.mode then
+                cmodal:bind(item.prefix, item.key, item.message, function()
+                    handleTileMode(item.mode)
+                    handleMode()
+                end)
+            end
+
+            if item.action then
+                cmodal:bind(item.prefix, item.key, item.message, function()
+                    if item.action == 'showMode' then
+                        if not CurrentLayoutMode then CurrentLayoutMode = '未开始 Tile 模式' end
+                        local curModeName = '当前模式: ' .. CurrentLayoutMode
+                        hs.alert.show(curModeName)
+                        handleMode()
+                    else
+                        local directionMapVal = {next = 1, prev = -1, first=0}
+                        handleWindowFocusOrSwap(item.action, directionMapVal[item.direction])
+                        handleMode()
+                    end
+                end)
+            end
+
+            if item.sizeVal then
+                cmodal:bind(item.prefix, item.key, item.message, function()
+                    handleWindowFlexOrResize(item.action, item.sizeVal)
+                    -- handleWindowFlexOrResize('windowRatio', -0.05)
+                    handleMode()
+                end)
+            end
+        end
     end)
 
     -- 定义窗口管理模式快捷键
@@ -156,8 +328,10 @@ if spoon.WinMan then
             spoon.ModalMgr:activate({ "windowM" }, "#B22222")
         end)
     end
+    -- 窗口管理之 传统模式 }}}
 end
 
+-- 窗口管理之 Grid 轮切模式
 if spoon.WinMan then
     local handleMode = function()
         if winman_mode ~= "persistent" then
@@ -213,6 +387,116 @@ if spoon.WinMan then
 end
 
 spoon.ModalMgr.supervisor:enter()
+
+--- App 窗口开启全局切换后自动调整布局, 有一定程度性会下降!
+function AppWindowAutoLayout()
+    hs.fnutils.each(applications, function(item)
+        hs.alert.show('!!!start: 即将自动调整窗口布局', 0.5)
+
+        if item.anytimeAdjustWindowLayout and item.alwaysWindowLayout then
+            local Appname = nil
+            if item.bundleId then
+                Appname = hs.application.nameForBundleID(item.bundleId)
+            else
+                Appname = item.name
+            end
+            local appMaplayout =  {[Appname] = item.alwaysWindowLayout }
+            table.insert(alwaysAdjustAppWindowLayoutData.appNames, Appname)
+            table.insert(alwaysAdjustAppWindowLayoutData, appMaplayout)
+        end
+
+        if #alwaysAdjustAppWindowLayoutData ~= 0 then
+            local awf = hs.window.filter.new(alwaysAdjustAppWindowLayoutData.appNames)
+            awf:subscribe(hs.window.filter.windowFocused, function(window, appName)
+                hs.alert.show('即将自动调整窗口布局', 0.5)
+                local layout = nil
+                for _, v in ipairs(alwaysAdjustAppWindowLayoutData) do
+                    if v[appName] then
+                        layout = v[appName]
+                    end
+                end
+
+                hs.grid.set(window, layout)
+            end)
+        end
+
+    end)
+end
+
+local Count = 0
+local function execAppWindowAutoLayout()
+    AppWindowAutoLayout()
+    Count = Count + 1
+    if #alwaysAdjustAppWindowLayoutData ~= 0 or Count > 1 then
+        AppWindowAutoLayoutTimer:stop()
+    end
+end
+
+-- AppWindowAutoLayoutTimer = hs.timer.new(2, execAppWindowAutoLayout)
+-- AppWindowAutoLayoutTimer:start()
+
+
+----------------------------------------------------------------
+---- TilingWindowManager 独立配置如下
+-- local Shyper = { "Ctrl", "Option", "Cmd" }
+-- hs.loadSpoon("TilingWindowManager")
+--     :setLogLevel("debug")
+--     :bindHotkeys({
+--         tile =           {Shyper, "t"},
+--         incMainRatio =   {Shyper, "p"},
+--         decMainRatio =   {Shyper, "o"},
+--         incMainWindows = {Shyper, "i"},
+--         decMainWindows = {Shyper, "u"},
+--         focusPrev =      {Shyper, "k"},
+--         focusNext =      {Shyper, "j"},
+--         swapNext =       {Shyper, "l"},
+--         swapPrev =       {Shyper, "h"},
+--         toggleFirst =    {Shyper, "return"},
+--         tall =           {Shyper, ","},
+--         talltwo =        {Shyper, "m"},
+--         fullscreen =     {Shyper, "."},
+--         wide =           {Shyper, ";"},
+--         display =        {Shyper, "d"},
+--     })
+--     :start({
+--         menubar = true,
+--         dynamic = false,
+--         layouts = {
+--             spoon.TilingWindowManager.layouts.fullscreen,
+--             spoon.TilingWindowManager.layouts.tall,
+--             spoon.TilingWindowManager.layouts.talltwo,
+--             spoon.TilingWindowManager.layouts.wide,
+--             spoon.TilingWindowManager.layouts.floating,
+--         },
+--         displayLayout = true,
+--         floatApps = {
+--             "com.apple.Finder",
+--         }
+--     })
+
+-- hs.hotkey.bind(Shyper, 'y', 'stop' , function ()
+--     hs.loadSpoon("TilingWindowManager"):toggleTWM({
+--         menubar = true,
+--         dynamic = false,
+--         layouts = {
+--             floating = "Floating",
+--             fullscreen = "Fullscreen",
+--             tall = "Tall",
+--             wide = "Wide",
+--             talltwo = "Tall Two Pane"
+--         },
+--         displayLayout = true,
+--         floatApps = {
+--             "com.apple.Finder",
+--         }
+--     })
+-- end)
+
+
+
+
+
+
 
 -- cmodal:bind('', 'A', '向左移动', function() spoon.WinMan:stepMove("left") end, nil, function() spoon.WinMan:stepMove("left") end)
 -- cmodal:bind('', 'D', '向右移动', function() spoon.WinMan:stepMove("right") end, nil, function() spoon.WinMan:stepMove("right") end)

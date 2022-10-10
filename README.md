@@ -10,6 +10,8 @@
 - 若 README 图片无法显示，请确保挂了梯子，并且 PAC 文件中配置 `||githubusercontent.com`，或者直接使用全局模式
 
 ## 目录
+<details>
+<summary><strong>Table of Contents</strong> (点击展开目录)</summary>
 - [目录](#目录)
 - [项目背景](#项目背景)
 - [Hyper键理念](#hyper键理念)
@@ -42,6 +44,9 @@
   - [关于工程目录结构](#关于工程目录结构)
   - [关于按键冲突 HS Console 报错](#关于按键冲突-hs-console-报错)
 - [参考与感谢](#参考与感谢)
+
+</details>
+
 
 ## 项目背景
 
@@ -176,8 +181,14 @@ git pull origin main
 * 支持一键关闭同类 APP 所有窗口
 * 支持一键关闭除当前APP 窗口外的其他窗口
 * 支持窗口组(不同 APP 窗口) 自动布局(需预配置)
+* 支持一键 Tile 当前 Space 所有 App 窗口
+  * 可同步操作所有窗口的 size
+  * 可快速变换聚焦
+  * 可快速交换窗口位置
+  * 支持多种 布局切换(双栏，高度优先，宽度优先，全屏)
 
- 
+
+
 
 <div align='center'>
   <img src='./images/windowman.gif'>
@@ -199,7 +210,8 @@ git pull origin main
 按下`Hyper` `Tab` 还能在当前桌面空间(什么是 [工作空间?](https://support.apple.com/zh-cn/guide/mac-help/mh14112/mac))轮切应用窗口
 
 * 支持APP 应用名称，应用ID配置
-* 支持配置应用窗口初始布局(启动时) 和全局布局(每次切换时)，以及指定屏幕显示
+* 支持配置应用窗口初始布局(启动后) 和全局布局(每次HS热键切换后)，以及指定屏幕显示
+* 支持配置应用窗口聚焦后自动调整布局，即任意方式切换后都自动调整， 有一定性能影响
 
 ---
 

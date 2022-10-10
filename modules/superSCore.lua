@@ -1,5 +1,7 @@
 require 'modules.caffeine'
 require 'modules.shortcut'
+hs.loadSpoon("FocusHighlight")
+local fhl = spoon.FocusHighlight
 
 function screenCenter()
     local cwin = hs.window.focusedWindow()
@@ -121,11 +123,20 @@ end
 
 function enableFocuseMode()
     if hs.settings.get('enableFocuseMode') then
-        hs.window.highlight.stop()
+        -- hs.window.highlight.stop()
+        fhl:stop()
+        hs.settings.set('enableFocuseMode', false)
     else
-        hs.window.highlight.ui.overlay = true
-        hs.window.highlight.ui.flashDuration = 0.1
-        hs.window.highlight.start()
+        -- hs.window.highlight.ui.overlay = true
+        -- hs.window.highlight.ui.flashDuration = 0.1
+        -- hs.window.highlight.start()
+        fhl.color = "#f9bc34"
+        fhl.windowFilter = hs.window.filter.default
+        fhl.arrowSize = 128
+        fhl.arrowFadeOutDuration = 1
+        fhl.highlightFadeOutDuration = 2
+        fhl.highlightFillAlpha = 0.3
+        fhl:start()
         hs.settings.set('enableFocuseMode', true)
     end
 end

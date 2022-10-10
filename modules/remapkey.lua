@@ -54,11 +54,6 @@ local function execTargetFunc(tgtfn)
         -- hs.mjomatic.go(window_group_layouts.chrome_iterm2)
         hs.mjomatic.go(window_group_layouts.finder_iTerm2)
 
-        -- local curScreenAllSpaceIDs = hs.spaces.spacesForScreen()
-        -- local targetSpaceID = curScreenAllSpaceIDs[1]
-        -- if targetSpaceID ~= nil then
-        --     hs.spaces.gotoSpace(targetSpaceID)
-        -- end
     elseif tgtfn == "windowMaximze" then
         local cwin = hs.window.focusedWindow()
         cwin:maximize()

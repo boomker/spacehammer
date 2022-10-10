@@ -1,21 +1,42 @@
 ---@diagnostic disable: lowercase-global
--- 快捷键配置版本号
+
+
+--[[
+███████╗██████╗  █████╗  ██████╗███████╗██╗  ██╗ █████╗ ███╗   ███╗███╗   ███╗███████╗██████╗ 
+██╔════╝██╔══██╗██╔══██╗██╔════╝██╔════╝██║  ██║██╔══██╗████╗ ████║████╗ ████║██╔════╝██╔══██╗
+███████╗██████╔╝███████║██║     █████╗  ███████║███████║██╔████╔██║██╔████╔██║█████╗  ██████╔╝
+╚════██║██╔═══╝ ██╔══██║██║     ██╔══╝  ██╔══██║██╔══██║██║╚██╔╝██║██║╚██╔╝██║██╔══╝  ██╔══██╗
+███████║██║     ██║  ██║╚██████╗███████╗██║  ██║██║  ██║██║ ╚═╝ ██║██║ ╚═╝ ██║███████╗██║  ██║
+╚══════╝╚═╝     ╚═╝  ╚═╝ ╚═════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═╝
+--]]
+
+
+-- 配置版本号
 shortcut_config = {
-    version = 1.1,
+    version = 2.0,
 }
 
+-- make the alerts look nicer.
+hs.alert.defaultStyle.strokeColor = { white = 1, alpha = 0 }
+hs.alert.defaultStyle.fillColor = { white = 0.05, alpha = 0.75 }
+hs.alert.defaultStyle.radius = 5
+hs.alert.defaultStyle.fadeOutDuration = 0.5
+hs.alert.defaultStyle.textFont = "Fira Mono"
 hs.alert.defaultStyle.atScreenEdge = 2
-hs.alert.defaultStyle.textSize = 16
+hs.alert.defaultStyle.textSize = 18
+
 
 HyperKey = { "Ctrl", "Option", "Shift" }
 -- prefix：表示快捷键前缀，可选值：Ctrl、Option、Shift, Cmd
 -- key：可选值 [A-Z]、[1-9]、Left、Right、Up、Down、-、=、/
 -- message: 提示信息
--- func: 函数
--- location: 窗口位置
+-- func: 要执行的函数
+-- action: 要执行的动作
 -- direction: 上下左右方向
--- initWindowLayout: App窗口初始(每次启动)位置和大小
--- alwaysWindowLayout: App窗口全局位置和大小
+-- location: 窗口位置
+-- initWindowLayout: App窗口初始(每次启动后)位置和大小
+-- alwaysWindowLayout: App窗口开启全局 HS 快捷键切换后自动调整布局, 没有性能影响, 无卡顿
+-- anytimeAdjustWindowLayout: App窗口开启全局任意方式切换后自动调整布局, 有一定程度性能下降! 
 -- onPrimaryScreen: 窗口排列位置在主显示器屏幕上
 -- bundleId: App唯一标识ID
 -- inputmethodId: 输入法唯一标示ID, 即对应输入法 App 的 BundleId
@@ -59,6 +80,12 @@ window_grids = {
     centerVertical = "0,2 16x8",
 }
 window_grid_groups = {
+    HalfScreenGrid = {
+        window_grids.leftHalf,
+        window_grids.rightHalf,
+        window_grids.topHalf,
+        window_grids.bottomHalf
+    },
     LeftGrid = {
         window_grids.leftHalf,
         window_grids.leftThird,
@@ -119,6 +146,7 @@ winman_keys = {
         prefix = {},
         key = "Q",
         message = "Quit WinMan",
+        tag = 'origin'
     },
     { -- 左半屏
         prefix = {},
@@ -194,14 +222,14 @@ winman_keys = {
         location = "fullscreen",
         tag = "origin",
     },
-    {
-        prefix = {},
-        key = "M",
-        message = "最大化",
-        func = "moveAndResize",
-        location = "max",
-        tag = "origin",
-    },
+    -- {
+    --     prefix = {},
+    --     key = "M",
+    --     message = "最大化",
+    --     func = "moveAndResize",
+    --     location = "max",
+    --     tag = "origin",
+    -- },
     {
         prefix = {},
         key = "C",
@@ -366,28 +394,28 @@ winman_keys = {
     },
     {
         prefix = {},
-        key = "E",
+        key = "A",
         message = "窗口移至左边屏幕",
         func = "wMoveToScreen",
         location = "left",
         tag = "origin",
     },
-    {
-        prefix = {},
-        key = "T",
-        message = "窗口移至上边屏幕",
-        func = "wMoveToScreen",
-        location = "up",
-        tag = "origin",
-    },
-    {
-        prefix = {},
-        key = "B",
-        message = "窗口移动下边屏幕",
-        func = "wMoveToScreen",
-        location = "down",
-        tag = "origin",
-    },
+    -- {
+    --     prefix = {},
+    --     key = "T",
+    --     message = "窗口移至上边屏幕",
+    --     func = "wMoveToScreen",
+    --     location = "up",
+    --     tag = "origin",
+    -- },
+    -- {
+    --     prefix = {},
+    --     key = "B",
+    --     message = "窗口移动下边屏幕",
+    --     func = "wMoveToScreen",
+    --     location = "down",
+    --     tag = "origin",
+    -- },
     {
         prefix = {},
         key = "N",
@@ -398,7 +426,8 @@ winman_keys = {
     },
     {
         prefix = {},
-        key = "S",
+        -- key = "S",
+        key = "B",
         message = "窗口移至上一个Space",
         func = "moveToSpace",
         direction = "left",
@@ -527,6 +556,137 @@ winman_keys = {
         mapGridGroup = window_grid_groups.CenterGrid,
         tag = "grid",
     },
+    {
+        prefix = {},
+        key = "F",
+        message = "窗口在屏幕四边半屏布局组",
+        mapGridGroup = window_grid_groups.HalfScreenGrid,
+        tag = "grid",
+    },
+
+    ------ Tile 模式键绑定配置 ------
+    {
+        prefix = {},
+        key = "T",
+        -- 优先水平方向均分模式
+        message = "tallMode",
+        mode = 'tall',
+        tag = "tile",
+    },
+    {
+        prefix = {},
+        key = "M",
+        -- -- 双栏模式
+        message = "tallTwoMode",
+        mode = 'talltwo',
+        tag = "tile",
+    },
+    {
+        prefix = {},
+        key = ",",
+        -- -- 优先垂直方向均分模式
+        message = "wideMode",
+        mode = 'wide',
+        tag = "tile",
+    },
+    {
+        prefix = {},
+        key = ";",
+        -- -- 全屏(最大化)模式
+        message = "fullScreenMode",
+        mode = 'fullscreen',
+        tag = "tile",
+    },
+    {
+        prefix = { "Ctrl" },
+        key = "J",
+        -- 聚焦下一个窗口
+        message = "focusNext",
+        action = "focus",
+        direction = 'next',
+        tag = "tile",
+    },
+    {
+        prefix = { "Ctrl" },
+        key = "K",
+        -- -- 聚焦上一个窗口
+        message = "focusPrev",
+        action = "focus",
+        direction = 'prev',
+        tag = "tile",
+    },
+    {
+        prefix = { "Ctrl" },
+        key = "L",
+        -- -- 与下一个窗口交互位置
+        message = "swapNext",
+        action = "swap",
+        direction = 'next',
+        tag = "tile",
+    },
+    {
+        prefix = { "Ctrl" },
+        key = "H",
+        -- -- 与上一个窗口交互位置
+        message = "swapPrev",
+        action = "swap",
+        direction = 'prev',
+        tag = "tile",
+    },
+    {
+        prefix = { "Ctrl" },
+        key = "I",
+        -- 与第一个窗口交互位置
+        message = "swapFirst",
+        action = "swap",
+        direction = 'first',
+        tag = "tile",
+    },
+    {
+        prefix = {},
+        key = "E",
+        -- 布局分割线右移伸展
+        message = "incMainRatio",
+        action = "resizeWidth",
+        sizeVal = 0.05,
+        tag = "tile",
+    },
+    {
+        -- prefix = { "Ctrl" },
+        prefix = {},
+        key = "S",
+        -- -- 布局分割线左移收缩
+        message = "decMainRatio",
+        action = "resizeWidth",
+        sizeVal = -0.05,
+        tag = "tile",
+    },
+    {
+        prefix = { "Ctrl" },
+        key = "S",
+        -- -- 当前聚焦窗口高度折半
+        message = "decMainWindows",
+        action = "resizeHeight",
+        sizeVal = 1,
+        tag = "tile",
+    },
+    {
+        prefix = { "Ctrl" },
+        key = "E",
+        -- -- 当前聚焦窗口高度增倍
+        message = "incMainWindows",
+        action = "resizeHeight",
+        sizeVal = -1,
+        tag = "tile",
+    },
+    {
+        prefix = { "Ctrl" },
+        key = "D",
+        -- 优先水平方向均分模式
+        message = "fullScreenMode",
+        action = "showMode",
+        tag = "tile",
+    },
 }
 
 -- 应用切换快捷键配置
@@ -537,6 +697,7 @@ applications = {
         message = "VSCode",
         bundleId = "com.microsoft.VSCode",
         alwaysWindowLayout = window_grids.fullScreen,
+        anytimeAdjustWindowLayout = true,
         onPrimaryScreen = true,
     },
     {
@@ -547,6 +708,7 @@ applications = {
         -- bundleId = "abnerworks.Typora"
         -- initWindowLayout = grid.centeredMedium,
         alwaysWindowLayout = window_grids.fullScreen,
+        anytimeAdjustWindowLayout = true,
     },
     {
         prefix = HyperKey,
@@ -554,6 +716,7 @@ applications = {
         message = "iTerm2",
         bundleId = "com.googlecode.iterm2",
         alwaysWindowLayout = window_grids.bottomTwoThirds,
+        anytimeAdjustWindowLayout = true,
     },
     {
         prefix = HyperKey,
@@ -562,6 +725,7 @@ applications = {
         bundleId = "com.cocoatech.PathFinder",
         initWindowLayout = window_grids.centeredMedium,
         alwaysWindowLayout = window_grids.centerHorizontal,
+        anytimeAdjustWindowLayout = true,
     },
     {
         prefix = HyperKey,
@@ -576,6 +740,7 @@ applications = {
         bundleId = "org.mozilla.firefox",
         initWindowLayout = window_grids.centeredMedium,
         alwaysWindowLayout = window_grids.fullScreen,
+        anytimeAdjustWindowLayout = true,
     },
     {
         prefix = HyperKey,
@@ -583,6 +748,7 @@ applications = {
         message = "Chrome",
         bundleId = "com.google.Chrome",
         alwaysWindowLayout = window_grids.fullScreen,
+        anytimeAdjustWindowLayout = true,
     },
     {
         prefix = HyperKey,
@@ -597,6 +763,7 @@ applications = {
         name = "Free Download Manager",
         initWindowLayout = window_grids.centeredMedium,
         alwaysWindowLayout = window_grids.fullScreen,
+        anytimeAdjustWindowLayout = true,
     },
     {
         prefix = HyperKey,
@@ -623,7 +790,8 @@ applications = {
         message = "Music",
         bundleId = "com.netease.163music",
         initWindowLayout = window_grids.centeredMedium,
-        alwaysWindowLayout = window_grids.centeredBig,
+        alwaysWindowLayout = window_grids.fullScreen,
+        anytimeAdjustWindowLayout = true,
     },
 }
 
@@ -814,5 +982,6 @@ if string.len(hsreload_keys[2]) > 0 then
     hs.hotkey.bind(hsreload_keys[1], hsreload_keys[2], "重新加载配置", function()
         hs.reload()
     end)
+
     hs.alert.show("配置文件已经重新加载")
 end
