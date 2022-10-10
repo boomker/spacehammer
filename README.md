@@ -211,6 +211,10 @@ git pull origin main
 窗口管理之 Tile 模式，效果如下
 
 <div align='center'>
+  <img src='./images/wintilemenuico.png' height=400>
+</div>
+
+<div align='center'>
   <img src='./images/windowTile.gif' height=400>
 </div>
 

@@ -58,9 +58,15 @@ local function renderMenubar(config)
     -- 调整图标大小
     local iconCopied = icon:setSize({w = 25, h = 25}, true)
     menubar:setIcon(iconCopied)
-    -- menubar:setTitle('KURANADO')
+    -- menubar:setTitle('SpaceHammer')
     menubar:setTooltip('启用/禁用配置')
     menubar:setMenu(menudata)
 end
 
 renderMenubar(loadConfig())
+local function renderMenubarItem()
+    renderMenubar(loadConfig())
+end
+
+MenuTimer = hs.timer.new(5, renderMenubarItem)
+MenuTimer :start()
