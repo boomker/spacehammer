@@ -1,6 +1,7 @@
 require 'modules.caffeine'
-require 'modules.shortcut'
+require 'configs.shortcuts'
 hs.loadSpoon("FocusHighlight")
+
 local fhl = spoon.FocusHighlight
 
 function screenCenter()
@@ -13,7 +14,7 @@ function screenCenter()
     -- hs.mouse.setAbsolutePosition({x=wf.x+wf.w/2, y=wf.y+wf.h/2})
     -- else
     -- Center the cursor on the screen
-    hs.mouse.setAbsolutePosition({ x = cres.x + cres.w / 2, y = cres.y + cres.h / 2 })
+    hs.mouse.absolutePosition({ x = cres.x + cres.w / 2, y = cres.y + cres.h / 2 })
     -- end
 end
 

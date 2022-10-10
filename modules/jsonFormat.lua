@@ -1,4 +1,4 @@
-require 'modules.shortcut'
+require 'configs.shortcuts'
 
 function init()
     local cscreen = hs.screen.mainScreen()

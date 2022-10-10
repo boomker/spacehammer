@@ -1,7 +1,7 @@
 -- 表情包搜索
 
 require 'modules.base'
-require 'modules.shortcut'
+require 'configs.shortcuts'
 
 local focusedWindow = hs.window.focusedWindow()
 if focusedWindow == nil then

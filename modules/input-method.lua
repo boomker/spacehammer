@@ -1,6 +1,6 @@
 -- 输入法切换
 
-require 'modules.shortcut'
+require 'configs.shortcuts'
 -- require 'modules.status-message'
 
 local message = require('modules.status-message')

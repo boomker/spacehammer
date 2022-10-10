@@ -1,5 +1,5 @@
 hs.loadSpoon("ModalMgr")
-require 'modules.shortcut'
+require 'configs.shortcuts'
 require 'modules.superSCore'
 require 'modules.ksheet'
 require 'modules.hotkeyHelper'
@@ -114,10 +114,10 @@ if spoon.ModalMgr then
 		hs.eventtap.keyStroke(superKey_items.bobOCR[1], superKey_items.bobOCR[2])
 		spoon.ModalMgr:deactivate({"SuperKey"})
 	end)
-	skmodal:bind({"Shift"}, 'H', 'MouseHighlight', function()
-        -- mouseHighlight()
-		spoon.ModalMgr:deactivate({"SuperKey"})
-	end)
+	-- skmodal:bind({"Shift"}, 'H', 'MouseHighlight', function()
+    --     -- mouseHighlight()
+	-- 	spoon.ModalMgr:deactivate({"SuperKey"})
+	-- end)
 
     spoon.ModalMgr.supervisor:bind(superKey_toggle[1], superKey_toggle[2], "进入SuperKey模式", function()
         spoon.ModalMgr:deactivateAll()

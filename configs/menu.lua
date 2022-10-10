@@ -1,11 +1,11 @@
 -- 功能菜单
 
 require 'modules.base'
-require 'modules.config'
+require 'configs.config'
 
 local menubar = hs.menubar.new()
 
-function renderMenubar(config)
+local function renderMenubar(config)
 
     -- 用于存储所有菜单项
     local menudata = {}

@@ -48,6 +48,7 @@
 
 </details>
 
+---
 
 ## 项目背景
 
@@ -58,6 +59,10 @@
 ## Hyper键理念
 * 受到上述 `spacelauncher` 使用习惯的影响, 使用 `Space` + `字母键` 来启动/切换应用. 另外我有两个 `Space` 键(XDM, 了解下分裂式空格客制化键盘), 多余的空格键不利用太可惜了. 
 * 如何实现 `Space` 作为 `Hyper` 键? 改键神器 [Karabiner-Elements](https://karabiner-elements.pqrs.org/) 申请出战. 添加如下配置到 `~/.config/karabiner/karabiner.json` 即可.
+
+<details>
+<summary><strong>Karabiner-Elements 配置</strong> (点击展开JSON 配置)</summary>
+
 ```json
 {
     "description": "Change spacebar to HyperKey if pressed with other keys.",
@@ -91,14 +96,15 @@
     ]
 }
 ```
+</details>
 
 ---
 
 ## TODO
 - [x] 按键组, 序列键(HyperKey + W + M)
 
-    * S[S, D]: 打开系统设置项或弹出快捷键 Sheet 面板  ✅
-    * W[{HJKL}], 窗口快速调整大小与布局      ✅ 
+    * S→\[S, D\]: 打开系统设置项或弹出快捷键 Sheet 面板  ✅
+    * W→\[H,J,K,L\], 窗口快速调整大小与布局      ✅ 
 - [ ] 快捷启禁用
 
     * 指定的模块功能
@@ -112,6 +118,7 @@
 - [ ] 一组热键在不同的应用中有不同的作用
 - [x] 剪贴板工具, 附加文本处理               ✅
 - [ ] 增强型PopClip, 按字母键触发
+
 ---
 
 ## 如何安装
@@ -159,7 +166,7 @@ git pull origin main
 鼠标单击功能项，即可启用/禁用功能项
 
 <div align='center'>
-  <img src='./images/hsmenuitem.png'/>
+  <img src='./images/hsmenuitem.png' height=400/>
 </div>
 
 
@@ -189,17 +196,15 @@ git pull origin main
   * 支持多种 布局切换(双栏，高度优先，宽度优先，全屏)
 
 
-
-
 <div align='center'>
-  <img src='./images/windowman.gif'>
+  <img src='./images/windowman.gif' height=400>
 </div>
 
 
 `Hyper+G`，进入窗口管理之 Grid 轮切模式。按下`Tab`键查看按键提示
 
 <div align='center'>
-  <img src='./images/wingrid.gif'>
+  <img src='./images/wingrid.gif' height=400>
 </div>
 
 
@@ -221,8 +226,9 @@ git pull origin main
 快捷键 `Hyper` `E` 唤醒表情包搜索功能，输入关键词，**上下**键用于选择、预览表情包；**左右**键用于翻页；**回车键**用于发送表情包；`Esc` 关闭搜索窗口
 
 <div align='center'>
-  <img src='./images/emoji.gif'>
+  <img src='./images/emoji.gif' height=400>
 </div>
+
 
 ---
 
@@ -251,14 +257,29 @@ Hyper+S 进入该模式。该模式可执行如下操作
 详细功能请按`Tab`键查看，如下图类似：
 
 <div align='center'>
-  <img src='./images/superSKey.png'>
+  <img src='./images/superSKey.png' height=400>
 </div>
+
 
 其中的「F: 开启专注模式」效果如下：
 
 <div align='center'>
-  <img src='./images/focusWorkMode.gif'>
+  <img src='./images/focusWorkMode.gif' height=400>
 </div>
+
+---
+
+### 应用菜单搜索
+
+按下`Hyper` `M` 即可弹出当前应用的所有菜单搜索框， 如下图效果
+
+<div align='center'>
+  <img src='./images/menuChooser.png' height=400>
+</div>
+
+
+
+---
 
 ### 输入法切换
 
@@ -482,48 +503,79 @@ osascript -e 'id of app "Name of App"'
 ### 关于工程目录结构
 
 ```shell
+
 .hammerspoon
-├── .config 用户本地配置文件，保存了用户每个功能模块的启用/禁用状态
-├── .emoji 表情包缓存目录
-├── .git
-├── .gitignore
-├── LICENSE
-├── README.md
-├── images 功能模块及 README 需要用到的图片
-├── install.sh 一键拉取本工程脚本(需要提前安装 Git)
-├── bin 二进制包
-    ├── blueutil 蓝牙开源工具
-├── init.lua 脚本入口
-└── modules 各个功能模块
-    ├── application.lua 应用切换模块
-    ├── base.lua 封装了 Lua 基本工具
-    ├── config.lua 菜单默认配置，记录了每一项功能的默认启用/禁用状态
-    ├── clipboardtool.lua 剪贴板模块
-    ├── emoji.lua 表情包搜索模块
-    ├── hotkeyHelper.lua 快捷键列表查看模块
-    ├── input-method.lua 输入法切换
-    ├── jsonFormat.lua json 格式化转换模块 
-    ├── keystroke-visualizer.lua 按键回显模块
-    ├── ksheet.lua 显示当前应用所有快捷键模块
-    ├── menu.lua 菜单模块
-    ├── systeminfo.lua 系统信息模块
-    ├── superSKey.lua 超级 SKey 模块
-    ├── superCore.lua 超级 SKey 的核心实现
-    ├── status-message.lua 右下角状态提示栏模块
-    ├── reload.lua 重载配置模块
-    ├── remind.lua 下班提醒模块
-    ├── shortcut.lua `用户自定义快捷键` # 最重要的配置文件
-    ├── shortcut.lua.example 快捷键配置文件示例, 用户请勿修改此文件
-    ├── shortcut-window.lua 窗口管理快捷键备份文件
-    ├── update.lua 自动更新模块
-    ├── window.lua 快捷键调用窗口管理功能模块
-    └── winman.lua 窗口管理模块(具体实现)
-└── Spoons HammerSpoon 官方功能模块
-    ├── ClipShow.spoon 剪贴板模块
-    ├── kSheet.spoon 查看当前应用快捷键 
-    ├── ModalMgr.spoon 模态管理模块(可实现按键组)
-    └── WinMan.spoon 窗口管理模块(原为WinWin, 二改版)
+├── .config                         # 用户本地配置文件
+├── .emoji                          # 表情包缓存目录
+├──  .gitignore
+├──  bin                           # 二进制包目录
+│  └──  blueutil                   # 开源蓝牙工具
+├──  configs                       # 配置文件目录
+│  ├──  applicationConfig.lua      # App 应用快捷启动切换配置
+│  ├──  baseConfig.lua             # 基础配置
+│  ├──  config.lua                 # 项目入口配置
+│  ├──  menu.lua                   # 菜单栏配置
+│  ├──  reload.lua                 # 重载本项目
+│  ├──  remapingShortcuts.lua      # 自定义按键映射
+│  ├──  shortcuts.lua              # 项目主要按键映射配置
+│  ├──  windowConfig.lua           # 窗口管理模块的配置
+│  └──  winmanShortcuts.lua        # 窗口管理的所有快捷键
+├──  icons                         # 图标文件夹
+│  ├──  caffeine-off.pdf           
+│  └──  caffeine-on.pdf
+├──  images                        # 图片文件夹
+│  ├──  after-work.png
+│  ├──  clipboard.gif
+│  ├──  emoji.gif
+│  ├──  focusWorkMode.gif
+│  ├──  hsheet.png
+│  ├──  hsmenuitem.png
+│  ├──  inputMethodSwitchBadage.png
+│  ├──  istatMenus.png
+│  ├──  json.png
+│  ├──  keystroke-visualizer.gif
+│  ├──  ksheet.png
+│  ├──  menu.png
+│  ├──  menuChooser.png
+│  ├──  superSKey.png
+│  ├──  windowman.gif
+│  └──  wingrid.gif
+├──  init.lua                      # 项目入口文件
+├──  install.sh                    # 项目自动安装脚本
+├──  LICENSE
+├──  modules                       # 各种功能模块
+│  ├──  application.lua            # 应用快启快切模块
+│  ├──  base.lua                   # 基础工具类模块
+│  ├──  caffeine.lua               # 咖啡
+│  ├──  clipboardtool.lua          # 剪贴板模块
+│  ├──  emoji.lua                  # 聊天发表情模块
+│  ├──  hotkeyHelper.lua           # 显示项目所有(部分放不下)按键模块
+│  ├──  input-method.lua           # 输入法模块
+│  ├──  jsonFormat.lua             # json 格式化工具
+│  ├──  keystroke-visualizer.lua   # 按键显示模块
+│  ├──  ksheet.lua                 # 查看当前应用快捷键模块
+│  ├──  remapingKey.lua            # 按键自定义映射模块
+│  ├──  remind.lua                 # 下班提醒模块
+│  ├──  status-message.lua         # 右下角显示状态模块
+│  ├──  superSCore.lua             # SuperSkey模块实现
+│  ├──  superSKey.lua              # SuperSkey模块
+│  ├──  systemInfo.lua             # 菜单栏显示系统信息模块
+│  ├──  update.lua                 # 自动更新本项目模块
+│  ├──  window.lua                 # 窗口管理模块实现
+│  └──  winman.lua                 # 窗口管理模块
+├──  README.md
+├──  Spoons                        # 官方模块库/开源第三方库
+│  ├──  ClipShow.spoon
+│  ├──  FocusHighlight.spoon
+│  ├──  KSheet.spoon
+│  ├──  MenuChooser.spoon
+│  ├──  ModalMgr.spoon
+│  ├──  TilingWindowManager.spoon
+│  └──  WinMan.spoon
+└──  stylua.toml
+
 ```
+---
 
 ### 关于按键冲突 HS Console 报错
 当在 HS 控制台看到的报错类似如下:
@@ -533,7 +585,7 @@ osascript -e 'id of app "Name of App"'
 
 ---
 
-## 参考与感谢
+## 参考与鸣谢
 
 - [KURANADO2](https://github.com/KURANADO2/hammerspoon-kuranado)
 - [zuorn](https://github.com/zuorn/hammerspoon_config)

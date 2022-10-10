@@ -1,18 +1,8 @@
 hs.loadSpoon("ModalMgr")
 hs.loadSpoon("KSheet")
-require 'modules.shortcut'
+-- require 'configs.shortcuts'
 
-if spoon.KSheet then
-    spoon.ModalMgr:new("cheatsheetM")
-    local cmodal = spoon.ModalMgr.modal_list["cheatsheetM"]
-    cmodal:bind('', 'escape', 'Deactivate cheatsheetM', function()
-        spoon.KSheet:hide()
-        spoon.ModalMgr:deactivate({"cheatsheetM"})
-    end)
-    cmodal:bind('', 'Q', 'Deactivate cheatsheetM', function()
-        spoon.KSheet:hide()
-        spoon.ModalMgr:deactivate({"cheatsheetM"})
-    end)
+-- if spoon.KSheet then
 
     -- 定义快捷键
     -- local hscheats_keys = hscheats_keys or {HyperKey, "S"}
@@ -23,12 +13,22 @@ if spoon.KSheet then
     --         spoon.ModalMgr:activate({"cheatsheetM"})
     --     end)
     -- end
-end
+-- end
 
 
 function enterCheatsheetM()
     spoon.KSheet:show()
     spoon.ModalMgr:deactivateAll()
+    spoon.ModalMgr:new("cheatsheetM")
+    local cmodal = spoon.ModalMgr.modal_list["cheatsheetM"]
+    cmodal:bind('', 'escape', 'Deactivate cheatsheetM', function()
+        spoon.KSheet:hide()
+        spoon.ModalMgr:deactivate({"cheatsheetM"})
+    end)
+    cmodal:bind('', 'Q', 'Deactivate cheatsheetM', function()
+        spoon.KSheet:hide()
+        spoon.ModalMgr:deactivate({"cheatsheetM"})
+    end)
     spoon.ModalMgr:activate({"cheatsheetM"})
 end
 

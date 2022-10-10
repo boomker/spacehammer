@@ -2,7 +2,10 @@
 
 require 'modules.base'
 hs.loadSpoon("ModalMgr")
-require 'modules.shortcut'
+-- require 'configs.shortcuts'
+-- require 'configs.applicationConfig'
+require 'configs.winmanShortcuts'
+require 'configs.remapingShortcuts'
 
 local modifierKey2Symbol = {
     Ctrl = "⌃",
@@ -119,10 +122,9 @@ local function formatText()
         -- end
     end
 
-    for i, v in ipairs(remapkeys) do
+    for i, v in ipairs(remapingKeys) do
         if i == 1 then
             table.insert(windowManagement, { msg = "" })
-            table.insert(customRemappings, { msg = "Hyper" .. " + " .. v.key .. ": " .. v.message })
         end
 
         table.insert(customRemappings, { msg = "Hyper" .. " + " .. v.key .. ": " .. v.message })
@@ -259,7 +261,30 @@ drawText(formatText())
 hs.hotkey.alertDuration = 0
 
 
-if hshelp_keys then
+-- if hshelp_keys then
+--     spoon.ModalMgr:new("ShowHSHelpKeys")
+--     local cmodal = spoon.ModalMgr.modal_list["ShowHSHelpKeys"]
+--     cmodal:bind('', 'escape', '退出', function()
+--         closeHotKeyShow()
+--         spoon.ModalMgr:deactivate({"ShowHSHelpKeys"})
+--     end)
+--     cmodal:bind('', 'Q', '退出 ', function()
+--         closeHotKeyShow()
+--         spoon.ModalMgr:deactivate({"ShowHSHelpKeys"})
+--     end)
+
+    -- 绑定功 ShowHSHelpKeys快捷键
+    -- hshelp_keys = hshelp_keys or {"alt", "S"}
+    -- if string.len(hshelp_keys.key) > 0 then
+    --     spoon.ModalMgr.supervisor:bind(hshelp_keys.prefix, hshelp_keys.key, "打开快捷键显示面板", function()
+    --         toggleHotkeysShow()
+    --         spoon.ModalMgr:activate({"ShowHSHelpKeys"})
+    --     end)
+    -- end
+-- end
+
+function enterShowHSHotKeyPane ()
+    toggleHotkeysShow()
     spoon.ModalMgr:new("ShowHSHelpKeys")
     local cmodal = spoon.ModalMgr.modal_list["ShowHSHelpKeys"]
     cmodal:bind('', 'escape', '退出', function()
@@ -271,18 +296,6 @@ if hshelp_keys then
         spoon.ModalMgr:deactivate({"ShowHSHelpKeys"})
     end)
 
-    -- 绑定功 ShowHSHelpKeys快捷键
-    -- hshelp_keys = hshelp_keys or {"alt", "S"}
-    -- if string.len(hshelp_keys.key) > 0 then
-    --     spoon.ModalMgr.supervisor:bind(hshelp_keys.prefix, hshelp_keys.key, "打开快捷键显示面板", function()
-    --         toggleHotkeysShow()
-    --         spoon.ModalMgr:activate({"ShowHSHelpKeys"})
-    --     end)
-    -- end
-end
-
-function enterShowHSHotKeyPane ()
-    toggleHotkeysShow()
     spoon.ModalMgr:deactivateAll()
     spoon.ModalMgr:activate({ "ShowHSHelpKeys" })
 end
