@@ -273,7 +273,6 @@ end
 ----------------------------------------------------------------
 -- Grid 轮切模式实现
 function rotateWinGrid(movements)
-    -- print(hs.inspect(movements))
     local chainResetInterval = 2 -- seconds
     local cycleLength = #movements
     local sequenceNumber = 1
@@ -299,8 +298,8 @@ function rotateWinGrid(movements)
         lastSeenAt = now
         lastSeenWindow = id
         if hs.settings.get(winIDKey) then sequenceNumber = hs.settings.get(winIDKey) end
+        if #movements < sequenceNumber then sequenceNumber = 1 end
 
-        -- print(hs.inspect(movements[sequenceNumber]))
         hs.grid.set(win, movements[sequenceNumber], screen)
         sequenceNumber = sequenceNumber % cycleLength + 1
         hs.settings.set(winIDKey, sequenceNumber)

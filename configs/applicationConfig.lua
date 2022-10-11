@@ -100,7 +100,7 @@ applications = {
     {
         prefix = HyperKey,
         key = "8",
-        message = "Music",
+        message = "NeteaseMusic",
         bundleId = "com.netease.163music",
         initWindowLayout = window_grids.centeredMedium,
         alwaysWindowLayout = window_grids.fullScreen,

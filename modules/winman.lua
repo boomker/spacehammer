@@ -7,6 +7,7 @@ hs.loadSpoon("TilingWindowManagerMod")
 require("configs.windowConfig")
 require("configs.winmanShortcuts")
 require("modules.window")
+require("modules.windowTimeLine")
 -- require 'modules.application'
 
 local TWM = spoon.TilingWindowManagerMod
@@ -27,7 +28,7 @@ TWM:start({
 CurrentLayoutMode = nil
 
 
--- 定义窗口管理模式快捷键
+-- ==== 窗口管理传统/Tile模式 ==== --
 if spoon.WinMan then
     local handleMode = function()
         if winman_mode ~= "persistent" then
@@ -87,85 +88,7 @@ if spoon.WinMan then
         spoon.ModalMgr:toggleCheatsheet()
     end)
 
-    -- # {{{ 多 App 窗口多种布局轮切
-    -- 优先水平方向均分模式
-    -- cmodal:bind("", "t", "tallMode", function()
-    --     handleTileMode('tall')
-    --     handleMode()
-    -- end)
-    -- -- 双栏模式
-    -- cmodal:bind("", "m", "talltwoMode", function()
-    --     handleTileMode('talltwo')
-    --     handleMode()
-    -- end)
-    -- -- 优先垂直方向均分模式
-    -- cmodal:bind("", ",", "wideMode", function()
-    --     handleTileMode('wide')
-    --     handleMode()
-    -- end)
-    -- -- 全屏(最大化)模式
-    -- cmodal:bind("", ";", "fullscreenMode", function()
-    --     handleTileMode('fullscreen')
-    --     handleMode()
-    -- end)
-    -- 布局分割线右移伸展
-    -- cmodal:bind("", "E", "incMainRatio", function()
-    --     handleWindowFlexOrResize('windowRatio', 0.05)
-    --     handleMode()
-    -- end)
-    -- -- 布局分割线左移收缩
-    -- cmodal:bind("", "S", "decMainRatio", function()
-    --     handleWindowFlexOrResize('windowRatio', -0.05)
-    --     handleMode()
-    -- end)
-    -- -- cmodal:bind({"Ctrl"}, "E", "incMainWindows", function()
-    -- -- 当前聚焦窗口高度折半
-    -- cmodal:bind("", "R", "incMainWindows", function()
-    --     handleWindowFlexOrResize('windowRotate', 1)
-    --     handleMode()
-    -- end)
-    -- -- cmodal:bind({"Ctrl"}, "S", "decMainWindows", function()
-    -- -- 当前聚焦窗口高度增倍
-    -- cmodal:bind({"Ctrl"}, "R", "decMainWindows", function()
-    --     handleWindowFlexOrResize('windowRotate', -1)
-    --     handleMode()
-    -- end)
-    -- 聚焦下一个窗口
-    -- cmodal:bind({"Ctrl"}, "K", "focusNext", function()
-    --     handleWindowFocusOrSwap('focus', 1)
-    --     handleMode()
-    -- end)
-    -- -- 聚焦上一个窗口
-    -- cmodal:bind({"Ctrl"}, "J", "focusPrev", function()
-    --     handleWindowFocusOrSwap('focus', -1)
-    --     handleMode()
-    -- end)
-    -- -- 与上一个窗口交互位置
-    -- cmodal:bind({"Ctrl"}, "L", "swapPrev", function()
-    --     handleWindowFocusOrSwap('swap', 1)
-    --     handleMode()
-    -- end)
-    -- -- 与下一个窗口交互位置
-    -- cmodal:bind({"Ctrl"}, "H", "swapNext", function()
-    --     handleWindowFocusOrSwap('swap', -1)
-    --     handleMode()
-    -- end)
-    -- 与第一个窗口交互位置
-    -- cmodal:bind({"Ctrl"}, "I", "swapFirst", function()
-    --     handleWindowFocusOrSwap('swap', 0)
-    --     handleMode()
-    -- end)
-    -- 显示模式 
-    -- cmodal:bind({"Ctrl"}, "D", "displayMode", function()
-    --     local curModeName = '当前模式: ' .. CurrentLayoutMode
-    --     hs.alert.show(curModeName)
-    --     handleMode()
-    -- end)
-
-    -- # 多 App 窗口多种布局轮切 }}}
-
-
-    -- {{{ 窗口管理之 传统模式
+    -- {{{ 窗口管理之 传统模式/Tile模式 Start
     hs.fnutils.each(winman_keys, function(item)
         if item.tag == "origin" then
             local wfn = item.func
@@ -258,15 +181,20 @@ if spoon.WinMan then
                     -- spoon.ModalMgr:deactivate({"windowM"})
                     handleMode()
                 end)
-            else
+            elseif wfn == "undo" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     spoon.WinMan:undo()
-                    -- spoon.ModalMgr:deactivate({"windowM"})
+                    handleMode()
+                end)
+            elseif wfn == "redo" then
+                cmodal:bind(item.prefix, item.key, item.message, function()
+                    spoon.WinMan:redo()
                     handleMode()
                 end)
             end
         end
 
+        -- Tile 模式(多 App 窗口同时操作)
         if item.tag == "tile" then
             if item.mode then
                 cmodal:bind(item.prefix, item.key, item.message, function()
@@ -319,7 +247,7 @@ if spoon.WinMan then
             spoon.ModalMgr:activate({ "windowM" }, "#B22222")
         end)
     end
-    -- 窗口管理之 传统模式 }}}
+    -- 窗口管理之 传统模式/Tile模式 End }}}
 end
 
 -- 窗口管理之 Grid 轮切模式
@@ -343,15 +271,38 @@ if spoon.WinMan then
     end)
 
     hs.fnutils.each(winman_keys, function(item)
+        if not item.mapGridGroup then return end
+
         if item.tag == "grid" then
-            cmodal:bind(item.prefix, item.key, item.message, function()
-                rotateWinGrid(item.mapGridGroup)
-                handleMode()
-            end)
+            if item.mapGridGroup == "switchToTileMode" then
+                cmodal:bind(item.prefix, item.key, item.message, function()
+                    spoon.ModalMgr:deactivateAll()
+                    local winman_toggle = winman_toggle or { "alt", "r" }
+                    hs.eventtap.keyStroke(winman_toggle[1],  winman_toggle[2])
+                end)
+			elseif item.mapGridGroup == 'Redo' then
+				cmodal:bind(item.prefix, item.key, item.message, function()
+					WTL:redo()
+					-- WTL:addToStack('redo', nil)
+					handleMode()
+				end)
+			elseif item.mapGridGroup == 'Undo' then
+				cmodal:bind(item.prefix, item.key, item.message, function()
+					WTL:addToStack('redo', nil) -- Undo 之前将当前窗口的 layout 存入 redoStack
+					WTL:undo()
+					handleMode()
+				end)
+            else
+                cmodal:bind(item.prefix, item.key, item.message, function()
+                    WTL:addToStack('undo', nil)
+                    rotateWinGrid(item.mapGridGroup)
+                    handleMode()
+                end)
+            end
         end
     end)
 
-    -- 定义窗口管理模式快捷键
+    -- 热键触发进入窗口管理Grid模式
     local winGridMan_toggle = winGridMan_toggle or { "alt", "R" }
     if string.len(winGridMan_toggle[2]) > 0 then
         spoon.ModalMgr.supervisor:bind(
@@ -379,8 +330,8 @@ end
 
 spoon.ModalMgr.supervisor:enter()
 
---- App 窗口开启全局任意方式切换后自动调整布局, 有一定程度性会下降!
 
+--! App 窗口开启全局任意方式切换后自动调整布局, 有一定程度性能会下降!
 local Count = 0
 local function execAppWindowAutoLayout()
     AppWindowAutoLayout()

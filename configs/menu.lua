@@ -3,7 +3,7 @@
 require 'modules.base'
 require 'configs.config'
 
-local menubar = hs.menubar.new()
+local HSMenubar = hs.menubar.new()
 
 local function renderMenubar(config)
 
@@ -57,13 +57,14 @@ local function renderMenubar(config)
     local icon = hs.image.imageFromPath(base_path .. 'images/menu.png')
     -- 调整图标大小
     local iconCopied = icon:setSize({w = 25, h = 25}, true)
-    menubar:setIcon(iconCopied)
+    HSMenubar:setIcon(iconCopied)
     -- menubar:setTitle('SpaceHammer')
-    menubar:setTooltip('启用/禁用配置')
-    menubar:setMenu(menudata)
+    HSMenubar:setTooltip('启用/禁用配置')
+    HSMenubar:setMenu(menudata)
 end
 
 renderMenubar(loadConfig())
+
 local function renderMenubarItem()
     renderMenubar(loadConfig())
 end
