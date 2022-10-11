@@ -1,55 +1,54 @@
+---@diagnostic disable: lowercase-global
 ---
 --- 控制空闲时是否允许屏幕睡眠
 ---
 -- require 'configs.shortcuts'
 
-local menuBarItem = nil
-setCaffeine = function()
-    if caffConfig ~= nil and caffConfig.caffeine == 'on' and menuBarItem == nil then
-        -- print("设置状态栏")
-        hs.alert.show("开启咖啡因", 0.5)
-        menuBarItem = hs.menubar.new()
-        menuBarItem:setTitle("")
-        menuBarItem:setIcon("./icons/caffeine-on.pdf")
-        hs.caffeinate.set("displayIdle", true)
+toggleCaffeine = function()
+    local c = hs.caffeinate
+    if not c then return end
+    if c.get('displayIdle') or c.get('systemIdle') or c.get('system') then
+        if menuCaff then
+            menuCaffRelease()
+        else
+            addMenuCaff()
+            local type
+            if c.get('displayIdle') then type = 'displayIdle' end
+            if c.get('systemIdle') then type = 'systemIdle' end
+            if c.get('system') then type = 'system' end
+            hs.alert('Caffeine already on for '..type)
+        end
+    else
+        acAndBatt = hs.battery.powerSource() == 'Battery Power'
+        c.set('system', true, acAndBatt)
+        hs.alert('Caffeinated '..(acAndBatt and '' or 'on AC Power'))
+        addMenuCaff()
     end
 end
 
-unsetCaffeine = function()
-    hs.caffeinate.set("displayIdle", false)
-    hs.alert.show("关闭咖啡因", 0.5)
-    menuBarItem:delete()
+function addMenuCaff()
+    menuCaff = hs.menubar.new()
+    menuCaff:setIcon("./icons/caffeine-on.pdf")
+    menuCaff:setClickCallback(menuCaffRelease)
 end
 
--- setCaffeine = function()
---     if caffConfig ~= nil and caffConfig.caffeine == 'on' and menuBarItem == nil then
---         print("设置状态栏")
---         menuBarItem = hs.menubar.new()
---         menuBarItem:setTitle("")
---         menuBarItem:setIcon("./icons/caffeine-on.pdf")
---         hs.caffeinate.set("displayIdle", true)
---     else
---     end
--- end
+function menuCaffRelease()
+    local c = hs.caffeinate
+    if not c then return end
+    if c.get('displayIdle') then
+        c.set('displayIdle', false, true)
+    end
+    if c.get('systemIdle') then
+        c.set('systemIdle', false, true)
+    end
+    if c.get('system') then
+        c.set('system', false, true)
+    end
+    if menuCaff then
+        menuCaff:setIcon("./icons/caffeine-off.pdf")
 
--- resetCaffeineMeun = function()
---     if (caffConfig ~= nil and caffConfig.caffeine == 'on' and menuBarItem:isInMenuBar() == false) then
---         -- print("重置状态栏")
---         menuBarItem:delete()
---         menuBarItem = hs.menubar.new()
---         menuBarItem:setTitle("")
---         menuBarItem:setIcon("./icons/caffeine-on.pdf")
---         --hs.caffeinate.set("displayIdle", true)
---     end
--- end
-
--- local function initData()
---     setCaffeine()
---     --监听咖啡因的状态,判断是否要重置
---     hs.timer.doEvery(1, resetCaffeineMeun)
--- end
-
--- hs.hotkey.bind(caffConfig.hotkey[1], caffConfig.hotkey[2], function()
---     -- 初始化
---     initData()
--- end)
+        -- menuCaff:delete()
+        -- menuCaff = nil
+    end
+    hs.alert('Decaffeinated', 0.5)
+end

@@ -1,6 +1,8 @@
+---@diagnostic disable: lowercase-global
+hs.loadSpoon("FocusHighlight")
 require 'modules.caffeine'
 require 'configs.shortcuts'
-hs.loadSpoon("FocusHighlight")
+
 
 local fhl = spoon.FocusHighlight
 
@@ -143,14 +145,12 @@ function enableFocuseMode()
 end
 
 function togglecaffeineMode()
-    if caffConfig ~= nil and caffConfig.caffeine == 'on' then
-        setCaffeine()
-        --监听咖啡因的状态,判断是否要重置
-        -- hs.timer.doEvery(1, resetCaffeineMeun)
-        caffConfig.caffeine = 'off'
-    else
-        unsetCaffeine()
-    end
+    -- if caffConfig and caffConfig.caffeine == 'on' then
+    toggleCaffeine()
+        -- caffConfig.caffeine = 'off'
+    -- else
+    --     unsetCaffeine()
+    -- end
 end
 
 function ejectAllDMG()
@@ -227,6 +227,7 @@ function oneKeyUpgradeBrews()
     local brewUpgradeCMD = "brew outdated |awk '$0 !~ /pin/{print $1}' |xargs -P 0 brew upgrade > /dev/null 2>&1 &"
     local cmd = string.format("%s %s", proxyCMD, brewUpgradeCMD)
     local _, status, _, exitCode = hs.execute(cmd, true)
+
     if status and exitCode == 0 then
         hs.alert.show("Brew正在更新...")
     end

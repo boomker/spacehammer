@@ -22,10 +22,18 @@ end)
 
 local function switchToTgtInputMethod(appTitle, appObject)
 
-    local curAppBundleID = appObject:bundleID()
     local curAppName = nil
+    local curAppObj = nil
+    local curAppBundleID = nil
     local curAppTitle = appTitle
-    if curAppBundleID ~= nil then
+    if appTitle and not appObject then
+        curAppObj = hs.appfinder.appFromName(curAppTitle)
+        curAppBundleID = curAppObj:bundleID()
+    else
+        curAppBundleID = appObject:bundleID()
+    end
+
+    if curAppBundleID then
         curAppName = hs.application.nameForBundleID(curAppBundleID)
         -- curAppName = appObject:name()
     end
