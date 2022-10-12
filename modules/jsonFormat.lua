@@ -1,6 +1,6 @@
 require 'configs.shortcuts'
 
-function init()
+local function init()
     local cscreen = hs.screen.mainScreen()
     local cres = cscreen:fullFrame()
     sheetView = hs.webview.newBrowser({
@@ -29,20 +29,20 @@ end
 --- KSheet:hide()
 --- Method
 --- Hide the JsonFormat view.
-function hide(time)
+local function hide(time)
     sheetView:hide(time)
 end
 
 --- KSheet:show()
 --- Method
 --- Show JsonFormat.
-function show(time)
+local function show(time)
     -- bindCopyKey()
     -- local str = hs.pasteboard.getContents()
     sheetView:show(time)
 end
 
-function toggle()
+local function toggle()
     if sheetView and sheetView:hswindow() and sheetView:hswindow():isVisible() then
         hide(1)
     else
@@ -58,6 +58,6 @@ init()
 -- end
 
 -- 添加片段（按下快捷键时做一个复制操作，并记录复制的内容到片段列表中）
-hs.hotkey.bind(jsonFormater.prefix, jsonFormater.key, jsonFormater.message, function()
+hs.hotkey.bind(json_formater.prefix, json_formater.key, json_formater.message, function()
     toggle()
 end)

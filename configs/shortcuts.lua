@@ -113,14 +113,11 @@ input_method_config = {
     },
 }
 
---  caffeine 配置
-caffConfig = { caffeine = "on"}
-
 -- 表情包搜索配置
 emoji_search = { prefix = HyperKey, key = "E", message = "Search emoji" }
 
 -- JSON 格式化
-jsonFormater = { prefix = HyperKey, key = "T", message = "JSON 格式化" }
+json_formater = { prefix = HyperKey, key = "T", message = "JSON 格式化" }
 
 -- 快捷显示 Hammerspoon 控制台
 ----------------------------------------------------------------------------------------------------

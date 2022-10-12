@@ -453,6 +453,13 @@ winman_keys = {
         mapGridGroup = 'switchToTileMode',
         tag = "grid",
     },
+    {
+        prefix = {},
+        key = "D",
+        message = "displayGridUI",
+        mapGridGroup = 'displayGridUI',
+        tag = "grid",
+    },
 
     ------ Tile 模式键绑定配置 ------
     {

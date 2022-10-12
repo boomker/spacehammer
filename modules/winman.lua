@@ -292,8 +292,17 @@ if spoon.WinMan then
 					WTL:undo()
 					handleMode()
 				end)
+			elseif item.mapGridGroup == 'displayGridUI' then
+				cmodal:bind(item.prefix, item.key, item.message, function()
+					hs.grid.GRIDWIDTH = reGridWidth
+					hs.grid.GRIDHEIGHT = reGridHeight
+                    hs.grid.toggleShow(nil, false)
+					handleMode()
+				end)
             else
                 cmodal:bind(item.prefix, item.key, item.message, function()
+					hs.grid.GRIDWIDTH = GridWidth
+					hs.grid.GRIDHEIGHT = GridHeight
                     WTL:addToStack('undo', nil)
                     rotateWinGrid(item.mapGridGroup)
                     handleMode()

@@ -19,10 +19,33 @@ require "configs.baseConfig"
 -- === 窗口管理配置 === --
 winman_toggle = { HyperKey, "W" }
 winGridMan_toggle = { HyperKey, "G" }
--- hs.grid.setGrid('12x12') -- allows us to place on quarters, thirds and halves
 hs.grid.setGrid("16x12") -- allows us to place on quarters, thirds and halves
 hs.grid.MARGINX = 0
 hs.grid.MARGINY = 0
+-- hs.grid.GRIDWIDTH = 10
+-- hs.grid.GRIDHEIGHT = 3
+GridWidth = 16
+GridHeight = 12
+reGridWidth = 10
+reGridHeight = 3
+
+hs.grid.ui.textSize = 30
+hs.grid.ui.highlightColor = {0, 1, 0, 0.3}
+hs.grid.ui.highlightStrokeColor = {0, 1, 0, 0.4}
+hs.grid.ui.cellStrokeColor = {1, 1, 1, 1}
+hs.grid.ui.cellStrokeWidth = 2
+hs.grid.ui.highlightStrokeWidth = 20
+hs.grid.ui.showExtraKeys = false
+
+hs.grid.HINTS = {
+    { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0" },
+    { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0" },
+    { "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P" },
+    { "A", "S", "D", "F", "G", "H", "J", "K", "L", ";" },
+    { "Z", "X", "C", "V", "B", "N", "M", ",", ".", "/" }
+}
+
+
 hs.window.animationDuration = 0 -- disable animations
 
 winman_mode = "persistent" -- 可选值[persistent]: 持久模式, 留空即为非持久模式
