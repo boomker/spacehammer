@@ -7,7 +7,7 @@ winman_keys = {
         prefix = {},
         key = "Q",
         message = "Quit WinMan",
-        tag = 'origin'
+        tag = "origin",
     },
     { -- 左半屏
         prefix = {},
@@ -84,14 +84,6 @@ winman_keys = {
         tag = "origin",
     },
     {
-        prefix = {'Ctrl'},
-        key = "M",
-        message = "最大化",
-        func = "moveAndResize",
-        location = "max",
-        tag = "origin",
-    },
-    {
         prefix = {},
         key = "C",
         message = "窗口移到屏幕正中",
@@ -108,7 +100,7 @@ winman_keys = {
         tag = "origin",
     },
     {
-        prefix = {'Ctrl'},
+        prefix = { "Ctrl" },
         key = "R",
         message = "恢复上次窗口操作",
         func = "undo",
@@ -311,7 +303,8 @@ winman_keys = {
         func = "moveToSpace",
         direction = "right",
         -- 'false' : 不会跟随窗口移动, 并会在当前 space 自动点击最上层的窗口以获取焦点
-        followWindow = false,
+        -- followWindow = false,
+        followWindow = true,
         tag = "origin",
     },
     -- 对同一 APP 所有窗口
@@ -436,28 +429,28 @@ winman_keys = {
         prefix = {},
         key = "Z",
         message = "Undo",
-        mapGridGroup = 'Undo',
+        mapGridGroup = "Undo",
         tag = "grid",
     },
     {
         prefix = {},
         key = "R",
         message = "Redo",
-        mapGridGroup = 'Redo',
+        mapGridGroup = "Redo",
         tag = "grid",
     },
     {
         prefix = {},
         key = "T",
         message = "switchToTileMode",
-        mapGridGroup = 'switchToTileMode',
+        mapGridGroup = "switchToTileMode",
         tag = "grid",
     },
     {
         prefix = {},
         key = "D",
         message = "displayGridUI",
-        mapGridGroup = 'displayGridUI',
+        mapGridGroup = "displayGridUI",
         tag = "grid",
     },
 
@@ -465,33 +458,33 @@ winman_keys = {
     {
         prefix = {},
         key = "T",
-        -- 优先水平方向均分模式
-        message = "tallMode",
-        mode = 'tall',
+        -- 优先水平方向(宽度)均分模式
+        message = "talllayout",
+        layout = "tall",
         tag = "tile",
     },
     {
         prefix = {},
         key = "M",
         -- -- 双栏模式
-        message = "tallTwoMode",
-        mode = 'talltwo',
+        message = "tallTwolayout",
+        layout = "talltwo",
         tag = "tile",
     },
     {
         prefix = {},
         key = ",",
-        -- -- 优先垂直方向均分模式
-        message = "wideMode",
-        mode = 'wide',
+        -- -- 优先垂直方向(高度)均分模式
+        message = "widelayout",
+        layout = "wide",
         tag = "tile",
     },
     {
         prefix = {},
         key = ";",
         -- -- 全屏(最大化)模式
-        message = "fullScreenMode",
-        mode = 'fullscreen',
+        message = "fullScreenlayout",
+        layout = "fullscreen",
         tag = "tile",
     },
     {
@@ -500,7 +493,7 @@ winman_keys = {
         -- 聚焦下一个窗口
         message = "focusNext",
         action = "focus",
-        direction = 'next',
+        direction = "next",
         tag = "tile",
     },
     {
@@ -509,7 +502,7 @@ winman_keys = {
         -- -- 聚焦上一个窗口
         message = "focusPrev",
         action = "focus",
-        direction = 'prev',
+        direction = "prev",
         tag = "tile",
     },
     {
@@ -518,7 +511,7 @@ winman_keys = {
         -- -- 与下一个窗口交互位置
         message = "swapNext",
         action = "swap",
-        direction = 'next',
+        direction = "next",
         tag = "tile",
     },
     {
@@ -527,7 +520,7 @@ winman_keys = {
         -- -- 与上一个窗口交互位置
         message = "swapPrev",
         action = "swap",
-        direction = 'prev',
+        direction = "prev",
         tag = "tile",
     },
     {
@@ -536,7 +529,7 @@ winman_keys = {
         -- 与第一个窗口交互位置
         message = "swapFirst",
         action = "swap",
-        direction = 'first',
+        direction = "first",
         tag = "tile",
     },
     {
@@ -579,9 +572,48 @@ winman_keys = {
     {
         prefix = { "Ctrl" },
         key = "D",
-        -- 优先水平方向均分模式
-        message = "fullScreenMode",
-        action = "showMode",
+        message = "showlayout",
+        action = "showlayout",
+        tag = "tile",
+    },
+    {
+        prefix = { "Ctrl" },
+        key = "M",
+        message = "当前 Space 切换为双栏模式",
+        action = "switchLayoutForSpace",
+        tgtLayout = "Tall Two Pane",
+        tag = "tile",
+    },
+    {
+        prefix = { "Ctrl" },
+        key = ";",
+        message = "当前 Space 切换为全屏模式",
+        action = "switchLayoutForSpace",
+        tgtLayout = "Fullscreen",
+        tag = "tile",
+    },
+    {
+        prefix = { "Ctrl" },
+        key = "W",
+        message = "当前 Space 切换为Wide模式",
+        action = "switchLayoutForSpace",
+        tgtLayout = "Wide",
+        tag = "tile",
+    },
+    {
+        prefix = { "Ctrl" },
+        key = "T",
+        message = "当前 Space 切换为Tall模式",
+        action = "switchLayoutForSpace",
+        tgtLayout = "Tall",
+        tag = "tile",
+    },
+    {
+        prefix = { "Ctrl" },
+        key = "F",
+        message = "当前 Space 切换为Floating模式",
+        action = "switchLayoutForSpace",
+        tgtLayout = "Floating",
         tag = "tile",
     },
 }

@@ -3,46 +3,97 @@
 hs.loadSpoon("ModalMgr")
 hs.loadSpoon("WinMan")
 hs.loadSpoon("TilingWindowManagerMod")
--- require("configs.shortcuts")
 require("configs.windowConfig")
 require("configs.winmanShortcuts")
 require("modules.window")
 require("modules.windowTimeLine")
--- require 'modules.application'
+require("modules.status-message")
+
 
 local TWM = spoon.TilingWindowManagerMod
-TWM:setLogLevel("debug")
+-- TWM:setLogLevel("debug")                             -- 可选开启 Tile 模式下 debug 日志
 TWM:start({
-        menubar = true,
-        dynamic = winman_dynamicAdjustWindowLayout,
-        layouts = {
-            spoon.TilingWindowManagerMod.layouts.fullscreen,
-            spoon.TilingWindowManagerMod.layouts.tall,
-            spoon.TilingWindowManagerMod.layouts.talltwo,
-            spoon.TilingWindowManagerMod.layouts.wide,
-            spoon.TilingWindowManagerMod.layouts.floating,
-        },
-        displayLayout = true,
-        floatApps = {}
-    })
-CurrentLayoutMode = nil
+    menubar = true,
+    dynamic = winman_dynamicAdjustWindowLayout,         -- 是否开启实时动态窗口布局调整, 默认关闭, 开启会有些许性能下降
+    layouts = {
+        spoon.TilingWindowManagerMod.layouts.floating,  -- 每个Space 默认用floating 布局, 即不改变当前现状的布局
+        spoon.TilingWindowManagerMod.layouts.fullscreen,
+        spoon.TilingWindowManagerMod.layouts.tall,
+        spoon.TilingWindowManagerMod.layouts.talltwo,
+        spoon.TilingWindowManagerMod.layouts.wide,
+    },
+    displayLayout = true,
+    floatApps = {},
+    fullscreenRightApps = { "md.obsidian" } -- 支持指定 App 窗口右半屏布局(全屏模式下)
+})
+
+-- 记录所有屏幕所有 Space 的布局, SpaceUID --> layoutName
+WindowLayoutForSpaceStatus = {
+    tmpWindowLayoutName = nil
+}
 
 
 -- ==== 窗口管理传统/Tile模式 ==== --
 if spoon.WinMan then
-    local handleMode = function()
-        if winman_mode ~= "persistent" then
+    -- SpaceUID 由 ScreenID_SpaceID 构成
+    local getSpaceUID = function()
+        local curScreenId = hs.screen.mainScreen():id()
+        local curSpaceId = hs.spaces.focusedSpace()
+        local curSpaceUid = string.format('%d_%d', curScreenId, curSpaceId)
+        return curSpaceUid
+    end
+
+    -- 是否保持持久模式, 对不同退出操作做善后处理
+    local handleWinManMode = function(toggle)
+        if not toggle then return end
+        if winman_mode ~= "persistent" or toggle then
+            local tilingConfig = TWM.tilingConfigCurrentSpace(true)
+            local winLayoutForCurSpace = tilingConfig.layout
+            if toggle == 'exitByManual' then
+                WindowLayoutForSpaceStatus[getSpaceUID()] = WindowLayoutForSpaceStatus[getSpaceUID()] or
+                    winLayoutForCurSpace
+                WindowLayoutForSpaceStatus.tmpWindowLayoutName = nil
+            elseif toggle == 'switchAfterExit' then
+                WindowLayoutForSpaceStatus[getSpaceUID()] = winLayoutForCurSpace
+                WindowLayoutForSpaceStatus.tmpWindowLayoutName = nil
+            elseif toggle == 'exitByFloat' then
+                local tmpLayoutName = WindowLayoutForSpaceStatus.tmpWindowLayoutName or
+                    WindowLayoutForSpaceStatus[getSpaceUID()]
+                WindowLayoutForSpaceStatus[getSpaceUID()] = tmpLayoutName
+                WindowLayoutForSpaceStatus.tmpWindowLayoutName = nil
+            elseif winman_mode == "persistent" then -- toggle: "auto" or skip this statment when not "persistent"
+                return
+            end
             spoon.ModalMgr:deactivate({ "windowM" })
         end
     end
 
-    local function handleTileMode(mode)
+    -- 持久模式下, Tile当前 Space 所有窗口布局
+    local function handleTileWindowLayout(mode)
         local tilingConfig = TWM.tilingConfigCurrentSpace(true)
-        -- TWM.tilingStrategy[TWM.layouts.tall].tile(tilingConfig)
+        tilingConfig.layout = TWM.layouts[mode]
         TWM.tilingStrategy[TWM.layouts[mode]].tile(tilingConfig)
-        CurrentLayoutMode = mode
+        WindowLayoutForSpaceStatus[getSpaceUID()] = tilingConfig.layout
+        WindowLayoutForSpaceStatus.tmpWindowLayoutName = tilingConfig.layout
     end
 
+    -- 调整窗口尺寸或移动焦点后处理
+    local afterHandelForWindow = function(tilingConfig)
+        if WindowLayoutForSpaceStatus.tmpWindowLayoutName then
+            TWM.tilingStrategy[tilingConfig.layout].tile(tilingConfig)
+        else
+            -- local getSpaceUID() = hs.spaces.focusedSpace()
+            local lastLayout = WindowLayoutForSpaceStatus[getSpaceUID()]
+            if lastLayout then
+                TWM.tilingStrategy[lastLayout].tile(tilingConfig)
+            else
+                local layout = tilingConfig.layout
+                TWM.tilingStrategy[layout].tile(tilingConfig)
+            end
+        end
+    end
+
+    -- 调整窗口尺寸
     local function handleWindowFlexOrResize(type, indexOrRatio)
         local tilingConfig = TWM.tilingConfigCurrentSpace()
         if type == "resizeWidth" then
@@ -50,10 +101,10 @@ if spoon.WinMan then
         else
             tilingConfig.mainNumberWindows = tilingConfig.mainNumberWindows + indexOrRatio
         end
-        tilingConfig.layout = CurrentLayoutMode
-        TWM.tilingStrategy[TWM.layouts[CurrentLayoutMode]].tile(tilingConfig)
+        afterHandelForWindow(tilingConfig)
     end
 
+    -- 移动焦点到其他窗口或交互两个窗口
     local function handleWindowFocusOrSwap(type, index)
 
         local windows = TWM.tilingConfigCurrentSpace().windows
@@ -70,26 +121,37 @@ if spoon.WinMan then
                     windows[i], windows[1] = windows[1], windows[i]
                 end
                 local tilingConfig = TWM.tilingConfigCurrentSpace(windows)
-                tilingConfig.layout = CurrentLayoutMode
-                TWM.tilingStrategy[TWM.layouts[CurrentLayoutMode]].tile(tilingConfig)
+                -- TWM.tilingStrategy[tilingConfig.layout].tile(tilingConfig)
+                afterHandelForWindow(tilingConfig)
             end
         end
     end
 
     spoon.ModalMgr:new("windowM")
     local cmodal = spoon.ModalMgr.modal_list["windowM"]
+    cmodal.statusMessage = statusmessage.new("WinMan Mode")
+    -- {{{ 右下角状态显示
+    cmodal.entered = function()
+        cmodal.statusMessage:show()
+    end
+    cmodal.exited = function()
+        cmodal.statusMessage:hide()
+    end
+    -- 右下角状态显示 }}}
+
     cmodal:bind("", "escape", "退出 ", function()
-        spoon.ModalMgr:deactivate({ "windowM" })
+        handleWinManMode("exitByManual")
     end)
     cmodal:bind("", "Q", "退出", function()
-        spoon.ModalMgr:deactivate({ "windowM" })
+        handleWinManMode("exitByManual")
     end)
     cmodal:bind("", "tab", "键位提示", function()
         spoon.ModalMgr:toggleCheatsheet()
     end)
 
-    -- {{{ 窗口管理之 传统模式/Tile模式 Start
+    -- {{{ 窗口管理之 原始模式/Tile模式 Start
     hs.fnutils.each(winman_keys, function(item)
+        -- 原始模式: 同时只能对一个窗口进行操作, 一个按键只会对应映射一个操作
         if item.tag == "origin" then
             local wfn = item.func
             if wfn == "moveAndResize" then
@@ -102,7 +164,7 @@ if spoon.WinMan then
                         spoon.WinMan:moveAndResize(item.location)
                     end
                     -- spoon.ModalMgr:deactivate({"windowM"})
-                    handleMode()
+                    handleWinManMode("auto")
                 end)
             elseif wfn == "stepResize" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
@@ -110,121 +172,126 @@ if spoon.WinMan then
                     spoon.WinMan:stepResize(item.direction)
                     spoon.WinMan:stepResize(item.direction)
                     -- spoon.ModalMgr:deactivate({"windowM"})
-                    handleMode()
+                    handleWinManMode("auto")
                 end)
             elseif wfn == "wMoveToScreen" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     spoon.WinMan:stash()
                     spoon.WinMan:cMoveToScreen(item.location)
                     -- spoon.ModalMgr:deactivate({"windowM"})
-                    handleMode()
+                    handleWinManMode("auto")
                 end)
             elseif wfn == "moveToSpace" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     spoon.WinMan:stash()
                     spoon.WinMan:moveToSpace(item.direction, item.followWindow)
                     -- spoon.ModalMgr:deactivate({"windowM"})
-                    handleMode()
+                    handleWinManMode("auto")
                 end)
             elseif wfn == "moveAndFocusToSpace" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     spoon.WinMan:stash()
                     spoon.WinMan:moveToSpace(item.direction)
                     -- spoon.ModalMgr:deactivate({"windowM"})
-                    handleMode()
+                    handleWinManMode("auto")
                 end)
             elseif wfn == "killSameAppAllWindow" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     kill_same_application()
                     -- spoon.ModalMgr:deactivate({"windowM"})
-                    handleMode()
+                    handleWinManMode("auto")
                 end)
             elseif wfn == "closeSameAppOtherWindows" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     close_same_application_other_windows()
                     -- spoon.ModalMgr:deactivate({"windowM"})
-                    handleMode()
+                    handleWinManMode("auto")
                 end)
             elseif wfn == "gridWindow" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     same_application(AUTO_LAYOUT_TYPE.GRID)
                     -- spoon.ModalMgr:deactivate({"windowM"})
-                    handleMode()
+                    handleWinManMode("auto")
                 end)
             elseif wfn == "flattenWindow" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     same_application(AUTO_LAYOUT_TYPE.HORIZONTAL_OR_VERTICAL)
                     -- spoon.ModalMgr:deactivate({"windowM"})
-                    handleMode()
+                    handleWinManMode("auto")
                 end)
             elseif wfn == "rotateLayout" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     same_application(AUTO_LAYOUT_TYPE.HORIZONTAL_OR_VERTICAL_R)
                     -- spoon.ModalMgr:deactivate({"windowM"})
-                    handleMode()
+                    handleWinManMode("auto")
                 end)
             elseif wfn == "flattenWindowsForSpace" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     same_space(AUTO_LAYOUT_TYPE.HORIZONTAL_OR_VERTICAL)
                     -- spoon.ModalMgr:deactivate({"windowM"})
-                    handleMode()
+                    handleWinManMode("auto")
                 end)
             elseif wfn == "gridWindowsForSpace" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     same_space(AUTO_LAYOUT_TYPE.GRID)
                     -- spoon.ModalMgr:deactivate({"windowM"})
-                    handleMode()
+                    handleWinManMode("auto")
                 end)
             elseif wfn == "rotateLayoutWindowsForSpace" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     same_space(AUTO_LAYOUT_TYPE.HORIZONTAL_OR_VERTICAL_R)
                     -- spoon.ModalMgr:deactivate({"windowM"})
-                    handleMode()
+                    handleWinManMode("auto")
                 end)
             elseif wfn == "undo" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     spoon.WinMan:undo()
-                    handleMode()
+                    handleWinManMode("auto")
                 end)
             elseif wfn == "redo" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     spoon.WinMan:redo()
-                    handleMode()
+                    handleWinManMode("auto")
                 end)
             end
         end
 
         -- Tile 模式(多 App 窗口同时操作)
         if item.tag == "tile" then
-            if item.mode then
+            -- 持久模式下, 改变布局, 不退出窗口管理模式
+            if item.layout then
                 cmodal:bind(item.prefix, item.key, item.message, function()
-                    handleTileMode(item.mode)
-                    handleMode()
+                    handleTileWindowLayout(item.layout)
+                    handleWinManMode("auto")
                 end)
             end
 
             if item.action then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     if item.action == 'showMode' then
-                        -- if not CurrentLayoutMode then CurrentLayoutMode = '' end
-                        local curModeName = '当前模式: ' .. (CurrentLayoutMode or '未开始 Tile 模式')
-                        hs.alert.show(curModeName)
-                        handleMode()
-                    else
-                        local directionMapVal = {next = 1, prev = -1, first=0}
+                        local tilingConfig = TWM.tilingConfigCurrentSpace(true)
+                        TWM.displayLayout(tilingConfig)
+                        handleWinManMode("auto")
+                        -- 重新设定当前 Space 全局布局, 改变布局后立即退出窗口管理模式
+                    elseif item.action == "switchLayoutForSpace" then
+                        local layout = { title = item.tgtLayout }
+                        TWM.switchLayout(nil, layout)
+                        if item.tgtLayout == 'Floating' then
+                            handleWinManMode("exitByFloat")
+                        else
+                            handleWinManMode("switchAfterExit")
+                        end
+                    elseif item.action == "focus" or item.action == "swap" then
+                        local directionMapVal = { next = 1, prev = -1, first = 0 }
                         handleWindowFocusOrSwap(item.action, directionMapVal[item.direction])
-                        handleMode()
+                        handleWinManMode("auto")
+                    else
+                        handleWindowFlexOrResize(item.action, item.sizeVal)
+                        handleWinManMode("auto")
                     end
                 end)
             end
 
-            if item.sizeVal then
-                cmodal:bind(item.prefix, item.key, item.message, function()
-                    handleWindowFlexOrResize(item.action, item.sizeVal)
-                    -- handleWindowFlexOrResize('windowRatio', -0.05)
-                    handleMode()
-                end)
-            end
         end
     end)
 
@@ -232,15 +299,6 @@ if spoon.WinMan then
     local winman_toggle = winman_toggle or { "alt", "R" }
     if string.len(winman_toggle[2]) > 0 then
         spoon.ModalMgr.supervisor:bind(winman_toggle[1], winman_toggle[2], "进入窗口管理传统模式", function()
-            local message = require("modules.status-message")
-            cmodal.statusMessage = message.new("WinMan Mode")
-            cmodal.entered = function()
-                cmodal.statusMessage:show()
-            end
-
-            cmodal.exited = function()
-                cmodal.statusMessage:hide()
-            end
 
             spoon.ModalMgr:deactivateAll()
             -- 显示状态指示器，方便查看所处模式
@@ -260,6 +318,14 @@ if spoon.WinMan then
 
     spoon.ModalMgr:new("windowRGrid")
     local cmodal = spoon.ModalMgr.modal_list["windowRGrid"]
+    cmodal.statusMsg = statusmessage.new("WinGridMan Mode")
+    cmodal.entered = function()
+        cmodal.statusMsg:show()
+    end
+
+    cmodal.exited = function()
+        cmodal.statusMsg:hide()
+    end
     cmodal:bind("", "escape", "退出 ", function()
         spoon.ModalMgr:deactivate({ "windowRGrid" })
     end)
@@ -278,31 +344,31 @@ if spoon.WinMan then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     spoon.ModalMgr:deactivateAll()
                     local winman_toggle = winman_toggle or { "alt", "r" }
-                    hs.eventtap.keyStroke(winman_toggle[1],  winman_toggle[2])
+                    hs.eventtap.keyStroke(winman_toggle[1], winman_toggle[2])
                 end)
-			elseif item.mapGridGroup == 'Redo' then
-				cmodal:bind(item.prefix, item.key, item.message, function()
-					WTL:redo()
-					-- WTL:addToStack('redo', nil)
-					handleMode()
-				end)
-			elseif item.mapGridGroup == 'Undo' then
-				cmodal:bind(item.prefix, item.key, item.message, function()
-					WTL:addToStack('redo', nil) -- Undo 之前将当前窗口的 layout 存入 redoStack
-					WTL:undo()
-					handleMode()
-				end)
-			elseif item.mapGridGroup == 'displayGridUI' then
-				cmodal:bind(item.prefix, item.key, item.message, function()
-					hs.grid.GRIDWIDTH = reGridWidth
-					hs.grid.GRIDHEIGHT = reGridHeight
+            elseif item.mapGridGroup == 'Redo' then
+                cmodal:bind(item.prefix, item.key, item.message, function()
+                    WTL:redo()
+                    -- WTL:addToStack('redo', nil)
+                    handleMode()
+                end)
+            elseif item.mapGridGroup == 'Undo' then
+                cmodal:bind(item.prefix, item.key, item.message, function()
+                    WTL:addToStack('redo', nil) -- Undo 之前将当前窗口的 layout 存入 redoStack
+                    WTL:undo()
+                    handleMode()
+                end)
+            elseif item.mapGridGroup == 'displayGridUI' then
+                cmodal:bind(item.prefix, item.key, item.message, function()
+                    hs.grid.GRIDWIDTH = reGridWidth
+                    hs.grid.GRIDHEIGHT = reGridHeight
                     hs.grid.toggleShow(nil, false)
-					handleMode()
-				end)
+                    handleMode()
+                end)
             else
                 cmodal:bind(item.prefix, item.key, item.message, function()
-					hs.grid.GRIDWIDTH = GridWidth
-					hs.grid.GRIDHEIGHT = GridHeight
+                    hs.grid.GRIDWIDTH = GridWidth
+                    hs.grid.GRIDHEIGHT = GridHeight
                     WTL:addToStack('undo', nil)
                     rotateWinGrid(item.mapGridGroup)
                     handleMode()
@@ -319,15 +385,6 @@ if spoon.WinMan then
             winGridMan_toggle[2],
             "进入窗口管理 Grid 轮切模式",
             function()
-                local message = require("modules.status-message")
-                cmodal.statusMessage = message.new("WinGridMan Mode")
-                cmodal.entered = function()
-                    cmodal.statusMessage:show()
-                end
-
-                cmodal.exited = function()
-                    cmodal.statusMessage:hide()
-                end
 
                 spoon.ModalMgr:deactivateAll()
                 -- 显示状态指示器，方便查看所处模式
