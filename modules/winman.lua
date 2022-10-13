@@ -133,9 +133,13 @@ if spoon.WinMan then
     -- {{{ 右下角状态显示
     cmodal.entered = function()
         cmodal.statusMessage:show()
+        cmodal.statusMessage:SMWatcher(cmodal.statusMessage)
+        -- cmodal.statusMessage:SMWatcher("on")
     end
     cmodal.exited = function()
         cmodal.statusMessage:hide()
+        cmodal.statusMessage:SMWatcher("off")
+        hs.alert.closeAll()
     end
     -- 右下角状态显示 }}}
 
@@ -321,10 +325,12 @@ if spoon.WinMan then
     cmodal.statusMsg = statusmessage.new("WinGridMan Mode")
     cmodal.entered = function()
         cmodal.statusMsg:show()
+        cmodal.statusMsg:SMWatcher(cmodal.statusMsg)
     end
 
     cmodal.exited = function()
         cmodal.statusMsg:hide()
+        cmodal.statusMsg:SMWatcher('off')
     end
     cmodal:bind("", "escape", "退出 ", function()
         spoon.ModalMgr:deactivate({ "windowRGrid" })

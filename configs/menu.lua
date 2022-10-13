@@ -65,9 +65,9 @@ end
 
 renderMenubar(loadConfig())
 
-local function renderMenubarItem()
-    renderMenubar(loadConfig())
-end
+-- local function renderMenubarItem()
+--     renderMenubar(loadConfig())
+-- end
 
-MenuTimer = hs.timer.new(5, renderMenubarItem)
-MenuTimer :start()
+-- MenuTimer = hs.timer.new(10, renderMenubarItem)
+-- MenuTimer :start()
