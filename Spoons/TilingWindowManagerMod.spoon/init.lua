@@ -189,7 +189,7 @@ obj.tilingStrategy[obj.layouts.fullscreen] = {
             local frame = window:screen():frame()
             -- Keep some apps on right side only
             -- Old habit...
-            appBundleID = window:application():bundleID()
+            local appBundleID = window:application():bundleID()
             if fnutils.contains(obj.fullscreenRightApps, appBundleID) then
                 local mainRatio = tilingConfig.mainRatio or 0.5
                 frame.x = frame.x + (frame.w * mainRatio)
@@ -868,7 +868,7 @@ end
 -- Returns:
 --  * menu table
 function obj.menuTable()
-    obj.log.d("> menuTable")
+    -- obj.log.d("> menuTable")
     local layoutCurrentSpace = obj.tilingConfigCurrentSpace().layout
     local menuTable = {}
 
@@ -920,7 +920,7 @@ function obj.menuTable()
             obj.tileCurrentSpace()
         end
     })
-    obj.log.d("< menuTable ->", inspect.inspect(menuTable))
+    -- obj.log.d("< menuTable ->", inspect.inspect(menuTable))
     return menuTable
 end
 
@@ -1105,7 +1105,6 @@ function obj:start(config)
     if settings.get('spaceHammerTWM') == 'stop' then
         -- obj.loadTilingConfig()
         obj.layouts = config.layouts
-        print(inspect(obj.layouts))
     end
 
     if config.dynamic == true then

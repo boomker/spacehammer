@@ -1,9 +1,10 @@
+---@diagnostic disable: lowercase-global
 local drawing = require 'hs.drawing'
 -- local geometry = require 'hs.geometry'
 local screen = require 'hs.screen'
 local styledtext = require 'hs.styledtext'
 
-local statusmessage = {}
+statusmessage = {}
 statusmessage.new = function(messageText)
     local buildParts = function(messageText)
         local frame = screen.primaryScreen():frame()
