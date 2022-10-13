@@ -1,6 +1,7 @@
 ---@diagnostic disable: lowercase-global
-local drawing = require 'hs.drawing'
+-- local drawing = require 'hs.drawing'
 -- local geometry = require 'hs.geometry'
+local canvas = require 'hs.canvas'
 local screen = require 'hs.screen'
 local styledtext = require 'hs.styledtext'
 
@@ -22,27 +23,34 @@ statusmessage.new = function(messageText)
 
         local styledText = styledtext.new('🤓 > ' .. messageText, styledTextAttributes)
 
-        local styledTextSize = drawing.getTextDrawingSize(styledText)
-        local textRect = {
+        local _text = canvas.new({ x = 0, y = 0, w = 0, h = 0 })
+        local styledTextSize = _text:minimumTextSize(styledText)
+
+        -- local styledTextSize = drawing.getTextDrawingSize(styledText)
+        text = canvas.new({
             x = frame.w - styledTextSize.w - 40,
             y = frame.h - styledTextSize.h,
             w = styledTextSize.w + 40,
             h = styledTextSize.h + 40
-        }
-        local text = drawing.text(textRect, styledText):setAlpha(0.9)
+        })
+        text:appendElements({
+            id = 'msg',
+            type = "text",
+            text = styledText,
+        })
 
-        local background = drawing.rectangle({
+        background = canvas.new({
             x = frame.w - styledTextSize.w - 45,
             y = frame.h - styledTextSize.h - 3,
             w = styledTextSize.w + 15,
             h = styledTextSize.h + 10
         })
-        background:setRoundedRectRadii(6, 6)
-        background:setFillColor({
-            red = 0,
-            green = 0,
-            blue = 0,
-            alpha = 0.6
+        background:appendElements({
+            id = 'bg',
+            action = 'fill',
+            type = 'rectangle',
+            fillColor = { alpha = 0.6, red = 0, green = 0, blue = 0 },
+            roundedRectRadii = { xRadius = 6.0, yRadius = 6.0 },
         })
 
         return background, text
@@ -52,28 +60,43 @@ statusmessage.new = function(messageText)
         _buildParts = buildParts,
         show = function(self)
             self:hide()
-
             self.background, self.text = self._buildParts(messageText)
             self.background:show()
             self.text:show()
         end,
         hide = function(self)
             if self.background then
+                self.background:hide()
                 self.background:delete()
                 self.background = nil
             end
             if self.text then
+                self.text:hide()
                 self.text:delete()
                 self.text = nil
             end
         end,
         notify = function(self, seconds)
-            local seconds = seconds or 1
+            local delaySecs = seconds or 1
             self:show()
-            hs.timer.delayed.new(seconds, function()
+            hs.timer.delayed.new(delaySecs, function()
                 self:hide()
             end):start()
-        end
+        end,
+        statusMsgCallback = function()
+            -- statusmessage.new(messageText):show()
+            oriSM:show()
+        end,
+        SMWatcher = function(self, toggle)
+            -- if toggle == 'on' then
+            if toggle == 'off' then
+                statusMsgWatcher:stop()
+            else
+                oriSM = toggle
+                statusMsgWatcher = hs.spaces.watcher.new(self.statusMsgCallback)
+                statusMsgWatcher:start()
+            end
+        end,
     }
 end
 

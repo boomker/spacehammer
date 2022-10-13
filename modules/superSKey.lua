@@ -131,10 +131,12 @@ local message = require('modules.status-message')
 skmodal.statusMessage = message.new('SuperSKey Mode')
 skmodal.entered = function()
     skmodal.statusMessage:show()
+    skmodal.statusMessage:SMWatcher(skmodal.statusMessage)
 end
 
 skmodal.exited = function()
     skmodal.statusMessage:hide()
+    skmodal.statusMessage:SMWatcher('off')
 end
 
 spoon.ModalMgr.supervisor:enter()
