@@ -3,6 +3,7 @@
 hs.loadSpoon("ModalMgr")
 hs.loadSpoon("WinMan")
 hs.loadSpoon("TilingWindowManagerMod")
+hs.loadSpoon('Layouts')
 require("configs.windowConfig")
 require("configs.winmanShortcuts")
 require("modules.window")
@@ -26,6 +27,10 @@ TWM:start({
     floatApps = {},
     fullscreenRightApps = { "md.obsidian" } -- 支持指定 App 窗口右半屏布局(全屏模式下)
 })
+
+
+local WGL = spoon.Layouts
+WGL:start()
 
 -- 记录所有屏幕所有 Space 的布局, SpaceUID --> layoutName
 WindowLayoutForSpaceStatus = {
@@ -167,36 +172,37 @@ if spoon.WinMan then
                         spoon.WinMan:moveAndResize(item.location)
                         spoon.WinMan:moveAndResize(item.location)
                     end
-                    -- spoon.ModalMgr:deactivate({"windowM"})
                     handleWinManMode("auto")
                 end)
             elseif wfn == "stepResize" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     spoon.WinMan:stash()
-                    spoon.WinMan:stepResize(item.direction)
-                    spoon.WinMan:stepResize(item.direction)
-                    -- spoon.ModalMgr:deactivate({"windowM"})
+                    -- spoon.WinMan:stepResize(item.direction)
+                    spoon.WinMan:smartStepResize(item.direction)
+                    handleWinManMode("auto")
+                end)
+            elseif wfn == "stepMove" then
+                cmodal:bind(item.prefix, item.key, item.message, function()
+                    spoon.WinMan:stash()
+                    spoon.WinMan:stepMove(item.direction)
                     handleWinManMode("auto")
                 end)
             elseif wfn == "wMoveToScreen" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     spoon.WinMan:stash()
                     spoon.WinMan:cMoveToScreen(item.location)
-                    -- spoon.ModalMgr:deactivate({"windowM"})
                     handleWinManMode("auto")
                 end)
             elseif wfn == "moveToSpace" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     spoon.WinMan:stash()
                     spoon.WinMan:moveToSpace(item.direction, item.followWindow)
-                    -- spoon.ModalMgr:deactivate({"windowM"})
                     handleWinManMode("auto")
                 end)
             elseif wfn == "moveAndFocusToSpace" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     spoon.WinMan:stash()
                     spoon.WinMan:moveToSpace(item.direction)
-                    -- spoon.ModalMgr:deactivate({"windowM"})
                     handleWinManMode("auto")
                 end)
             elseif wfn == "killSameAppAllWindow" then

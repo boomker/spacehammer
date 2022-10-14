@@ -42,6 +42,38 @@ winman_keys = {
         location = "halfdown",
         tag = "origin",
     },
+    { -- stepMoveToLeft
+        prefix = {},
+        key = ",",
+        message = "stepMoveToLeft",
+        func = "stepMove",
+        direction = "left",
+        tag = "origin",
+    },
+    { -- stepMoveToRight
+        prefix = {},
+        key = ".",
+        message = "stepMoveToRight",
+        func = "stepMove",
+        direction = "right",
+        tag = "origin",
+    },
+    { -- stepMoveToUp
+        prefix = {'Ctrl'},
+        key = "U",
+        message = "stepMoveToUp",
+        func = "stepMove",
+        direction = "up",
+        tag = "origin",
+    },
+    { -- stepMoveToDown
+        prefix = {'Ctrl'},
+        key = "V",
+        message = "stepMoveToDown",
+        func = "stepMove",
+        direction = "down",
+        tag = "origin",
+    },
     -- 窗口平移至当前屏幕四个角落, 不会改变窗口原来尺寸
     {
         prefix = {},
@@ -174,7 +206,7 @@ winman_keys = {
         tag = "origin",
     },
     {
-        prefix = { "Ctrl", "Shift" },
+        prefix = { "Ctrl" },
         key = "E",
         message = "窗口拉伸",
         func = "moveAndResize",
@@ -182,7 +214,7 @@ winman_keys = {
         tag = "origin",
     },
     {
-        prefix = { "Ctrl", "Shift" },
+        prefix = { "Ctrl"},
         key = "S",
         message = "窗口收缩",
         func = "moveAndResize",
@@ -375,85 +407,6 @@ winman_keys = {
         tag = "origin",
     },
 
-    ------ Grid 模式键绑定配置 ------
-    {
-        prefix = {},
-        key = "H",
-        message = "窗口在屏幕左半部布局组",
-        mapGridGroup = window_grid_groups.LeftGrid,
-        tag = "grid",
-    },
-    {
-        prefix = {},
-        key = "L",
-        message = "窗口在屏幕右半部布局组",
-        mapGridGroup = window_grid_groups.RightGrid,
-        tag = "grid",
-    },
-    {
-        prefix = {},
-        key = "K",
-        message = "窗口在屏幕顶部布局组",
-        mapGridGroup = window_grid_groups.TopGrid,
-        tag = "grid",
-    },
-    {
-        prefix = {},
-        key = "J",
-        message = "窗口在屏幕底部布局组",
-        mapGridGroup = window_grid_groups.BottomGrid,
-        tag = "grid",
-    },
-    {
-        prefix = {},
-        key = "S",
-        message = "窗口在屏幕四角布局组",
-        mapGridGroup = window_grid_groups.cornerGrid,
-        tag = "grid",
-    },
-    {
-        prefix = {},
-        key = "C",
-        message = "窗口在屏幕中心部布局组",
-        mapGridGroup = window_grid_groups.CenterGrid,
-        tag = "grid",
-    },
-    {
-        prefix = {},
-        key = "F",
-        message = "窗口在屏幕四边半屏布局组",
-        mapGridGroup = window_grid_groups.HalfScreenGrid,
-        tag = "grid",
-    },
-    {
-        prefix = {},
-        key = "Z",
-        message = "Undo",
-        mapGridGroup = "Undo",
-        tag = "grid",
-    },
-    {
-        prefix = {},
-        key = "R",
-        message = "Redo",
-        mapGridGroup = "Redo",
-        tag = "grid",
-    },
-    {
-        prefix = {},
-        key = "T",
-        message = "switchToTileMode",
-        mapGridGroup = "switchToTileMode",
-        tag = "grid",
-    },
-    {
-        prefix = {},
-        key = "D",
-        message = "displayGridUI",
-        mapGridGroup = "displayGridUI",
-        tag = "grid",
-    },
-
     ------ Tile 模式键绑定配置 ------
     {
         prefix = {},
@@ -473,7 +426,7 @@ winman_keys = {
     },
     {
         prefix = {},
-        key = ",",
+        key = "W",
         -- -- 优先垂直方向(高度)均分模式
         message = "widelayout",
         layout = "wide",
@@ -552,7 +505,7 @@ winman_keys = {
         tag = "tile",
     },
     {
-        prefix = { "Ctrl" },
+        prefix = { "Ctrl", "Shift" },
         key = "S",
         -- -- 当前聚焦窗口高度折半
         message = "decMainWindows",
@@ -561,7 +514,7 @@ winman_keys = {
         tag = "tile",
     },
     {
-        prefix = { "Ctrl" },
+        prefix = { "Ctrl", "Shift" },
         key = "E",
         -- -- 当前聚焦窗口高度增倍
         message = "incMainWindows",
@@ -579,7 +532,7 @@ winman_keys = {
     {
         prefix = { "Ctrl" },
         key = "M",
-        message = "当前 Space 切换为双栏模式",
+        message = "当前 Space 切换为双栏布局",
         action = "switchLayoutForSpace",
         tgtLayout = "Tall Two Pane",
         tag = "tile",
@@ -587,7 +540,7 @@ winman_keys = {
     {
         prefix = { "Ctrl" },
         key = ";",
-        message = "当前 Space 切换为全屏模式",
+        message = "当前 Space 切换为全屏布局",
         action = "switchLayoutForSpace",
         tgtLayout = "Fullscreen",
         tag = "tile",
@@ -595,7 +548,7 @@ winman_keys = {
     {
         prefix = { "Ctrl" },
         key = "W",
-        message = "当前 Space 切换为Wide模式",
+        message = "当前 Space 切换为Wide布局",
         action = "switchLayoutForSpace",
         tgtLayout = "Wide",
         tag = "tile",
@@ -603,7 +556,7 @@ winman_keys = {
     {
         prefix = { "Ctrl" },
         key = "T",
-        message = "当前 Space 切换为Tall模式",
+        message = "当前 Space 切换为Tall布局",
         action = "switchLayoutForSpace",
         tgtLayout = "Tall",
         tag = "tile",
@@ -611,9 +564,88 @@ winman_keys = {
     {
         prefix = { "Ctrl" },
         key = "F",
-        message = "当前 Space 切换为Floating模式",
+        message = "当前 Space 切换为浮动布局",
         action = "switchLayoutForSpace",
         tgtLayout = "Floating",
         tag = "tile",
+    },
+
+    ------ Grid 模式键绑定配置 ------
+    {
+        prefix = {},
+        key = "H",
+        message = "窗口在屏幕左半部布局组",
+        mapGridGroup = window_grid_groups.LeftGrid,
+        tag = "grid",
+    },
+    {
+        prefix = {},
+        key = "L",
+        message = "窗口在屏幕右半部布局组",
+        mapGridGroup = window_grid_groups.RightGrid,
+        tag = "grid",
+    },
+    {
+        prefix = {},
+        key = "K",
+        message = "窗口在屏幕顶部布局组",
+        mapGridGroup = window_grid_groups.TopGrid,
+        tag = "grid",
+    },
+    {
+        prefix = {},
+        key = "J",
+        message = "窗口在屏幕底部布局组",
+        mapGridGroup = window_grid_groups.BottomGrid,
+        tag = "grid",
+    },
+    {
+        prefix = {},
+        key = "S",
+        message = "窗口在屏幕四角布局组",
+        mapGridGroup = window_grid_groups.cornerGrid,
+        tag = "grid",
+    },
+    {
+        prefix = {},
+        key = "C",
+        message = "窗口在屏幕中心部布局组",
+        mapGridGroup = window_grid_groups.CenterGrid,
+        tag = "grid",
+    },
+    {
+        prefix = {},
+        key = "F",
+        message = "窗口在屏幕四边半屏布局组",
+        mapGridGroup = window_grid_groups.HalfScreenGrid,
+        tag = "grid",
+    },
+    {
+        prefix = {},
+        key = "Z",
+        message = "Undo",
+        mapGridGroup = "Undo",
+        tag = "grid",
+    },
+    {
+        prefix = {},
+        key = "R",
+        message = "Redo",
+        mapGridGroup = "Redo",
+        tag = "grid",
+    },
+    {
+        prefix = {},
+        key = "T",
+        message = "switchToTileMode",
+        mapGridGroup = "switchToTileMode",
+        tag = "grid",
+    },
+    {
+        prefix = {},
+        key = "D",
+        message = "displayGridUI",
+        mapGridGroup = "displayGridUI",
+        tag = "grid",
     },
 }

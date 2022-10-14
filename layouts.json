@@ -1,0 +1,25 @@
+{
+  "Coding:vscode-iterm2" : {
+    "F466F621-B5FA-04A0-0800-CFA6C258DECD" : {
+      "apps" : {
+        "Code" : [
+          {
+            "y" : 25,
+            "w" : 720,
+            "x" : 720,
+            "h" : 875
+          }
+        ],
+        "iTerm2" : [
+          {
+            "y" : 25,
+            "w" : 720,
+            "x" : -0,
+            "h" : 875
+          }
+        ]
+      },
+      "Monitor Name" : "Built-in Retina Display"
+    }
+  }
+}
