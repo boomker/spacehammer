@@ -1,3 +1,4 @@
+---@diagnostic disable: lowercase-global
 hs.loadSpoon("ModalMgr")
 hs.loadSpoon("KSheet")
 -- require 'configs.shortcuts'
@@ -16,7 +17,7 @@ hs.loadSpoon("KSheet")
 -- end
 
 
-function enterCheatsheetM()
+function showAppShortCutsPane()
     spoon.KSheet:show()
     spoon.ModalMgr:deactivateAll()
     spoon.ModalMgr:new("cheatsheetM")

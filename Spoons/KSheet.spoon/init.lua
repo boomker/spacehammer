@@ -37,7 +37,7 @@ function obj:init()
     self.sheetView:windowStyle("utility")
     self.sheetView:allowGestures(true)
     self.sheetView:allowNewWindows(false)
-    self.sheetView:level(hs.drawing.windowLevels.tornOffMenu)
+    self.sheetView:level(hs.canvas.windowLevels.tornOffMenu)
     local cscreen = hs.screen.mainScreen()
     local cres = cscreen:fullFrame()
     self.sheetView:frame({

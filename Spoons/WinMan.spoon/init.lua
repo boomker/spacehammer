@@ -23,6 +23,43 @@ obj.history = {}
 --- An integer specifying how many gridparts the screen should be divided into. Defaults to 30.
 obj.gridparts = 30
 
+
+-- Internal method to find out what part of the screen a window gravitates towards (left/right, top/bottom)
+--      +------------------+------------------+
+--      |   +-------------------+             |   Example: The window gravitates towards left and top
+--      |   |              |    |             |
+--      |   |              |    |             |
+--      +-------------------------------------+
+--      |   |              |    |             |
+--      |   +-------------------+             |
+--      |                  |                  |
+--      +------------------+------------------+
+-- Perhaps there is a much easier way to calculate this?
+function obj:_getWindowGravity(window)
+    local screen = window:screen()
+    local sFrame = screen:frame()
+    local wFrame = window:frame()
+
+    local halfWidth = sFrame.w / 2
+    local lMargin = wFrame.x
+    local rMargin = sFrame.w - (lMargin + wFrame.w)
+    local lPart = halfWidth - lMargin
+    local rPart = halfWidth - rMargin
+
+    local halfHeight = sFrame.h / 2
+    local tMargin = wFrame.y
+    local bMargin = sFrame.h - (tMargin + wFrame.h)
+    local tPart = halfHeight - tMargin
+    local bPart = halfHeight - bMargin
+
+    return {
+        left = lPart >= rPart,
+        right = rPart > lPart,
+        top = tPart >= bPart,
+        bottom = bPart > tPart,
+    }
+end
+
 --- WinMan:stepMove(direction)
 --- Method
 --- Move the focused window in the `direction` by on step. The step scale equals to the width/height of one gridpart.
@@ -97,6 +134,100 @@ end
 --- Stash current windows's position and size.
 ---
 
+--- WinMan:smartStepResize(direction)
+--- Method
+--- Resize the focused window "smartly" by one step. See notes for our definition of smartly.
+---
+--- Parameters:
+---  * direction - A string specifying the direction, valid strings are: `left`, `right`, `up`, `down`.
+---
+--- Notes:
+--- * If window gravitates to the right, `right` and `left` expands and shrinks the window on the left border.
+--- * If window is more to the left, it resizes on the right border.
+--- * The same principal applies to `up` and `down`.
+--- * When a window is full width or full height, it will shrink/expand in the 'direction' direction.
+function obj:smartStepResize(direction)
+    local cwin = hs.window.focusedWindow()
+    if cwin then
+        local cscreen = cwin:screen()
+
+        local cres = cscreen:fullFrame()
+        local wf = cwin:frame()
+        -- local stepw = cres.w/obj.gridparts
+        -- local steph = cres.h/obj.gridparts
+        local wsize = cwin:size()
+        local gravity = obj:_getWindowGravity(cwin)
+
+        local sFrame = cscreen:frame()
+        local wFrame = cwin:frame()
+        local isFullWidth = sFrame.w == wFrame.w
+        local isFullHeight = sFrame.h == wFrame.h
+
+        if direction == "left" then
+            if isFullWidth then
+                gravity.left = true
+                gravity.right = false
+            end
+            if gravity.left then
+                obj:stepResize('left')
+            else
+                obj:stepMove('left')
+                obj:stepResize('right')
+            end
+
+        elseif direction == "right" then
+            if isFullWidth then
+                gravity.left = false
+                gravity.right = true
+            end
+            if gravity.right then
+                obj:stepResize('left')
+                obj:stepMove('right')
+            else
+                obj:stepResize('right')
+            end
+
+        elseif direction == "up" then
+            if isFullHeight then
+                gravity.top = true
+                gravity.bottom = false
+            end
+            if gravity.top then
+                obj:stepResize('up')
+            else
+                obj:stepMove('up')
+                obj:stepResize('down')
+            end
+
+        elseif direction == "down" then
+            if isFullHeight then
+                gravity.top = false
+                gravity.bottom = true
+            end
+            if gravity.bottom then
+                obj:stepResize('up')
+                obj:stepMove('down')
+            else
+                obj:stepResize('down')
+            end
+
+        elseif direction == "rightExpanToScreen" then
+            cwin:setSize({w=cres.w-wf.x, h=wsize.h})
+        elseif direction == "leftExpanToScreen" then
+            cwin:setFrame({x=cres.x, y=wf.y, w=wsize.w + wf.x, h=wf.h})
+        elseif direction == "upExpanToScreen" then
+            cwin:setFrame({x=wf.x, y=cres.y, w=wf.w, h=wf.h + wf.y})
+        elseif direction == "downExpanToScreen" then
+            cwin:setSize({w=wsize.w, h=cres.h})
+        else
+            hs.alert.show("Unknown direction: " .. direction)
+        end
+    else
+        hs.alert.show("No focused window!")
+    end
+end
+
+
 local function isInHistory(windowid)
     for idx,val in ipairs(obj.history) do
         if val[1] == windowid then
@@ -152,87 +283,118 @@ function obj:moveAndResize(option)
         -- local stepw = cres.w/obj.gridparts
         -- local steph = cres.h/obj.gridparts
         local wf = cwin:frame()
-        if option == "halfleft" then
-            cwin:setFrame({x=cres.x, y=cres.y, w=cres.w/2, h=cres.h})
-        elseif option == "halfright" then
-            cwin:setFrame({x=cres.x+cres.w/2, y=cres.y, w=cres.w/2, h=cres.h})
-        -- 定义  lesshalfleft、onethird、lesshalfright
-        elseif option == "lesshalfleft" then
-            cwin:setFrame({x=cres.x, y=cres.y, w=cres.w/3, h=cres.h})
-        elseif option == "onethird" then
-            cwin:setFrame({x=cres.x+cres.w/3, y=cres.y, w=cres.w/3, h=cres.h})
-        elseif option == "lesshalfright" then
-            cwin:setFrame({x=cres.x+cres.w/3*2, y=cres.y, w=cres.w/3, h=cres.h})
-        
-        -- 定义 mostleft、mostright
-        elseif option == "mostleft" then
-            cwin:setFrame({x=cres.x, y=cres.y, w=cres.w/3*2, h=cres.h})
-        elseif option == "mostright" then
-            cwin:setFrame({x=cres.x+cres.w/3, y=cres.y, w=cres.w/3*2, h=cres.h})
-        
-        -- 定义 centermost
-        elseif option == "centermost" then
-            -- cwin:setFrame({x=cres.x+cres.w/3/2, y=cres.h/96, w=cres.w/3*2, h=cres.h})
-            cwin:setFrame({x=cres.x+cres.w/3/2, y=cres.y, w=cres.w/3*2, h=cres.h})
-            
-        -- 定义 show 
-        -- 宽度为24 分之 22
-        elseif option == "show" then
-            -- cwin:setFrame({x=cres.x+cres.w/3/2/2/2/2, y=cres.h/96, w=cres.w/48*46, h=cres.h})
-            cwin:setFrame({x=cres.x+cres.w/3/2/2/2/2, y=cres.y, w=cres.w/48*46, h=cres.h})
-        
-        -- 定义 shows
-        elseif option == "shows" then
-            -- cwin:setFrame({x=cres.x+cres.w/3/2/2, y=cres.h/96, w=cres.w/12*10, h=cres.h})
-            cwin:setFrame({x=cres.x+cres.w/3/2/2, y=cres.y, w=cres.w/12*10, h=cres.h})
-         
-        -- 定义 center-2 
-        elseif option == "center-2" then
-            cwin:setFrame({x=cres.x+cres.w/2/2, y=cres.y, w=cres.w/2, h=cres.h})
-             
-        elseif option == "halfup" then
-            cwin:setFrame({x=cres.x, y=cres.y, w=cres.w, h=cres.h/2})
-        elseif option == "halfdown" then
-            cwin:setFrame({x=cres.x, y=cres.y+cres.h/2, w=cres.w, h=cres.h/2})
-        elseif option == "cornerNW" then
-            cwin:setFrame({x=cres.x, y=cres.y, w=cres.w/2, h=cres.h/2})
-        elseif option == "cornerNE" then
-            cwin:setFrame({x=cres.x+cres.w/2, y=cres.y, w=cres.w/2, h=cres.h/2})
-        elseif option == "cornerSW" then
-            cwin:setFrame({x=cres.x, y=cres.y+cres.h/2, w=cres.w/2, h=cres.h/2})
-        elseif option == "cornerSE" then
-            cwin:setFrame({x=cres.x+cres.w/2, y=cres.y+cres.h/2, w=cres.w/2, h=cres.h/2})
-        elseif option == "fullscreen" then
-            -- cwin:setFrame({x=cres.x, y=cres.y, w=cres.w, h=cres.h})
-            cwin:toggleFullScreen()
-        elseif option == "max" then
-            cwin:maximize()
-        elseif option == "center" then
-            cwin:centerOnScreen()
-        elseif option == "screenRB" then
-            cwin:setFrame({x=cres.w-wf.w, y=wf.y, w=wf.w, h=wf.h})
-        elseif option == "screenLB" then
-            cwin:setFrame({x=cres.x, y=wf.y, w=wf.w, h=wf.h})
-        elseif option == "screenDB" then
-            cwin:setFrame({x=wf.x, y=cres.h-wf.h, w=wf.w, h=wf.h})
-        elseif option == "screenUB" then
-            cwin:setFrame({x=wf.x, y=cres.y, w=wf.w, h=wf.h})
+        local options = {
+            halfleft = function() cwin:setFrame({x=cres.x, y=cres.y, w=cres.w/2, h=cres.h}) end,
+            halfright = function() cwin:setFrame({x=cres.x+cres.w/2, y=cres.y, w=cres.w/2, h=cres.h}) end,
+            halfup = function() cwin:setFrame({x=cres.x, y=cres.y, w=cres.w, h=cres.h/2}) end,
+            halfdown = function() cwin:setFrame({x=cres.x, y=cres.y+cres.h/2, w=cres.w, h=cres.h/2}) end,
+            cornerNW = function() cwin:setFrame({x=cres.x, y=cres.y, w=cres.w/2, h=cres.h/2}) end,
+            cornerNE = function() cwin:setFrame({x=cres.x+cres.w/2, y=cres.y, w=cres.w/2, h=cres.h/2}) end,
+            cornerSW = function() cwin:setFrame({x=cres.x, y=cres.y+cres.h/2, w=cres.w/2, h=cres.h/2}) end,
+            cornerSE = function() cwin:setFrame({x=cres.x+cres.w/2, y=cres.y+cres.h/2, w=cres.w/2, h=cres.h/2}) end,
+            fullscreen = function() cwin:toggleFullScreen() end,
+            maximize = function() cwin:maximize() end,
+            minimize = function() cwin:minimize() end,
+            center = function() cwin:centerOnScreen() end,
+            screenRB = function () cwin:setFrame({x=cres.w-wf.w, y=wf.y, w=wf.w, h=wf.h}) end,
+            screenLB = function () cwin:setFrame({x=cres.x, y=wf.y, w=wf.w, h=wf.h}) end,
+            screenUB = function () cwin:setFrame({x=wf.x, y=cres.y, w=wf.w, h=wf.h}) end,
+            screenDB = function ()  cwin:setFrame({x=wf.x, y=cres.h-wf.h, w=wf.w, h=wf.h}) end,
+            screenCornerNW = function() cwin:setFrame({x=cres.x, y=cres.y, w=wf.w, h=wf.h}) end,
+            screenCornerNE = function() cwin:setFrame({x=cres.w-wf.w, y=cres.y, w=wf.w, h=wf.h}) end,
+            screenCornerSW = function() cwin:setFrame({x=cres.x, y=cres.y+(cres.h-wf.h), w=wf.w, h=wf.h}) end,
+            screenCornerSE = function() cwin:setFrame({x=cres.x+(cres.w-wf.w), y=cres.y+(cres.h-wf.h), w=wf.w, h=wf.h}) end,
+            expand = function() obj:stepResize("expand") end,
+            shrink = function() obj:stepResize("shrink") end,
+        }
 
-        elseif option == "screenCornerNW" then
-            cwin:setFrame({x=cres.x, y=cres.y, w=wf.w, h=wf.h})
-        elseif option == "screenCornerNE" then
-            cwin:setFrame({x=cres.w-wf.w, y=cres.y, w=wf.w, h=wf.h})
-        elseif option == "screenCornerSW" then
-            cwin:setFrame({x=cres.x, y=cres.y+(cres.h-wf.h), w=wf.w, h=wf.h})
-        elseif option == "screenCornerSE" then
+        if options[option] then
+            -- obj:stash()
+            return options[option]()
+        else
+            hs.alert.show("Unknown option: " .. option)
+        end
+        -- if option == "halfleft" then
+        --     cwin:setFrame({x=cres.x, y=cres.y, w=cres.w/2, h=cres.h})
+        -- elseif option == "halfright" then
+        --     cwin:setFrame({x=cres.x+cres.w/2, y=cres.y, w=cres.w/2, h=cres.h})
+        -- -- 定义  lesshalfleft、onethird、lesshalfright
+        -- elseif option == "lesshalfleft" then
+        --     cwin:setFrame({x=cres.x, y=cres.y, w=cres.w/3, h=cres.h})
+        -- elseif option == "onethird" then
+        --     cwin:setFrame({x=cres.x+cres.w/3, y=cres.y, w=cres.w/3, h=cres.h})
+        -- elseif option == "lesshalfright" then
+        --     cwin:setFrame({x=cres.x+cres.w/3*2, y=cres.y, w=cres.w/3, h=cres.h})
+        
+        -- -- 定义 mostleft、mostright
+        -- elseif option == "mostleft" then
+        --     cwin:setFrame({x=cres.x, y=cres.y, w=cres.w/3*2, h=cres.h})
+        -- elseif option == "mostright" then
+        --     cwin:setFrame({x=cres.x+cres.w/3, y=cres.y, w=cres.w/3*2, h=cres.h})
+        
+        -- -- 定义 centermost
+        -- elseif option == "centermost" then
+        --     -- cwin:setFrame({x=cres.x+cres.w/3/2, y=cres.h/96, w=cres.w/3*2, h=cres.h})
+        --     cwin:setFrame({x=cres.x+cres.w/3/2, y=cres.y, w=cres.w/3*2, h=cres.h})
+            
+        -- -- 定义 show 
+        -- -- 宽度为24 分之 22
+        -- elseif option == "show" then
+        --     -- cwin:setFrame({x=cres.x+cres.w/3/2/2/2/2, y=cres.h/96, w=cres.w/48*46, h=cres.h})
+        --     cwin:setFrame({x=cres.x+cres.w/3/2/2/2/2, y=cres.y, w=cres.w/48*46, h=cres.h})
+        
+        -- -- 定义 shows
+        -- elseif option == "shows" then
+        --     -- cwin:setFrame({x=cres.x+cres.w/3/2/2, y=cres.h/96, w=cres.w/12*10, h=cres.h})
+        --     cwin:setFrame({x=cres.x+cres.w/3/2/2, y=cres.y, w=cres.w/12*10, h=cres.h})
+         
+        -- -- 定义 center-2 
+        -- elseif option == "center-2" then
+        --     cwin:setFrame({x=cres.x+cres.w/2/2, y=cres.y, w=cres.w/2, h=cres.h})
+             
+        -- elseif option == "halfup" then
+        --     cwin:setFrame({x=cres.x, y=cres.y, w=cres.w, h=cres.h/2})
+        -- elseif option == "halfdown" then
+        --     cwin:setFrame({x=cres.x, y=cres.y+cres.h/2, w=cres.w, h=cres.h/2})
+        -- elseif option == "cornerNW" then
+        --     cwin:setFrame({x=cres.x, y=cres.y, w=cres.w/2, h=cres.h/2})
+        -- elseif option == "cornerNE" then
+        --     cwin:setFrame({x=cres.x+cres.w/2, y=cres.y, w=cres.w/2, h=cres.h/2})
+        -- elseif option == "cornerSW" then
+        --     cwin:setFrame({x=cres.x, y=cres.y+cres.h/2, w=cres.w/2, h=cres.h/2})
+        -- elseif option == "cornerSE" then
+        --     cwin:setFrame({x=cres.x+cres.w/2, y=cres.y+cres.h/2, w=cres.w/2, h=cres.h/2})
+        -- elseif option == "fullscreen" then
+        --     -- cwin:setFrame({x=cres.x, y=cres.y, w=cres.w, h=cres.h})
+        --     cwin:toggleFullScreen()
+        -- elseif option == "max" then
+        --     cwin:maximize()
+        -- elseif option == "center" then
+        --     cwin:centerOnScreen()
+        -- elseif option == "screenRB" then
+        --     cwin:setFrame({x=cres.w-wf.w, y=wf.y, w=wf.w, h=wf.h})
+        -- elseif option == "screenLB" then
+        --     cwin:setFrame({x=cres.x, y=wf.y, w=wf.w, h=wf.h})
+        -- elseif option == "screenDB" then
+        --     cwin:setFrame({x=wf.x, y=cres.h-wf.h, w=wf.w, h=wf.h})
+        -- elseif option == "screenUB" then
+        --     cwin:setFrame({x=wf.x, y=cres.y, w=wf.w, h=wf.h})
+
+        -- elseif option == "screenCornerNW" then
+        --     cwin:setFrame({x=cres.x, y=cres.y, w=wf.w, h=wf.h})
+        -- elseif option == "screenCornerNE" then
+        --     cwin:setFrame({x=cres.w-wf.w, y=cres.y, w=wf.w, h=wf.h})
+        -- elseif option == "screenCornerSW" then
+        --     cwin:setFrame({x=cres.x, y=cres.y+(cres.h-wf.h), w=wf.w, h=wf.h})
+        -- elseif option == "screenCornerSE" then
             cwin:setFrame({x=cres.x+(cres.w-wf.w), y=cres.y+(cres.h-wf.h), w=wf.w, h=wf.h})
-        elseif option == "expand" then
-            -- cwin:setFrame({x=wf.x-stepw, y=wf.y-steph, w=wf.w+(stepw*2), h=wf.h+(steph*2)})
-            obj:stepResize("expand")
-        elseif option == "shrink" then
+        -- elseif option == "expand" then
+        --     -- cwin:setFrame({x=wf.x-stepw, y=wf.y-steph, w=wf.w+(stepw*2), h=wf.h+(steph*2)})
+        --     obj:stepResize("expand")
+        -- elseif option == "shrink" then
             obj:stepResize("shrink")
             -- cwin:setFrame({x=wf.x+stepw, y=wf.y+steph, w=wf.w-(stepw*2), h=wf.h-(steph*2)})
-        end
+        -- end
     else
         hs.alert.show("No focused window!")
     end
