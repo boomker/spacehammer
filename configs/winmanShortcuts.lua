@@ -655,4 +655,12 @@ winman_keys = {
         func = "chooseLayout",
         tag = "grid",
     },
+    {
+        prefix = {},
+        key = "N",
+        message = "移动窗口到下个屏幕",
+        func = "MoveWindowToNextScreen",
+        direction = "next",
+        tag = "grid",
+    },
 }
