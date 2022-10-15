@@ -68,7 +68,7 @@ winman_keys = {
     },
     { -- stepMoveToDown
         prefix = {'Ctrl'},
-        key = "V",
+        key = "I",
         message = "stepMoveToDown",
         func = "stepMove",
         direction = "down",
@@ -478,7 +478,7 @@ winman_keys = {
     },
     {
         prefix = { "Ctrl" },
-        key = "I",
+        key = ";",
         -- 与第一个窗口交互位置
         message = "swapFirst",
         action = "swap",
@@ -539,7 +539,7 @@ winman_keys = {
     },
     {
         prefix = { "Ctrl" },
-        key = ";",
+        key = "P",
         message = "当前 Space 切换为全屏布局",
         action = "switchLayoutForSpace",
         tgtLayout = "Fullscreen",
@@ -624,28 +624,35 @@ winman_keys = {
         prefix = {},
         key = "Z",
         message = "Undo",
-        mapGridGroup = "Undo",
+        func = "Undo",
         tag = "grid",
     },
     {
         prefix = {},
         key = "R",
         message = "Redo",
-        mapGridGroup = "Redo",
+        func = "Redo",
         tag = "grid",
     },
     {
         prefix = {},
         key = "T",
         message = "switchToTileMode",
-        mapGridGroup = "switchToTileMode",
+        func = "switchToTileMode",
         tag = "grid",
     },
     {
         prefix = {},
         key = "D",
         message = "displayGridUI",
-        mapGridGroup = "displayGridUI",
+        func = "displayGridUI",
+        tag = "grid",
+    },
+    {
+        prefix = {},
+        key = "G",
+        message = "选择一个窗口组布局",
+        func = "chooseLayout",
         tag = "grid",
     },
 }

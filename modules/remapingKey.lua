@@ -54,11 +54,6 @@ local function execTargetFunc(tgtfn)
         if not nextSpaceID and not nextSpaceIndex  then
             hs.spaces.gotoSpace(nextSpaceID)
         end
-    elseif tgtfn == "winwodGroupAutoLayout" then
-        -- hs.mjomatic.go(windowGroupIndex)
-        -- hs.mjomatic.go(window_group_layouts.chrome_iterm2)
-        hs.mjomatic.go(window_group_layouts.finder_iTerm2)
-
     elseif tgtfn == "windowMaximze" then
         local cwin = hs.window.focusedWindow()
         cwin:maximize()

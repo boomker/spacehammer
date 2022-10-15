@@ -25,11 +25,12 @@ TWM:start({
     },
     displayLayout = true,
     floatApps = {},
-    fullscreenRightApps = { "md.obsidian" } -- 支持指定 App 窗口右半屏布局(全屏模式下)
+    fullscreenRightApps = { "md.obsidian" }     -- 支持指定 App 窗口右半屏布局(全屏模式下)
 })
 
 
 local WGL = spoon.Layouts
+-- WGL.logger.setLogLevel('debug')              -- 可选开启 Layout Spoon debug 日志
 WGL:start()
 
 -- 记录所有屏幕所有 Space 的布局, SpaceUID --> layoutName
@@ -320,8 +321,8 @@ end
 
 -- 窗口管理之 Grid 轮切模式
 if spoon.WinMan then
-    local handleMode = function()
-        if winman_mode ~= "persistent" then
+    local handleMode = function(tag)
+        if winman_mode ~= "persistent" or tag == 'off' then
             spoon.ModalMgr:deactivate({ "windowRGrid" })
         end
     end
@@ -349,33 +350,38 @@ if spoon.WinMan then
     end)
 
     hs.fnutils.each(winman_keys, function(item)
-        if not item.mapGridGroup then return end
+        if not item.mapGridGroup and not item.func then return end
 
         if item.tag == "grid" then
-            if item.mapGridGroup == "switchToTileMode" then
+            if item.func == "switchToTileMode" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     spoon.ModalMgr:deactivateAll()
                     local winman_toggle = winman_toggle or { "alt", "r" }
                     hs.eventtap.keyStroke(winman_toggle[1], winman_toggle[2])
                 end)
-            elseif item.mapGridGroup == 'Redo' then
+            elseif item.func == 'Redo' then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     WTL:redo()
                     -- WTL:addToStack('redo', nil)
                     handleMode()
                 end)
-            elseif item.mapGridGroup == 'Undo' then
+            elseif item.func == 'Undo' then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     WTL:addToStack('redo', nil) -- Undo 之前将当前窗口的 layout 存入 redoStack
                     WTL:undo()
                     handleMode()
                 end)
-            elseif item.mapGridGroup == 'displayGridUI' then
+            elseif item.func == 'displayGridUI' then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     hs.grid.GRIDWIDTH = reGridWidth
                     hs.grid.GRIDHEIGHT = reGridHeight
                     hs.grid.toggleShow(nil, false)
                     handleMode()
+                end)
+            elseif item.func == 'chooseLayout' then
+                cmodal:bind(item.prefix, item.key, item.message, function()
+                    WGL:chooseLayout(window_group_layouts)
+                    handleMode('off')
                 end)
             else
                 cmodal:bind(item.prefix, item.key, item.message, function()

@@ -123,7 +123,7 @@ window_grid_groups = {
 }
 
 window_group_layouts = {
-    -- 缺点: 只能将已经激活的窗口平铺
+    -- 缺点: 只能将已经启动的App窗口平铺
     -- ToDo: 激活聚焦配置中对应的 App 窗口, 并置于最前面
     chrome_iterm2 = {
         "CCCCCCCCCCCCVVVVVVVVVVVV",
