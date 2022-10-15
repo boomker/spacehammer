@@ -189,7 +189,7 @@ git pull origin main
 * 支持同一 Space 不同 APP 的多个窗口网格布局，水平垂直平铺布局，可轮转布局
 * 支持一键关闭同类 APP 所有窗口
 * 支持一键关闭除当前APP 窗口外的其他窗口
-* 支持窗口组(不同 APP 窗口) 自动布局(需预配置)
+* 支持窗口组(不同 APP 窗口) 自动布局(需预配置，通过 chooser 触发)
 * 支持一键 Tile 当前 Space 所有 App 窗口
   * 可同步操作所有窗口的 size
   * 可快速在窗口间变换焦点
@@ -219,6 +219,12 @@ git pull origin main
 <div align='center'>
   <img src='./images/windowTile.gif' height=400>
 </div>
+
+
+<div align='center'>
+  <img src='./images/windowGroupChooser.png' height=400>
+</div>
+
 
 ---
 

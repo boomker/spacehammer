@@ -1,3 +1,4 @@
+---@diagnostic disable: lowercase-global
 require 'configs.shortcuts'
 
 local function init()
@@ -21,6 +22,7 @@ local function init()
     sheetView:reload(false)
     sheetView:shadow(true)
     sheetView:alpha(1)
+    -- sheetView:level(hs.drawing.windowLevels.mainMenu)
     sheetView:level(hs.canvas.windowLevels.mainMenu)
     -- sheetView:url("https://i.sugood.xyz/pages/jsonweb.html")
     sheetView:url("https://c.runoob.com/front-end/53/")
@@ -51,11 +53,6 @@ local function toggle()
 end
 
 init()
-
--- 按下添加快捷键时映射到复制快捷键
--- function bindCopyKey()
---     hs.eventtap.keyStroke({"cmd"}, "C")
--- end
 
 -- 添加片段（按下快捷键时做一个复制操作，并记录复制的内容到片段列表中）
 hs.hotkey.bind(json_formater.prefix, json_formater.key, json_formater.message, function()

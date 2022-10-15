@@ -1,3 +1,4 @@
+---@diagnostic disable: lowercase-global
 -- 表情包搜索
 
 require 'modules.base'

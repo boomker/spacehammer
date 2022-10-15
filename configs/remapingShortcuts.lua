@@ -65,9 +65,7 @@ remapingKeys = { -- trigger target combination key
     {
         prefix = HyperKey,
         key = "M",
-        -- message = "winwodGroupAutoLayout",
         message = "MenuChooser",
-        -- targetFunc = "winwodGroupAutoLayout",
         targetFunc = "menuchooser",
     },
     {
