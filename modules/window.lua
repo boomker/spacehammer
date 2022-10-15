@@ -271,11 +271,13 @@ function close_same_application_other_windows()
 end
 
 ----------------------------------------------------------------
+
 -- Grid 轮切模式实现
+sequenceNumber = 1
 function rotateWinGrid(movements)
     local chainResetInterval = 2 -- seconds
     local cycleLength = #movements
-    local sequenceNumber = 1
+    -- local sequenceNumber = 1
 
     -- return function()
     local execSetGrid = function()
@@ -283,7 +285,6 @@ function rotateWinGrid(movements)
         local id = win:id()
         local now = hs.timer.secondsSinceEpoch()
         local screen = win:screen()
-        local winIDKey = string.format("w%d", id)
 
         if lastSeenChain ~= movements or
             lastSeenAt < now - chainResetInterval or
@@ -295,15 +296,13 @@ function rotateWinGrid(movements)
             -- At end of chain, restart chain on next screen.
             -- screen = screen:next()
         end
+
         lastSeenAt = now
         lastSeenWindow = id
-        if hs.settings.get(winIDKey) then sequenceNumber = hs.settings.get(winIDKey) end
-        if #movements < sequenceNumber then sequenceNumber = 1 end
 
         hs.grid.set(win, movements[sequenceNumber], screen)
         sequenceNumber = sequenceNumber % cycleLength + 1
-        hs.settings.set(winIDKey, sequenceNumber)
-        if hs.settings.get(winIDKey) == #movements then sequenceNumber = 1 end
+
     end
     return execSetGrid()
 end

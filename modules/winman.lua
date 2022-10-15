@@ -383,6 +383,11 @@ if spoon.WinMan then
                     WGL:chooseLayout(window_group_layouts)
                     handleMode('off')
                 end)
+            elseif item.func == 'MoveWindowToNextScreen' then
+                cmodal:bind(item.prefix, item.key, item.message, function()
+                    spoon.WinMan:cMoveToScreen(item.direction)
+                    handleMode('off')
+                end)
             else
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     hs.grid.GRIDWIDTH = GridWidth
