@@ -10,10 +10,8 @@ require "configs.baseConfig"
 -- action: 要执行的动作
 -- direction: 上下左右方向
 -- location: 窗口位置
--- initWindowLayout: App窗口初始(每次启动后)位置和大小
--- alwaysWindowLayout: App窗口开启全局 HS 快捷键切换后自动调整布局, 没有性能影响, 无卡顿
--- anytimeAdjustWindowLayout: App窗口开启全局任意方式切换后自动调整布局, 有一定程度性能下降! 
--- onPrimaryScreen: 窗口排列位置在主显示器屏幕上
+-- tag: 窗口管理模式
+-- layout: 窗口布局
 
 
 -- === 窗口管理配置 === --

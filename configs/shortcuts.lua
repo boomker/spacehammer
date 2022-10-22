@@ -23,15 +23,18 @@ require "configs.baseConfig"
 -- prefix：表示快捷键前缀，可选值：Ctrl、Option、Shift, Cmd
 -- key：可选值 [A-Z]、[1-9]、Left、Right、Up、Down、-、=、/
 -- message: 提示信息
+-- name: 应用名称
+-- bundleId: App唯一标识ID
 -- func: 要执行的函数
 -- action: 要执行的动作
 -- direction: 上下左右方向
 -- location: 窗口位置
+-- tag: 窗口管理模式
+-- layout: 窗口布局
 -- initWindowLayout: App窗口初始(每次启动后)位置和大小
 -- alwaysWindowLayout: App窗口开启全局 HS 快捷键切换后自动调整布局, 没有性能影响, 无卡顿
 -- anytimeAdjustWindowLayout: App窗口开启全局任意方式切换后自动调整布局, 有一定程度性能下降! 
 -- onPrimaryScreen: 窗口排列位置在主显示器屏幕上
--- bundleId: App唯一标识ID
 -- inputmethodId: 输入法唯一标示ID, 即对应输入法 App 的 BundleId
 
 -- window管理快捷键配置

@@ -2,6 +2,17 @@
 
 -- require "configs.windowConfig"
 
+-- prefix：表示快捷键前缀，可选值：Ctrl、Option、Shift, Cmd
+-- key：可选值 [A-Z]、[1-9]、Left、Right、Up、Down、-、=、/
+-- message: 提示信息
+-- func: 要执行的函数
+-- action: 要执行的动作
+-- direction: 上下左右方向
+-- location: 窗口位置
+-- tag: 窗口管理模式
+-- layout: 窗口布局
+
+
 winman_keys = {
     { -- quit
         prefix = {},
