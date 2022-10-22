@@ -1,5 +1,15 @@
 ---@diagnostic disable: lowercase-global
 
+-- prefix：表示快捷键前缀，可选值：Ctrl、Option、Shift, Cmd
+-- key：可选值 [A-Z]、[1-9]、Left、Right、Up、Down、-、=、/
+-- message: 提示信息
+-- name: 应用名称
+-- bundleId: App唯一标识ID
+-- initWindowLayout: App窗口初始(每次启动后)位置和大小
+-- alwaysWindowLayout: App窗口开启全局 HS 快捷键切换后自动调整布局, 没有性能影响, 无卡顿
+-- anytimeAdjustWindowLayout: App窗口开启全局任意方式切换后自动调整布局, 有一定程度性能下降! 
+-- onPrimaryScreen: 窗口排列位置在主显示器屏幕上
+
 require "configs.baseConfig"
 require "configs.windowConfig"
 
@@ -9,7 +19,7 @@ applications = {
         prefix = HyperKey,
         key = "L",
         message = "VSCode",
-        bundleId = "com.microsoft.VSCode",
+        bundleId = "com.microsoft.VSCode",                  -- 支持 App bundleID
         alwaysWindowLayout = window_grids.fullScreen,
         anytimeAdjustWindowLayout = true,
         onPrimaryScreen = true,
@@ -18,16 +28,23 @@ applications = {
         prefix = HyperKey,
         key = "O",
         message = "Obsidian",
-        name = "obsidian",
+        name = "obsidian",                                  -- 支持 APP 名称
         -- initWindowLayout = grid.centeredMedium,
         alwaysWindowLayout = window_grids.fullScreen,
         anytimeAdjustWindowLayout = true,
     },
     {
         prefix = HyperKey,
+        key = "A",
+        message = "ApiPost",
+        name = "apipost",                                   -- 支持 App 名称模糊匹配(ApiPost7)
+    },
+    {
+        prefix = HyperKey,
         key = "I",
         message = "iTerm2",
-        bundleId = "com.googlecode.iterm2",
+        name = "iterm",
+        -- bundleId = "com.googlecode.iterm2",
         alwaysWindowLayout = window_grids.fullScreen,
         anytimeAdjustWindowLayout = true,
     },
@@ -39,12 +56,6 @@ applications = {
         initWindowLayout = window_grids.centeredMedium,
         alwaysWindowLayout = window_grids.centerHorizontal,
         anytimeAdjustWindowLayout = true,
-    },
-    {
-        prefix = HyperKey,
-        key = "A",
-        message = "ApiPost",
-        name = "ApiPost7",
     },
     {
         prefix = HyperKey,
@@ -67,7 +78,7 @@ applications = {
         prefix = HyperKey,
         key = "D",
         message = "DBeaver",
-        name = "DBeaver",
+        name = "dbeaver",
     },
     {
         prefix = HyperKey,

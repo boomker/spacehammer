@@ -380,7 +380,11 @@ if spoon.WinMan then
                 end)
             elseif item.func == 'chooseLayout' then
                 cmodal:bind(item.prefix, item.key, item.message, function()
-                    WGL:chooseLayout(window_group_layouts)
+                    if window_grid_groups then
+                        WGL:chooseLayout(window_group_layouts)
+                    else
+                        WGL:chooseLayout()
+                    end
                     handleMode('off')
                 end)
             elseif item.func == 'MoveWindowToNextScreen' then
