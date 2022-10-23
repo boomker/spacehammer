@@ -41,6 +41,16 @@ applications = {
     },
     {
         prefix = HyperKey,
+        key = "U",
+        message = "FDM",
+        name = "fdm",                                       -- 支持 APP 名称简写
+        -- name = "Free Download Manager",
+        initWindowLayout = window_grids.centeredMedium,
+        alwaysWindowLayout = window_grids.fullScreen,
+        anytimeAdjustWindowLayout = true,
+    },
+    {
+        prefix = HyperKey,
         key = "I",
         message = "iTerm2",
         name = "iterm",
@@ -79,15 +89,6 @@ applications = {
         key = "D",
         message = "DBeaver",
         name = "dbeaver",
-    },
-    {
-        prefix = HyperKey,
-        key = "U",
-        message = "FDM",
-        name = "Free Download Manager",
-        initWindowLayout = window_grids.centeredMedium,
-        alwaysWindowLayout = window_grids.fullScreen,
-        anytimeAdjustWindowLayout = true,
     },
     {
         prefix = HyperKey,

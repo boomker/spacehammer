@@ -111,10 +111,9 @@ function split(input, delimiter)
 end
 
 function trim(s)
-    if s == nil then
-        return ''
-    end
-    return (s:gsub("^%s+", ""):gsub("%s+$", ""))
+    if not s then return '' end
+    local res = string.gsub(s, "\r\n", "")
+    return (res:gsub("^%s+", ""):gsub("%s+$", ""))
 end
 
 function pushleft(list, value)

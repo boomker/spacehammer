@@ -2,6 +2,7 @@
 
 -- require 'configs.shortcuts'
 require 'configs.applicationConfig'
+require 'modules.base'
 
 local app_info = {
     bundleId = nil,
@@ -39,8 +40,7 @@ local function setWindowLayout(appName, eventType, appObject)
         end
     end
 
-    if
-        app_info.initWindowLayout and
+    if app_info.initWindowLayout and
         eventType == hs.application.watcher.activated and
         appObject:bundleID() == app_info.bundleId and
         not hs.settings.get(appIdentifier)
@@ -76,8 +76,7 @@ local function setWindowLayout(appName, eventType, appObject)
         end
     end
 
-    if
-        app_info.alwaysWindowLayout and
+    if app_info.alwaysWindowLayout and
         eventType == hs.application.watcher.activated and
         appObject:bundleID() == app_info.bundleId and
         checkInitWindowLayoutExist()
@@ -93,33 +92,61 @@ local function setWindowLayout(appName, eventType, appObject)
     end
 end
 
-local function getAppID(appName)
-    local osaScriptCodeStr =  string.format('id of app "%s"', appName)
+local function _getAppID(appName)
+
+    local osaScriptCodeStr = string.format('id of app "%s"', appName)
     local ok, bundleID, _ = hs.osascript.applescript(osaScriptCodeStr)
-    if ok then return bundleID end
-
-    -- hs.application.enableSpotlightForNameSearches(true)
-    local appObj = hs.application.get(appName)
-    if appObj then return appObj:bundleID() end
-
-    local Apps = {}
-    local function SplitAndAddToTable(s, delimiter)
-        for match in (s .. delimiter):gmatch("(.-)" .. delimiter) do
-            if (match ~= "") then
-                table.insert(Apps, match)
-            end
-        end
-        -- return Apps
+    if ok then
+        return bundleID
+    else
+        local appObj = hs.application.get(appName)
+        if appObj then return appObj:bundleID() end
     end
 
-    SplitAndAddToTable(hs.execute('find "/System/Applications"  -maxdepth 2 -name "*.app" '), "\n")
-    SplitAndAddToTable(hs.execute('find "/Applications"  -maxdepth 2 -name "*.app" '), "\n")
-    for _, app in ipairs(Apps) do
-        local appLower = string.lower(app)
-        local appLowerName = string.lower(appName)
-        if string.match(app, appName) or string.match(appLower, appLowerName) then
-            local appID = getAppID(app)
-            if appID then return appID end
+    -- hs.application.enableSpotlightForNameSearches(true)
+    --  mdfind  "kMDItemDisplayName  == '*vpn*'c && (kMDItemKind == 'Application' || kMDItemKind == '应用程序') "
+    local cmdOpts = string.format("kMDItemDisplayName == '*%s*'c && (kMDItemKind == 'Application' || kMDItemKind == '应用程序')"
+        , appName)
+    local cmdStr = 'mdfind ' .. '"' .. cmdOpts .. '"'
+    local result, status, _, rc = hs.execute(cmdStr)
+    if result and status and rc == 0 then
+        local appID = getAppID(trim(result))
+        if appID then return appID end
+    end
+
+end
+
+local function getAppID(appName)
+
+    local appBundleID = hs.settings.get(appName .. "_bundleId")
+    if appBundleID then return appBundleID end
+
+    local appTitle = appName:gsub("^%l",string.upper)                           -- 首字母大写
+    local appObj = hs.application.get(appTitle)
+    if appObj then
+        return appObj:bundleID()
+    else
+        --[[
+            "kMDItemDisplayName = '*iterm*'c                                    -- "c": 大小写不敏感
+                && (kMDItemKind = 'Application' || kMDItemKind = '应用程序')     -- "指定文件后缀为 `.app`"
+                && kMDItemContentType = 'com.apple.application-bundle'"         -- "指定仅App 应用程序"
+        ]]
+        local cmdOpts = string.format(
+            "(kMDItemDisplayName = '*%s*'c  || kMDItemCFBundleIdentifier = '*%s*'c) \
+            && (kMDItemKind = 'Application' || kMDItemKind = '应用程序') \
+            && kMDItemContentType = 'com.apple.application-bundle'"
+            , appName, appName
+        )
+        local cmdStr = 'mdfind ' .. '"' .. cmdOpts .. '"'
+        local result, status, _, rc = hs.execute(cmdStr)
+        if result and status and rc == 0 then
+            local osaScriptCodeStr = string.format('id of app "%s"', trim(result))
+            local ok, bundleID, _ = hs.osascript.applescript(osaScriptCodeStr)
+            if ok then
+                local appBundleIDKey = appName .. "_bundleId"
+                hs.settings.set(appBundleIDKey, bundleID)
+                return bundleID
+            end
         end
     end
 

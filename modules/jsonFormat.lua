@@ -1,4 +1,5 @@
 ---@diagnostic disable: lowercase-global
+
 require 'configs.shortcuts'
 
 local function init()
@@ -25,7 +26,9 @@ local function init()
     -- sheetView:level(hs.drawing.windowLevels.mainMenu)
     sheetView:level(hs.canvas.windowLevels.mainMenu)
     -- sheetView:url("https://i.sugood.xyz/pages/jsonweb.html")
-    sheetView:url("https://c.runoob.com/front-end/53/")
+    -- sheetView:url("https://c.runoob.com/front-end/53/")
+    sheetView:url("https://www.11meigui.com/tools/json")
+
 end
 
 --- KSheet:hide()
