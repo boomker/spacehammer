@@ -15,9 +15,9 @@ local TWM = spoon.TilingWindowManagerMod
 -- TWM:setLogLevel("debug")                             -- 可选开启 Tile 模式下 debug 日志
 TWM:start({
     menubar = true,
-    dynamic = winman_dynamicAdjustWindowLayout,         -- 是否开启实时动态窗口布局调整, 默认关闭, 开启会有些许性能下降
+    dynamic = winman_dynamicAdjustWindowLayout, -- 是否开启实时动态窗口布局调整, 默认关闭, 开启会有些许性能下降
     layouts = {
-        spoon.TilingWindowManagerMod.layouts.floating,  -- 每个Space 默认用floating 布局, 即不改变当前现状的布局
+        spoon.TilingWindowManagerMod.layouts.floating, -- 每个Space 默认用floating 布局, 即不改变当前现状的布局
         spoon.TilingWindowManagerMod.layouts.fullscreen,
         spoon.TilingWindowManagerMod.layouts.tall,
         spoon.TilingWindowManagerMod.layouts.talltwo,
@@ -25,7 +25,7 @@ TWM:start({
     },
     displayLayout = true,
     floatApps = {},
-    fullscreenRightApps = { "md.obsidian" }     -- 支持指定 App 窗口右半屏布局(全屏模式下)
+    fullscreenRightApps = { "md.obsidian" } -- 支持指定 App 窗口右半屏布局(全屏模式下)
 })
 
 
@@ -53,6 +53,8 @@ if spoon.WinMan then
     local handleWinManMode = function(toggle)
         if not toggle then return end
         if winman_mode ~= "persistent" or toggle then
+            if winman_mode == "persistent" and toggle == 'auto' then return end -- toggle: "auto" or skip this statment when not "persistent"
+            if toggle == 'off' then spoon.ModalMgr:deactivate({ "windowM" }) end
             local tilingConfig = TWM.tilingConfigCurrentSpace(true)
             local winLayoutForCurSpace = tilingConfig.layout
             if toggle == 'exitByManual' then
@@ -67,9 +69,7 @@ if spoon.WinMan then
                     WindowLayoutForSpaceStatus[getSpaceUID()]
                 WindowLayoutForSpaceStatus[getSpaceUID()] = tmpLayoutName
                 WindowLayoutForSpaceStatus.tmpWindowLayoutName = nil
-            elseif winman_mode == "persistent" then -- toggle: "auto" or skip this statment when not "persistent"
-                return
-            end
+            elseif winman_mode == "persistent" then return end
             spoon.ModalMgr:deactivate({ "windowM" })
         end
     end
@@ -167,7 +167,11 @@ if spoon.WinMan then
             if wfn == "moveAndResize" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     spoon.WinMan:stash()
-                    if item.location ~= "shrink" and item.location ~= "expand" then
+                    if item.location == "fullscreen" then
+                        spoon.WinMan:moveAndResize(item.location)
+                        handleWinManMode("off")
+                        return
+                    elseif item.location ~= "shrink" and item.location ~= "expand" then
                         spoon.WinMan:moveAndResize(item.location)
                     else
                         spoon.WinMan:moveAndResize(item.location)
