@@ -1,34 +1,34 @@
 -- 输入法切换
 
-require 'configs.shortcuts'
+---@diagnostic disable: lowercase-global
+require("configs.inputSourceConfig")
 -- require 'modules.status-message'
 
-local message = require('modules.status-message')
-local messageABC = message.new(' 🔤️  - ON')
-local messageSogou = message.new(' 🇨🇳️ - ON')
+local message = require("modules.status-message")
+local messageABC = message.new(" 🔤️  - ON")
+local messageSogou = message.new(" 🇨🇳️ - ON")
 
-hs.fnutils.each(input_method_config.input_methods, function(item)
-    if type(item) ~= 'string' then
+if input_method_config.manualSwitch then
+    hs.fnutils.each(input_method_config.input_methods, function(item)
         hs.hotkey.bind(item.prefix, item.key, item.message, function()
-            if string.match(item.inputmethodId, 'abc') then
+            if string.match(item.inputmethodId, "abc") then
                 messageABC:notify()
             else
                 messageSogou:notify()
             end
             hs.keycodes.currentSourceID(item.inputmethodId)
         end)
-    end
-end)
+    end)
+end
 
 local function switchToTgtInputMethod(appTitle, appObject)
-
     local curAppName = nil
     local curAppObj = nil
     local curAppBundleID = nil
     local curAppTitle = appTitle
     if appTitle and not appObject then
         -- curAppObj = hs.appfinder.appFromName(curAppTitle)
-        curAppObj =hs.application.get(curAppTitle)
+        curAppObj = hs.application.get(curAppTitle)
         curAppBundleID = curAppObj:bundleID()
     else
         curAppBundleID = appObject:bundleID()
@@ -41,21 +41,25 @@ local function switchToTgtInputMethod(appTitle, appObject)
     local abc_apps = input_method_config.abc_apps
     local chinese_apps = input_method_config.chinese_apps
 
-    local curAppIdentifiers = {curAppName, curAppBundleID, curAppTitle}
+    local curAppIdentifiers = { curAppName, curAppBundleID, curAppTitle }
     local isExistABC = hs.fnutils.some(curAppIdentifiers, function(identifier)
         return hs.fnutils.contains(abc_apps, identifier)
     end)
 
     if isExistABC then
         hs.keycodes.currentSourceID(input_method_config.input_methods.abc.inputmethodId)
-        messageABC:notify()
+        if input_method_config.notifiyStatus then
+            messageABC:notify()
+        end
     else
         local isExistChinese = hs.fnutils.some(curAppIdentifiers, function(identifier)
             return hs.fnutils.contains(chinese_apps, identifier)
         end)
         if isExistChinese then
             hs.keycodes.currentSourceID(input_method_config.input_methods.chinese.inputmethodId)
-            messageSogou:notify()
+            if input_method_config.notifiyStatus then
+                messageSogou:notify()
+            end
         end
     end
 end
@@ -66,7 +70,9 @@ local function appWatcher(appName, eventType, appObject)
     end
 end
 
-local inputmethodWatcher = function() hs.application.watcher.new(appWatcher):start() end
+local inputmethodWatcher = function()
+    hs.application.watcher.new(appWatcher):start()
+end
 
 -- inputmethodWatcher()
 local interval = 2
