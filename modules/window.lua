@@ -13,11 +13,11 @@ local lastSeenAt = 0
 LAYOUT_COUNT = {
     grid = 0,
     hflatten = 0,
-    vflatten = 0
+    vflatten = 0,
 }
 
 alwaysAdjustAppWindowLayoutData = {
-    appNames = {}
+    appNames = {},
 }
 
 -- 窗口枚举
@@ -55,8 +55,8 @@ function same_space(auto_layout_type)
         visible = true,
         fullscreen = false,
         hasTitlebar = true,
-        currentSpace=true,
-        allowRoles = "AXStandardWindow"
+        currentSpace = true,
+        allowRoles = "AXStandardWindow",
     })
 
     local all_windows = window_filter:getWindows()
@@ -143,7 +143,7 @@ function layout_grid(windows)
 
     local windowNum = #windows
     local focusedScreenFrame = focusedScreen:frame()
-    for _k, item in ipairs(layout) do
+    for _, item in ipairs(layout) do
         if windowNum <= item.num then
             local column = item.column
             local row = item.row
@@ -286,13 +286,10 @@ function rotateWinGrid(movements)
         local now = hs.timer.secondsSinceEpoch()
         local screen = win:screen()
 
-        if lastSeenChain ~= movements or
-            lastSeenAt < now - chainResetInterval or
-            lastSeenWindow ~= id
-        then
+        if lastSeenChain ~= movements or lastSeenAt < now - chainResetInterval or lastSeenWindow ~= id then
             sequenceNumber = 1
             lastSeenChain = movements
-        -- elseif (sequenceNumber == 1) then
+            -- elseif (sequenceNumber == 1) then
             -- At end of chain, restart chain on next screen.
             -- screen = screen:next()
         end
@@ -302,7 +299,6 @@ function rotateWinGrid(movements)
 
         hs.grid.set(win, movements[sequenceNumber], screen)
         sequenceNumber = sequenceNumber % cycleLength + 1
-
     end
     return execSetGrid()
 end
@@ -311,7 +307,7 @@ end
 -- 全局任意方式切换后自动调整布局的实现
 function AppWindowAutoLayout()
     hs.fnutils.each(applications, function(item)
-        hs.alert.show('!!!start: 即将自动调整窗口布局', 0.5)
+        hs.alert.show("!!!start: 即将自动调整窗口布局", 0.5)
 
         if item.anytimeAdjustWindowLayout and item.alwaysWindowLayout then
             local Appname = nil
@@ -320,7 +316,7 @@ function AppWindowAutoLayout()
             else
                 Appname = item.name
             end
-            local appMaplayout =  {[Appname] = item.alwaysWindowLayout }
+            local appMaplayout = { [Appname] = item.alwaysWindowLayout }
             table.insert(alwaysAdjustAppWindowLayoutData.appNames, Appname)
             table.insert(alwaysAdjustAppWindowLayoutData, appMaplayout)
         end
@@ -328,7 +324,7 @@ function AppWindowAutoLayout()
         if #alwaysAdjustAppWindowLayoutData ~= 0 then
             local awf = hs.window.filter.new(alwaysAdjustAppWindowLayoutData.appNames)
             awf:subscribe(hs.window.filter.windowFocused, function(window, appName)
-                hs.alert.show('即将自动调整窗口布局', 0.5)
+                hs.alert.show("即将自动调整窗口布局", 0.5)
                 local layout = nil
                 for _, v in ipairs(alwaysAdjustAppWindowLayoutData) do
                     if v[appName] then
@@ -339,6 +335,5 @@ function AppWindowAutoLayout()
                 hs.grid.set(window, layout)
             end)
         end
-
     end)
 end

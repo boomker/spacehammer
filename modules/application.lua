@@ -1,8 +1,8 @@
 -- 应用切换
 
 -- require 'configs.shortcuts'
-require 'configs.applicationConfig'
-require 'modules.base'
+require("configs.applicationConfig")
+require("modules.base")
 
 local app_info = {
     bundleId = nil,
@@ -11,7 +11,6 @@ local app_info = {
     alwaysWindowLayout = nil,
     onPrimaryScreen = true,
 }
-
 
 -- 存储鼠标位置
 local mousePositions = {}
@@ -25,6 +24,7 @@ local function setMouseToCenter(foucusedWindow)
     hs.mouse.absolutePosition(centerPosition)
 end
 
+---@diagnostic disable-next-line: unused-local
 local function setWindowLayout(appName, eventType, appObject)
     local appPID = appObject:pid()
     local appIdentifier = string.format("%s_%d", appObject:bundleID(), appPID)
@@ -35,15 +35,18 @@ local function setWindowLayout(appName, eventType, appObject)
         else
             local primaryScreenID = hs.screen.primaryScreen():id()
             for _, screen in ipairs(screens) do
-                if screen.id() ~= primaryScreenID then return screen end
+                if screen.id() ~= primaryScreenID then
+                    return screen
+                end
             end
         end
     end
 
-    if app_info.initWindowLayout and
-        eventType == hs.application.watcher.activated and
-        appObject:bundleID() == app_info.bundleId and
-        not hs.settings.get(appIdentifier)
+    if
+        app_info.initWindowLayout
+        and eventType == hs.application.watcher.activated
+        and appObject:bundleID() == app_info.bundleId
+        and not hs.settings.get(appIdentifier)
     then
         local layout = app_info.initWindowLayout
         local checkWindowFocused = function()
@@ -76,10 +79,11 @@ local function setWindowLayout(appName, eventType, appObject)
         end
     end
 
-    if app_info.alwaysWindowLayout and
-        eventType == hs.application.watcher.activated and
-        appObject:bundleID() == app_info.bundleId and
-        checkInitWindowLayoutExist()
+    if
+        app_info.alwaysWindowLayout
+        and eventType == hs.application.watcher.activated
+        and appObject:bundleID() == app_info.bundleId
+        and checkInitWindowLayoutExist()
     then
         local layout = app_info.alwaysWindowLayout
         -- local window = hs.window.focusedWindow()
@@ -92,36 +96,37 @@ local function setWindowLayout(appName, eventType, appObject)
     end
 end
 
-local function _getAppID(appName)
-
-    local osaScriptCodeStr = string.format('id of app "%s"', appName)
-    local ok, bundleID, _ = hs.osascript.applescript(osaScriptCodeStr)
-    if ok then
-        return bundleID
-    else
-        local appObj = hs.application.get(appName)
-        if appObj then return appObj:bundleID() end
-    end
-
-    -- hs.application.enableSpotlightForNameSearches(true)
-    --  mdfind  "kMDItemDisplayName  == '*vpn*'c && (kMDItemKind == 'Application' || kMDItemKind == '应用程序') "
-    local cmdOpts = string.format("kMDItemDisplayName == '*%s*'c && (kMDItemKind == 'Application' || kMDItemKind == '应用程序')"
-        , appName)
-    local cmdStr = 'mdfind ' .. '"' .. cmdOpts .. '"'
-    local result, status, _, rc = hs.execute(cmdStr)
-    if result and status and rc == 0 then
-        local appID = getAppID(trim(result))
-        if appID then return appID end
-    end
-
-end
+-- local function _getAppID(appName)
+--
+--     local osaScriptCodeStr = string.format('id of app "%s"', appName)
+--     local ok, bundleID, _ = hs.osascript.applescript(osaScriptCodeStr)
+--     if ok then
+--         return bundleID
+--     else
+--         local appObj = hs.application.get(appName)
+--         if appObj then return appObj:bundleID() end
+--     end
+--
+--     -- hs.application.enableSpotlightForNameSearches(true)
+--     --  mdfind  "kMDItemDisplayName  == '*vpn*'c && (kMDItemKind == 'Application' || kMDItemKind == '应用程序') "
+--     local cmdOpts = string.format("kMDItemDisplayName == '*%s*'c && (kMDItemKind == 'Application' || kMDItemKind == '应用程序')"
+--         , appName)
+--     local cmdStr = 'mdfind ' .. '"' .. cmdOpts .. '"'
+--     local result, status, _, rc = hs.execute(cmdStr)
+--     if result and status and rc == 0 then
+--         local appID = getAppID(trim(result))
+--         if appID then return appID end
+--     end
+--
+-- end
 
 local function getAppID(appName)
-
     local appBundleID = hs.settings.get(appName .. "_bundleId")
-    if appBundleID then return appBundleID end
+    if appBundleID then
+        return appBundleID
+    end
 
-    local appTitle = appName:gsub("^%l",string.upper)                           -- 首字母大写
+    local appTitle = appName:gsub("^%l", string.upper) -- 首字母大写
     local appObj = hs.application.get(appTitle)
     if appObj then
         return appObj:bundleID()
@@ -134,11 +139,13 @@ local function getAppID(appName)
         local cmdOpts = string.format(
             "(kMDItemDisplayName = '*%s*'c  || kMDItemCFBundleIdentifier = '*%s*'c) \
             && (kMDItemKind = 'Application' || kMDItemKind = '应用程序') \
-            && kMDItemContentType = 'com.apple.application-bundle'"
-            , appName, appName
+            && kMDItemContentType = 'com.apple.application-bundle'",
+            appName,
+            appName
         )
-        local cmdStr = 'mdfind ' .. '"' .. cmdOpts .. '"'
-        local result, status, _, rc = hs.execute(cmdStr)
+        local cmdStr = "mdfind " .. '"' .. cmdOpts .. '"'
+        local results, status, _, rc = hs.execute(cmdStr)
+        local result = split(results, "\n")[1]
         if result and status and rc == 0 then
             local osaScriptCodeStr = string.format('id of app "%s"', trim(result))
             local ok, bundleID, _ = hs.osascript.applescript(osaScriptCodeStr)
@@ -149,11 +156,9 @@ local function getAppID(appName)
             end
         end
     end
-
 end
 
 local function launchOrFocusApp(appInfo)
-
     local previousFocusedWindow = hs.window.focusedWindow()
     if previousFocusedWindow ~= nil then
         mousePositions[previousFocusedWindow:id()] = hs.mouse.absolutePosition()
@@ -166,7 +171,9 @@ local function launchOrFocusApp(appInfo)
     else
         -- hs.application.launchOrFocus(appName)
         appBundleID = getAppID(appName)
-        if not appBundleID then return false end
+        if not appBundleID then
+            return false
+        end
         hs.application.launchOrFocusByBundleID(appBundleID)
         app_info.bundleId = appBundleID
     end
@@ -174,7 +181,9 @@ local function launchOrFocusApp(appInfo)
     -- 获取 application 对象
     local applications = hs.application.applicationsForBundleID(appBundleID)
     local application = nil
-    for _, v in ipairs(applications) do application = v end
+    for _, v in ipairs(applications) do
+        application = v
+    end
 
     local currentFocusedWindow = application:focusedWindow()
     if currentFocusedWindow and mousePositions[currentFocusedWindow:id()] then
@@ -216,6 +225,5 @@ hs.fnutils.each(applications, function(item)
         end
 
         launchOrFocusApp(app_info)
-
     end)
 end)

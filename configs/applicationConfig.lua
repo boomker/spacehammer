@@ -87,8 +87,10 @@ applications = {
     {
         prefix = HyperKey,
         key = "K",
-        message = "Chrome",
-        bundleId = "com.google.Chrome",
+        message = "Edge",
+        -- message = "Chrome",
+        name = "edge",
+        -- bundleId = "com.google.Chrome",
         alwaysWindowLayout = window_grids.fullScreen,
         anytimeAdjustWindowLayout = true,
     },
