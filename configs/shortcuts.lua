@@ -78,9 +78,11 @@ end
 
 -- 快捷显示 重载 Hammerspoon 配置
 ----------------------------------------------------------------------------------------------------
-hsreload_keys = hsreload_keys or { { "cmd", "shift", "ctrl" }, "Z" }
+hsreload_keys = hsreload_keys or { { "cmd", "alt", "ctrl" }, "Z" }
 if string.len(hsreload_keys[2]) > 0 then
     hs.hotkey.bind(hsreload_keys[1], hsreload_keys[2], "重新加载配置", function()
+        -- clear all settings data
+        for _, v in ipairs(hs.settings.getKeys()) do hs.settings.clear(v) end
         hs.reload()
     end)
 
