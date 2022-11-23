@@ -27,7 +27,7 @@ applications = {
         prefix = HyperKey,
         key = "V",
         message = "goneovim",
-        name = "nvide", -- 支持 App bundleID
+        name = {"neovide", "goneovim"},  -- 支持多 AppName
         alwaysWindowLayout = window_grids.fullScreen,
         anytimeAdjustWindowLayout = true,
         onPrimaryScreen = true,
@@ -36,7 +36,7 @@ applications = {
         prefix = HyperKey,
         key = "O",
         message = "Obsidian",
-        name = "obsidian", -- 支持 APP 名称
+        name = { "obsidian", "typora" }, -- 支持 APP 名称
         -- initWindowLayout = grid.centeredMedium,
         alwaysWindowLayout = window_grids.fullScreen,
         anytimeAdjustWindowLayout = true,
@@ -45,13 +45,13 @@ applications = {
         prefix = HyperKey,
         key = "A",
         message = "ApiPost",
-        name = "apipost", -- 支持 App 名称模糊匹配(ApiPost7)
+        name = { "apipost", "apifox" }, -- 支持 App 名称模糊匹配(ApiPost7)
     },
     {
         prefix = HyperKey,
         key = "U",
         message = "FDM",
-        name = "fdm", -- 支持 APP 名称简写
+        name = { "fdm", "Folx" }, -- 支持 APP 名称简写
         -- name = "Free Download Manager",
         initWindowLayout = window_grids.centeredMedium,
         alwaysWindowLayout = window_grids.fullScreen,
@@ -61,7 +61,7 @@ applications = {
         prefix = HyperKey,
         key = "I",
         message = "iTerm2",
-        name = "iTerm",
+        name = {"iTerm", "iTerm2", "warp"},
         -- bundleId = "com.googlecode.iterm2",
         alwaysWindowLayout = window_grids.fullScreen,
         anytimeAdjustWindowLayout = true,
@@ -69,10 +69,10 @@ applications = {
     {
         prefix = HyperKey,
         key = "F",
-        message = "Finder",
+        message = "PathFinder",
         bundleId = "com.cocoatech.PathFinder",
-        initWindowLayout = window_grids.centeredMedium,
-        alwaysWindowLayout = window_grids.centerHorizontal,
+        -- initWindowLayout = window_grids.centeredMedium,
+        -- alwaysWindowLayout = window_grids.centerHorizontal,
         anytimeAdjustWindowLayout = true,
     },
     {
@@ -89,7 +89,7 @@ applications = {
         key = "K",
         message = "Edge",
         -- message = "Chrome",
-        name = "edge",
+        name = {"edge", "Chrome", "Arc"},
         -- bundleId = "com.google.Chrome",
         alwaysWindowLayout = window_grids.fullScreen,
         anytimeAdjustWindowLayout = true,
@@ -98,7 +98,7 @@ applications = {
         prefix = HyperKey,
         key = "D",
         message = "DBeaver",
-        name = "dbeaver",
+        name = { "dbeaver", "DBeaverEE", "DataGrip" },
     },
     {
         prefix = HyperKey,

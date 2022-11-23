@@ -8,5 +8,7 @@ hs.alert.defaultStyle.textFont = "Fira Mono"
 hs.alert.defaultStyle.atScreenEdge = 2
 hs.alert.defaultStyle.textSize = 18
 
+hs.settings.set("HSUploadCrashData", false)
+hs.settings.set("MJKeepConsoleOnTopKey", true)
 -- space mapping to HyperKey
 HyperKey = { "Ctrl", "Option", "Shift" }

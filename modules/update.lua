@@ -1,3 +1,4 @@
+---@diagnostic disable: lowercase-global
 -- 自动检查更新
 require 'modules.base'
 require 'modules.config'
@@ -23,7 +24,7 @@ function checkUpdate()
                 item.configVersion = defaultConfig[1].configVersion
             end
             local exists = false
-            for i, j in ipairs(customConfig) do
+            for _, j in ipairs(customConfig) do
                 -- 同一配置项
                 if v.name == j.name then
                     item.name = v.name
@@ -64,4 +65,4 @@ end
 checkUpdateForReload()
 
 -- 每天 12 点检查一遍更新
-start = hs.timer.doAt('12:00', hs.timer.days(1), checkUpdate):start()
+-- start = hs.timer.doAt('12:00', hs.timer.days(1), checkUpdate):start()
