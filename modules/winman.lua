@@ -52,8 +52,9 @@ if spoon.WinMan then
     -- 是否保持持久模式, 对不同退出操作做善后处理
     local handleWinManMode = function(toggle)
         if not toggle then return end
+        -- toggle: "on" means to "persistent"
+        if winman_mode == "persistent" and toggle == "on" then return end
         if winman_mode ~= "persistent" or toggle then
-            if winman_mode == "persistent" and toggle == 'auto' then return end -- toggle: "auto" or skip this statment when not "persistent"
             if toggle == 'off' then spoon.ModalMgr:deactivate({ "windowM" }) end
             local tilingConfig = TWM.tilingConfigCurrentSpace(true)
             local winLayoutForCurSpace = tilingConfig.layout
@@ -69,8 +70,10 @@ if spoon.WinMan then
                     WindowLayoutForSpaceStatus[getSpaceUID()]
                 WindowLayoutForSpaceStatus[getSpaceUID()] = tmpLayoutName
                 WindowLayoutForSpaceStatus.tmpWindowLayoutName = nil
-            elseif winman_mode == "persistent" then return end
+            end
             spoon.ModalMgr:deactivate({ "windowM" })
+        else
+            return
         end
     end
 
@@ -177,96 +180,96 @@ if spoon.WinMan then
                         spoon.WinMan:moveAndResize(item.location)
                         spoon.WinMan:moveAndResize(item.location)
                     end
-                    handleWinManMode("auto")
+                    handleWinManMode("on")
                 end)
             elseif wfn == "stepResize" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     spoon.WinMan:stash()
                     -- spoon.WinMan:stepResize(item.direction)
                     spoon.WinMan:smartStepResize(item.direction)
-                    handleWinManMode("auto")
+                    handleWinManMode("on")
                 end)
             elseif wfn == "stepMove" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     spoon.WinMan:stash()
                     spoon.WinMan:stepMove(item.direction)
-                    handleWinManMode("auto")
+                    handleWinManMode("on")
                 end)
             elseif wfn == "wMoveToScreen" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     spoon.WinMan:stash()
                     spoon.WinMan:cMoveToScreen(item.location)
-                    handleWinManMode("auto")
+                    handleWinManMode("off")
                 end)
             elseif wfn == "moveToSpace" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     spoon.WinMan:stash()
                     spoon.WinMan:moveToSpace(item.direction, item.followWindow)
-                    handleWinManMode("auto")
+                    handleWinManMode("off")
                 end)
-            elseif wfn == "moveAndFocusToSpace" then
-                cmodal:bind(item.prefix, item.key, item.message, function()
-                    spoon.WinMan:stash()
-                    spoon.WinMan:moveToSpace(item.direction)
-                    handleWinManMode("auto")
-                end)
+            -- elseif wfn == "moveAndFocusToSpace" then
+            --     cmodal:bind(item.prefix, item.key, item.message, function()
+            --         spoon.WinMan:stash()
+            --         spoon.WinMan:moveToSpace(item.direction)
+            --         handleWinManMode("on")
+            --     end)
             elseif wfn == "killSameAppAllWindow" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     kill_same_application()
                     -- spoon.ModalMgr:deactivate({"windowM"})
-                    handleWinManMode("auto")
+                    handleWinManMode("on")
                 end)
             elseif wfn == "closeSameAppOtherWindows" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     close_same_application_other_windows()
                     -- spoon.ModalMgr:deactivate({"windowM"})
-                    handleWinManMode("auto")
+                    handleWinManMode("on")
                 end)
             elseif wfn == "gridWindow" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     same_application(AUTO_LAYOUT_TYPE.GRID)
                     -- spoon.ModalMgr:deactivate({"windowM"})
-                    handleWinManMode("auto")
+                    handleWinManMode("on")
                 end)
             elseif wfn == "flattenWindow" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     same_application(AUTO_LAYOUT_TYPE.HORIZONTAL_OR_VERTICAL)
                     -- spoon.ModalMgr:deactivate({"windowM"})
-                    handleWinManMode("auto")
+                    handleWinManMode("on")
                 end)
             elseif wfn == "rotateLayout" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     same_application(AUTO_LAYOUT_TYPE.HORIZONTAL_OR_VERTICAL_R)
                     -- spoon.ModalMgr:deactivate({"windowM"})
-                    handleWinManMode("auto")
+                    handleWinManMode("on")
                 end)
             elseif wfn == "flattenWindowsForSpace" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     same_space(AUTO_LAYOUT_TYPE.HORIZONTAL_OR_VERTICAL)
                     -- spoon.ModalMgr:deactivate({"windowM"})
-                    handleWinManMode("auto")
+                    handleWinManMode("on")
                 end)
             elseif wfn == "gridWindowsForSpace" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     same_space(AUTO_LAYOUT_TYPE.GRID)
                     -- spoon.ModalMgr:deactivate({"windowM"})
-                    handleWinManMode("auto")
+                    handleWinManMode("on")
                 end)
             elseif wfn == "rotateLayoutWindowsForSpace" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     same_space(AUTO_LAYOUT_TYPE.HORIZONTAL_OR_VERTICAL_R)
                     -- spoon.ModalMgr:deactivate({"windowM"})
-                    handleWinManMode("auto")
+                    handleWinManMode("on")
                 end)
             elseif wfn == "undo" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     spoon.WinMan:undo()
-                    handleWinManMode("auto")
+                    handleWinManMode("on")
                 end)
             elseif wfn == "redo" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     spoon.WinMan:redo()
-                    handleWinManMode("auto")
+                    handleWinManMode("on")
                 end)
             end
         end
@@ -277,7 +280,7 @@ if spoon.WinMan then
             if item.layout then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     handleTileWindowLayout(item.layout)
-                    handleWinManMode("auto")
+                    handleWinManMode("on")
                 end)
             end
 
@@ -286,7 +289,7 @@ if spoon.WinMan then
                     if item.action == 'showMode' then
                         local tilingConfig = TWM.tilingConfigCurrentSpace(true)
                         TWM.displayLayout(tilingConfig)
-                        handleWinManMode("auto")
+                        handleWinManMode("on")
                         -- 重新设定当前 Space 全局布局, 改变布局后立即退出窗口管理模式
                     elseif item.action == "switchLayoutForSpace" then
                         local layout = { title = item.tgtLayout }
@@ -299,10 +302,10 @@ if spoon.WinMan then
                     elseif item.action == "focus" or item.action == "swap" then
                         local directionMapVal = { next = 1, prev = -1, first = 0 }
                         handleWindowFocusOrSwap(item.action, directionMapVal[item.direction])
-                        handleWinManMode("auto")
+                        handleWinManMode("on")
                     else
                         handleWindowFlexOrResize(item.action, item.sizeVal)
-                        handleWinManMode("auto")
+                        handleWinManMode("on")
                     end
                 end)
             end
