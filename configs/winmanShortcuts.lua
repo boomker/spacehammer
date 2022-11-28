@@ -330,7 +330,6 @@ winman_keys = {
     },
     {
         prefix = {},
-        -- key = "S",
         key = "B",
         message = "窗口移至上一个Space",
         func = "moveToSpace",

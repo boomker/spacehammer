@@ -10,5 +10,6 @@ hs.alert.defaultStyle.textSize = 18
 
 hs.settings.set("HSUploadCrashData", false)
 hs.settings.set("MJKeepConsoleOnTopKey", true)
+hs.settings.set("SUEnableAutomaticChecks", true)
 -- space mapping to HyperKey
 HyperKey = { "Ctrl", "Option", "Shift" }
