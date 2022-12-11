@@ -325,33 +325,33 @@ function obj:moveAndResize(option)
         --     cwin:setFrame({x=cres.x+cres.w/3, y=cres.y, w=cres.w/3, h=cres.h})
         -- elseif option == "lesshalfright" then
         --     cwin:setFrame({x=cres.x+cres.w/3*2, y=cres.y, w=cres.w/3, h=cres.h})
-        
+
         -- -- 定义 mostleft、mostright
         -- elseif option == "mostleft" then
         --     cwin:setFrame({x=cres.x, y=cres.y, w=cres.w/3*2, h=cres.h})
         -- elseif option == "mostright" then
         --     cwin:setFrame({x=cres.x+cres.w/3, y=cres.y, w=cres.w/3*2, h=cres.h})
-        
+
         -- -- 定义 centermost
         -- elseif option == "centermost" then
         --     -- cwin:setFrame({x=cres.x+cres.w/3/2, y=cres.h/96, w=cres.w/3*2, h=cres.h})
         --     cwin:setFrame({x=cres.x+cres.w/3/2, y=cres.y, w=cres.w/3*2, h=cres.h})
-            
+
         -- -- 定义 show 
         -- -- 宽度为24 分之 22
         -- elseif option == "show" then
         --     -- cwin:setFrame({x=cres.x+cres.w/3/2/2/2/2, y=cres.h/96, w=cres.w/48*46, h=cres.h})
         --     cwin:setFrame({x=cres.x+cres.w/3/2/2/2/2, y=cres.y, w=cres.w/48*46, h=cres.h})
-        
+
         -- -- 定义 shows
         -- elseif option == "shows" then
         --     -- cwin:setFrame({x=cres.x+cres.w/3/2/2, y=cres.h/96, w=cres.w/12*10, h=cres.h})
         --     cwin:setFrame({x=cres.x+cres.w/3/2/2, y=cres.y, w=cres.w/12*10, h=cres.h})
-         
+
         -- -- 定义 center-2 
         -- elseif option == "center-2" then
         --     cwin:setFrame({x=cres.x+cres.w/2/2, y=cres.y, w=cres.w/2, h=cres.h})
-             
+
         -- elseif option == "halfup" then
         --     cwin:setFrame({x=cres.x, y=cres.y, w=cres.w, h=cres.h/2})
         -- elseif option == "halfdown" then
@@ -426,61 +426,44 @@ function obj:cMoveToScreen(direction)
     end
 end
 
-local function getNextSID(direction)
+local function getSpaceID(direction)
     local curSpaceID = hs.spaces.focusedSpace()
     local curScreenAllSpaceIDs = hs.spaces.spacesForScreen()
-    local nextSpaceID = 0
+    local targetSpaceID = 0
+    local targetSpaceIndex = 0
+    local curSpaceIndex = hs.fnutils.indexOf(curScreenAllSpaceIDs, curSpaceID)
     if direction == "right" then
-        for _, v in ipairs(curScreenAllSpaceIDs) do
-            if curSpaceID < v then
-                nextSpaceID = v
-                break
-            end
-        end
-        if nextSpaceID == 0 then
-            nextSpaceID = 1
-        end
+        targetSpaceIndex = curSpaceIndex + 1
     else
-        for i, v in ipairs(curScreenAllSpaceIDs) do
-            if curSpaceID == v then
-                local nextSpaceIndex = i - 1
-                if nextSpaceIndex == 0 then
-                    nextSpaceID = curScreenAllSpaceIDs[#curScreenAllSpaceIDs]
-                else
-                    nextSpaceID = curScreenAllSpaceIDs[nextSpaceIndex]
-                end
-            end
-        end
+        targetSpaceIndex = curSpaceIndex - 1
     end
-    return nextSpaceID
+    if targetSpaceIndex == 0 then
+        targetSpaceID = curScreenAllSpaceIDs[#curScreenAllSpaceIDs]
+    elseif targetSpaceIndex > #curScreenAllSpaceIDs then
+        targetSpaceID = curScreenAllSpaceIDs[1]
+    else
+        targetSpaceID = curScreenAllSpaceIDs[targetSpaceIndex]
+    end
+    return targetSpaceID
 end
 
 function obj:moveToSpace(direction, followWindow)
     local windowObj = hs.window.focusedWindow()
     local mousePosition = hs.mouse.absolutePosition()
-    if windowObj then
-        if direction == "right" then
-            local nextSpaceID = getNextSID("right")
-            hs.spaces.moveWindowToSpace(windowObj, nextSpaceID)
-            -- 跟随窗口一起移动到下一个 space
-            if followWindow then
-                local newwindowObj = hs.window.frontmostWindow()
-                newwindowObj:focus()
-            else
-                hs.eventtap.leftClick(mousePosition)
-            end
-        elseif direction == "left" then
-            local nextSpaceID = getNextSID("left")
-            hs.spaces.moveWindowToSpace(windowObj, nextSpaceID)
-            if followWindow then
-                local newwindowObj = hs.window.frontmostWindow()
-                newwindowObj:focus()
-            else
-                hs.eventtap.leftClick(mousePosition)
-            end
-        end
+    if not windowObj then hs.alert.show("No focused window!") end
+    if direction == "right" then
+        local nextSpaceID = getSpaceID("right")
+        hs.spaces.moveWindowToSpace(windowObj, nextSpaceID)
+    elseif direction == "left" then
+        local prevSpaceID = getSpaceID("left")
+        hs.spaces.moveWindowToSpace(windowObj, prevSpaceID)
+    end
+    -- 跟随窗口一起移动到下一个 space
+    if followWindow then
+        local newWindowObj = hs.window.frontmostWindow()
+        newWindowObj:focus()
     else
-        hs.alert.show("No focused window!")
+        hs.eventtap.leftClick(mousePosition)
     end
 end
 

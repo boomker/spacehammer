@@ -27,6 +27,7 @@ local function init()
     sheetView:level(hs.canvas.windowLevels.mainMenu)
     -- sheetView:url("https://i.sugood.xyz/pages/jsonweb.html")
     -- sheetView:url("https://c.runoob.com/front-end/53/")
+    -- sheetView:url("https://www.golangs.cn/Jsoneditor")
     sheetView:url("https://www.11meigui.com/tools/json")
 
 end
