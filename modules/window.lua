@@ -1,8 +1,6 @@
 ---@diagnostic disable: lowercase-global
 -- 窗口管理
 
--- require("modules.base")
-
 -- 关闭动画持续时间
 hs.window.animationDuration = 0
 
