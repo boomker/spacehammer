@@ -145,6 +145,27 @@ if spoon.ModalMgr then
     end)
 end
 
+--------------- 开机登陆后自动化任务 -----------------------
+local function judge_boot()
+    local uptime_cmd = [[uptime |awk -F'[, ]+' '{gsub(/:/, "");print $(NF-8)}']]
+    ---@diagnostic disable-next-line: unused-local
+    local retVal, status, _, exitCode = hs.execute(uptime_cmd)
+    if tonumber(retVal) < 3 then
+        print("retval: ", retVal)
+        return true
+    end
+    return false
+end
+
+local function connect_bluetooth()
+    if judge_boot() then
+        toggleBluetooth()
+    end
+end
+
+connect_bluetooth()
+
+------------------------------------
 local message = require("modules.status-message")
 skmodal.statusMessage = message.new("SuperSKey Mode")
 skmodal.entered = function()

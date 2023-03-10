@@ -44,6 +44,7 @@ input_method_config = {
         "com.kapeli.dashdoc",
         "com.runningwithcrayons.Alfred",
         "Raycast",
+        "Obsidian",
     },
 
     chinese_apps = {
@@ -53,7 +54,6 @@ input_method_config = {
         "QQ",
         "网易云音乐",
         "Typora",
-        "Obsidian",
         "com.yinxiang.Mac",
     },
 }

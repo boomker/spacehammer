@@ -140,7 +140,6 @@ local function getAppID(appName)
             return bundleID
         end
     end
-    -- end
 end
 
 local function launchOrFocusApp(appInfo)

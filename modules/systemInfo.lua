@@ -80,6 +80,7 @@ local function init()
     if menuData then menuData = {} end
 
     -- system load    
+    ---@diagnostic disable-next-line: unused-local
     local loadResult, okLoad, _type, rcLoad = hs.execute("uptime |awk '{print $(NF-2),$(NF-1),$NF}'")
     if loadResult and okLoad and rcLoad == 0 then
         local loadArr = split(loadResult, " ")
@@ -124,6 +125,7 @@ local function init()
 
         -- DNS
 		-- local dns = hs.execute("/usr/bin/dig baidu.com |awk -F'[: #]+' '/SERVER/{print $3}'")
+    ---@diagnostic disable-next-line: unused-local
         local dns, ok, type, rc = hs.execute("/usr/bin/grep nameserver /etc/resolv.conf |cut -f2 -d' ' ")
         if ok and rc == 0 and dns then
             table.insert(menuData, {
@@ -143,7 +145,7 @@ local function init()
                 title = "MAC: " .. macAddress,
                 tooltip = "Copy MAC to clipboard",
                 fn = function()
-                    hs.pasteboard.setContents(mac)
+                    hs.pasteboard.setContents(macAddress)
                 end,
             })
         end
