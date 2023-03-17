@@ -26,7 +26,7 @@ applications = {
     {
         prefix = HyperKey,
         key = "V",
-        message = "goneovim",
+        message = "neovide",
         name = {"neovide", "goneovim"},  -- 支持多 AppName
         alwaysWindowLayout = window_grids.fullScreen,
         anytimeAdjustWindowLayout = true,
@@ -53,8 +53,8 @@ applications = {
         message = "FDM",
         name = { "fdm", "Folx" }, -- 支持 APP 名称简写
         -- name = "Free Download Manager",
-        initWindowLayout = window_grids.centeredMedium,
-        alwaysWindowLayout = window_grids.fullScreen,
+        -- initWindowLayout = window_grids.centeredMedium,
+        alwaysWindowLayout = window_grids.centeredMedium,
         anytimeAdjustWindowLayout = true,
     },
     {

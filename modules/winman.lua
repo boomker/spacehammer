@@ -2,7 +2,7 @@
 
 hs.loadSpoon("ModalMgr")
 hs.loadSpoon("WinMan")
-hs.loadSpoon("TilingWindowManagerMod")
+-- hs.loadSpoon("TilingWindowManagerMod")
 hs.loadSpoon('Layouts')
 require("configs.windowConfig")
 require("configs.winmanShortcuts")
@@ -11,9 +11,9 @@ require("modules.windowTimeLine")
 require("modules.status-message")
 
 
-local TWM = spoon.TilingWindowManagerMod
+local TWM = hs.loadSpoon("TilingWindowManagerMod")
 -- TWM:setLogLevel("debug")                             -- 可选开启 Tile 模式下 debug 日志
-TWM:start({
+TWMObj = TWM:start({
     menubar = true,
     dynamic = winman_dynamicAdjustWindowLayout, -- 是否开启实时动态窗口布局调整, 默认关闭, 开启会有些许性能下降
     layouts = {
@@ -57,13 +57,13 @@ if spoon.WinMan then
         if winman_mode ~= "persistent" or toggle then
             if toggle == 'off' then spoon.ModalMgr:deactivate({ "windowM" }) end
             local tilingConfig = TWM.tilingConfigCurrentSpace(true)
-            local winLayoutForCurSpace = tilingConfig.layout
+            local wdsLayoutForCurSpace = tilingConfig.layout
             if toggle == 'exitByManual' then
                 WindowLayoutForSpaceStatus[getSpaceUID()] = WindowLayoutForSpaceStatus[getSpaceUID()] or
-                    winLayoutForCurSpace
+                    wdsLayoutForCurSpace
                 WindowLayoutForSpaceStatus.tmpWindowLayoutName = nil
             elseif toggle == 'switchAfterExit' then
-                WindowLayoutForSpaceStatus[getSpaceUID()] = winLayoutForCurSpace
+                WindowLayoutForSpaceStatus[getSpaceUID()] = wdsLayoutForCurSpace
                 WindowLayoutForSpaceStatus.tmpWindowLayoutName = nil
             elseif toggle == 'exitByFloat' then
                 local tmpLayoutName = WindowLayoutForSpaceStatus.tmpWindowLayoutName or
@@ -77,16 +77,16 @@ if spoon.WinMan then
         end
     end
 
-    -- 持久模式下, Tile当前 Space 所有窗口布局
-    local function handleTileWindowLayout(mode)
+    -- 持久模式下, 当前 Space 所有窗口切换到目标布局
+    local function handleTileWindowLayout(tgtLayout)
         local tilingConfig = TWM.tilingConfigCurrentSpace(true)
-        tilingConfig.layout = TWM.layouts[mode]
-        TWM.tilingStrategy[TWM.layouts[mode]].tile(tilingConfig)
+        tilingConfig.layout = TWM.layouts[tgtLayout]
+        TWM.tilingStrategy[TWM.layouts[tgtLayout]].tile(tilingConfig)
         WindowLayoutForSpaceStatus[getSpaceUID()] = tilingConfig.layout
         WindowLayoutForSpaceStatus.tmpWindowLayoutName = tilingConfig.layout
     end
 
-    -- 调整窗口尺寸或移动焦点后处理
+    -- 窗口调整之后动作
     local afterHandelForWindow = function(tilingConfig)
         if WindowLayoutForSpaceStatus.tmpWindowLayoutName then
             TWM.tilingStrategy[tilingConfig.layout].tile(tilingConfig)
@@ -103,31 +103,31 @@ if spoon.WinMan then
     end
 
     -- 调整窗口尺寸
-    local function handleWindowFlexOrResize(type, indexOrRatio)
+    local function handleWindowFlexOrResize(type, sizeOrRatio)
         local tilingConfig = TWM.tilingConfigCurrentSpace()
         if type == "resizeWidth" then
-            tilingConfig.mainRatio = tilingConfig.mainRatio + indexOrRatio
+            tilingConfig.mainRatio = tilingConfig.mainRatio + sizeOrRatio
         else
-            tilingConfig.mainNumberWindows = tilingConfig.mainNumberWindows + indexOrRatio
+            tilingConfig.mainNumberWindows = tilingConfig.mainNumberWindows + sizeOrRatio
         end
         afterHandelForWindow(tilingConfig)
     end
 
-    -- 移动焦点到其他窗口或交互两个窗口
+    -- 移动焦点到其他窗口或交换两个窗口
     local function handleWindowFocusOrSwap(type, index)
 
         local windows = TWM.tilingConfigCurrentSpace().windows
         if #windows > 1 then
-            local i = hs.fnutils.indexOf(windows, hs.window.focusedWindow())
-            if i and type == 'focus' then
-                local j = (i - 1 + index) % #windows + 1
-                windows[j]:focus():raise()
-            elseif i and type == 'swap' then
+            local focusWdIdx = hs.fnutils.indexOf(windows, hs.window.focusedWindow())
+            if focusWdIdx and type == 'focus' then
+                local wdIdx = (focusWdIdx - 1 + index) % #windows + 1
+                windows[wdIdx]:focus():raise()
+            elseif focusWdIdx and type == 'swap' then
                 if index ~= 0 then
-                    local j = (i - 1 + index) % #windows + 1
-                    windows[i], windows[j] = windows[j], windows[i]
+                    local wdIdx = (focusWdIdx - 1 + index) % #windows + 1
+                    windows[focusWdIdx], windows[wdIdx] = windows[wdIdx], windows[focusWdIdx]
                 else
-                    windows[i], windows[1] = windows[1], windows[i]
+                    windows[focusWdIdx], windows[1] = windows[1], windows[focusWdIdx]
                 end
                 local tilingConfig = TWM.tilingConfigCurrentSpace(windows)
                 -- TWM.tilingStrategy[tilingConfig.layout].tile(tilingConfig)
@@ -286,14 +286,18 @@ if spoon.WinMan then
 
             if item.action then
                 cmodal:bind(item.prefix, item.key, item.message, function()
-                    if item.action == 'showMode' then
-                        local tilingConfig = TWM.tilingConfigCurrentSpace(true)
-                        TWM.displayLayout(tilingConfig)
-                        handleWinManMode("on")
+                    if item.action == 'showLayout' then
+                        -- local tilingConfig = TWM.tilingConfigCurrentSpace(true)
+                        -- TWM.displayLayout(tilingConfig)
+                        TWMObj.displayLayout()
                         -- 重新设定当前 Space 全局布局, 改变布局后立即退出窗口管理模式
-                    elseif item.action == "switchLayoutForSpace" then
-                        local layout = { title = item.tgtLayout }
-                        TWM.switchLayout(nil, layout)
+                        handleWinManMode("on")
+                    elseif item.action == 'toogleWindowMouseHover' then
+                        TWMObj.toggleFirstMouseHover()
+                        handleWinManMode("on")
+                    elseif item.action == "switchLayout" then
+                        local layoutName = { title = item.tgtLayout }
+                        TWMObj.switchLayout(nil, layoutName)
                         if item.tgtLayout == 'Floating' then
                             handleWinManMode("exitByFloat")
                         else

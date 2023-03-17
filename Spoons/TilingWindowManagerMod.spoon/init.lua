@@ -1,3 +1,4 @@
+---@diagnostic disable: unused-local, redefined-local, lowercase-global
 --- === TilingWindowManager ===
 ---
 --- macOS Tiling Window Manager. Spoon on top of Hammerspoon.
@@ -43,13 +44,13 @@
 ---     })
 --- ```
 
-local inspect = require("hs.inspect")
-local window = require("hs.window")
-local fnutils = require("hs.fnutils")
-local spoons = require("hs.spoons")
--- local image =      require("hs.image")
+local inspect  = require("hs.inspect")
+local window   = require("hs.window")
+local fnutils  = require("hs.fnutils")
+local spoons   = require("hs.spoons")
 local settings = require("hs.settings")
-local menubar = require("hs.menubar")
+local menubar  = require("hs.menubar")
+-- local image =      require("hs.image")
 
 local obj = {}
 obj.__index = obj
@@ -179,7 +180,7 @@ obj.tilingStrategy[obj.layouts.floating] = {
 . . . . . f . . . . . . . . . . . . . d .
 . . . . . . f e # # # # # # # # # e d . .
 . . . . . . . . . . . . . . . . . . . . .
-]]   ,
+]],
 }
 
 obj.tilingStrategy[obj.layouts.fullscreen] = {
@@ -216,7 +217,7 @@ obj.tilingStrategy[obj.layouts.fullscreen] = {
 . f . . . . . . . . . . . . . . . . . d .
 . . f e # # # # # # # # # # # # # e d . .
 . . . . . . . . . . . . . . . . . . . . .
-]]   ,
+]],
 }
 
 obj.tilingStrategy[obj.layouts.tall] = {
@@ -270,7 +271,7 @@ obj.tilingStrategy[obj.layouts.tall] = {
 . f . . . . . . . . 1 . . . . . . . . d .
 . . f e # # # # # # # # # # # # # e d . .
 . . . . . . . . . . . . . . . . . . . . .
-]]   ,
+]],
 }
 
 obj.tilingStrategy[obj.layouts.talltwo] = {
@@ -323,7 +324,7 @@ obj.tilingStrategy[obj.layouts.talltwo] = {
 . f . . . . . . . . 1 . . . . . . . . d .
 . . f e # # # # # # # # # # # # # e d . .
 . . . . . . . . . . . . . . . . . . . . .
-]]   ,
+]],
 }
 
 obj.tilingStrategy[obj.layouts.wide] = {
@@ -377,7 +378,7 @@ obj.tilingStrategy[obj.layouts.wide] = {
 . f . . . . . 4 . . . . . 5 . . . . . d .
 . . f e # # # # # # # # # # # # # e d . .
 . . . . . . . . . . . . . . . . . . . . .
-]]   ,
+]],
 }
 
 
@@ -492,7 +493,6 @@ end
 -- Returns:
 --  * tiling config - table as per `obj.initTilingConfig()`
 function obj.setLayoutCurrentSpace(layout)
-    -- if settings.get('spaceHammerTWM') == 'stop' then return false end
     obj.log.d("> setLayoutCurrentSpace", layout)
     local tilingConfig = obj.tilingConfigCurrentSpace()
 
@@ -521,8 +521,6 @@ end
 -- Returns:
 --  * none
 function obj.setMainRatioRelative(ratio)
-    -- if settings.get('spaceHammerTWM') == 'stop' then return false end
-
     obj.log.d("> setMainRatioRelative", ratio)
     local tilingConfig = obj.tilingConfigCurrentSpace()
 
@@ -548,8 +546,6 @@ end
 -- Returns:
 --  * none
 function obj.setMainWindowsRelative(i)
-    -- if settings.get('spaceHammerTWM') == 'stop' then return false end
-
     obj.log.d("> setMainWindowsRelative", i)
     local tilingConfig = obj.tilingConfigCurrentSpace()
     tilingConfig.mainNumberWindows = tilingConfig.mainNumberWindows + i
@@ -702,9 +698,6 @@ end
 --- Newly focussed window is determined by relative distance `relativeIndex` from current window in ordered tileable windows table.  Wraps around if current window is first or last window.
 --- `+1` focuses next window, `-1` focuses previous window.
 function obj.focusRelative(relativeIndex)
-
-    -- if settings.get('spaceHammerTWM') == 'stop' then return false end
-
     obj.log.d("> focusRelative", relativeIndex)
     local windows = obj.tilingConfigCurrentSpace().windows
     if #windows > 1 then
@@ -735,9 +728,6 @@ end
 --- Wraps around if current window is first or last window.
 --- Tiles the current space.
 function obj.moveRelative(relativeIndex)
-
-    -- if settings.get('spaceHammerTWM') == 'stop' then return false end
-
     obj.log.d("> moveRelative", relativeIndex)
     local windows = obj.tilingConfigCurrentSpace().windows
     if #windows > 1 then
@@ -769,7 +759,6 @@ end
 --- If current window is not first window: Swaps window order and position with first window in tileable windows.
 --- Tiles the current space.
 function obj.swapFirst()
-    -- if settings.get('spaceHammerTWM') == 'stop' then return false end
     obj.log.d("> swapFirst")
     local windows = obj.tilingConfigCurrentSpace().windows
     if #windows > 1 then
@@ -803,7 +792,6 @@ end
 ---  * If current window is not first window: Makes current window the first window. Previous first window becomes the second window.
 ---  *Tiles the current space.
 function obj.toggleFirst()
-    -- if settings.get('spaceHammerTWM') == 'stop' then return false end
     if not obj then return false end
     obj.log.d("> toggleFirst")
     local windows = obj.tilingConfigCurrentSpace().windows
@@ -821,6 +809,28 @@ function obj.toggleFirst()
         end
     end
     obj.log.d("< toggleFirst")
+end
+
+--- TilingWindowManager.toggleFirstMouseHover() -> nil
+--- Function
+--- Focuses and raises window under mouse pointer, then calls toogleFirst().
+---
+--- Parameters:
+---  * None
+---
+--- Returns:
+---  * None
+function obj.toggleFirstMouseHover()
+    obj.log.d("> toggleFirstMouseHover")
+    local windows = obj.tilingConfigCurrentSpace().windows
+    local point = hs.mouse.absolutePosition()
+    for i, w in ipairs(windows) do
+        if hs.geometry.point(point.x, point.y):inside(w:frame()) then
+            w:focus():raise()
+        end
+    end
+    obj.toggleFirst()
+    obj.log.d("< toggleFirstMouseHover")
 end
 
 -- Menu bar ---------------------------------------------------------
@@ -850,6 +860,7 @@ end
 --
 -- Returns:
 --  * Icon
+---@diagnostic disable-next-line: unused-function
 local function iconFromASCII(ascii)
     -- Hacky workaround: make Hammerspoon render the icon by creating
     -- a menubar object, grabbing the icon and deleting the menubar
@@ -878,8 +889,9 @@ function obj.menuTable()
         menuItem.title = layout
         if not obj.tilingStrategy[layout].icon then
             -- cache icons
-            obj.tilingStrategy[layout].icon =
-            iconFromASCII((obj.tilingStrategy[layout].symbol))
+            local asciiLayout = obj.tilingStrategy[layout].symbol
+            obj.tilingStrategy[layout].icon = obj.menubar:setIcon(asciiLayout):icon()
+            -- obj.tilingStrategy[layout].icon = iconFromASCII(asciiLayout)
         end
         menuItem.image = obj.tilingStrategy[layout].icon
         if layout == layoutCurrentSpace then

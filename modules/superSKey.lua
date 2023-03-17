@@ -1,5 +1,6 @@
 hs.loadSpoon("ModalMgr")
 require("configs.shortcuts")
+require("modules.base")
 require("modules.superSCore")
 require("modules.ksheet")
 require("modules.hotkeyHelper")
@@ -147,11 +148,14 @@ end
 
 --------------- 开机登陆后自动化任务 -----------------------
 local function judge_boot()
-    local uptime_cmd = [[uptime |awk -F'[, ]+' '{gsub(/:/, "");print $(NF-8)}']]
+    local uptime_cmd = [[uptime |cut -d',' -f1 |awk '{gsub(/:/, "");print $NF}']]
     ---@diagnostic disable-next-line: unused-local
     local retVal, status, _, exitCode = hs.execute(uptime_cmd)
+    print("retval:-", retVal)
+    if string.match(trim(retVal), "day") then
+        return false
+    end
     if tonumber(retVal) < 3 then
-        print("retval: ", retVal)
         return true
     end
     return false

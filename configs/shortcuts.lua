@@ -72,7 +72,7 @@ hsconsole_keys = hsconsole_keys or { "alt", "Z" }
 if string.len(hsconsole_keys[2]) > 0 then
     hs.hotkey.bind(hsconsole_keys[1], hsconsole_keys[2], "打开 Hammerspoon 控制台", function()
         hs.toggleConsole()
-        hs.application.launchOrFocusByBundleID("org.hammerspoon.Hammerspoon")
+        -- hs.application.launchOrFocusByBundleID("org.hammerspoon.Hammerspoon")
     end)
 end
 
