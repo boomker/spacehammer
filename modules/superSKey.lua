@@ -148,14 +148,16 @@ end
 
 --------------- 开机登陆后自动化任务 -----------------------
 local function judge_boot()
-    local uptime_cmd = [[uptime |cut -d',' -f1 |awk '{gsub(/:/, "");print $NF}']]
+    local uptime_cmd = [[uptime |cut -d',' -f1 |awk '{gsub(/:/, "");print $(NF-1), $NF}']]
     ---@diagnostic disable-next-line: unused-local
     local retVal, status, _, exitCode = hs.execute(uptime_cmd)
-    print("retval:-", retVal)
-    if string.match(trim(retVal), "day") then
+    -- print("retval:-", retVal)
+    local retValArr = split(trim(retVal), " ")
+    if string.match(retValArr[2], "secs") then
+        return true
+    elseif string.match(retValArr[2], "day") then
         return false
-    end
-    if tonumber(retVal) < 3 then
+    elseif string.match(retValArr[2], "mins") and tonumber(retValArr[1]) < 2 then
         return true
     end
     return false

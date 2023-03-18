@@ -68,10 +68,9 @@ local function setWindowLayout(appName, eventType, appObject)
         end
 
         hs.timer.waitUntil(checkWindowFocused, execSetAppWindowGridLayout)
-        -- local windows = appObject:visibleWindows()
     end
 
-    local checkInitWindowLayoutExist = function()
+    local checkInitWindowLayoutSeted = function()
         if AppObjInfo.initWindowLayout then
             return hs.settings.get(appIdentifier)
         else
@@ -83,7 +82,7 @@ local function setWindowLayout(appName, eventType, appObject)
         AppObjInfo.alwaysWindowLayout
         and eventType == hs.application.watcher.activated
         and appObject:bundleID() == AppObjInfo.bundleId
-        and checkInitWindowLayoutExist()
+        and checkInitWindowLayoutSeted()
     then
         local layout = AppObjInfo.alwaysWindowLayout
         -- local window = hs.window.focusedWindow()

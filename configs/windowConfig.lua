@@ -54,17 +54,17 @@ window_grids = {
     topThird = "0,0 16x4",
     topTwoThirds = "0,0 16x8",
 
-    rightHalf = "8,0 8x12",
-    rightThird = "11,0 5x12",
-    rightTwoThirds = "2,0 14x12",
-
     bottomHalf = "0,6 16x6",
-    bottomThird = "0,7 16x5",
-    bottomTwoThirds = "0,2 16x10",
+    bottomThird = "0,8 16x4",
+    bottomTwoThirds = "0,4 16x8",
+
+    rightHalf = "8,0 8x12",
+    rightThird = "11,0 6x12",
+    rightTwoThirds = "5,0 11x12",
 
     leftHalf = "0,0 8x12",
-    leftThird = "0,0 4x12",
-    leftTwoThirds = "0,0 14x12",
+    leftThird = "0,0 6x12",
+    leftTwoThirds = "0,0 11x12",
 
     topLeft = "0,0 8x6",
     topRight = "8,0 8x6",
