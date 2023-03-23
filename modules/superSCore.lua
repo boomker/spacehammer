@@ -1,8 +1,7 @@
 ---@diagnostic disable: lowercase-global
 hs.loadSpoon("FocusHighlight")
-require 'modules.caffeine'
-require 'configs.shortcuts'
-
+require("modules.caffeine")
+require("configs.shortcuts")
 
 local fhl = spoon.FocusHighlight
 
@@ -64,7 +63,9 @@ function removeDeskTopSpace()
         end closeSpace
     ]]
     local ok, _, _ = hs.osascript.applescript(osascript)
-    if ok then hs.alert.show("桌面空间已移除", 0.5) end
+    if ok then
+        hs.alert.show("桌面空间已移除", 0.5)
+    end
 end
 
 function addDeskTopSpace()
@@ -78,13 +79,42 @@ function addDeskTopSpace()
         end tell
     ]]
     local ok, _, _ = hs.osascript.applescript(osascript)
-    if ok then hs.alert.show("桌面空间已添加", 0.5) end
+    if ok then
+        hs.alert.show("桌面空间已添加", 0.5)
+    end
 end
 
-function toggleBluetooth()
-    local favoriteBluetoothName = superKey_items.favoriteBluetoothName or '小爱音箱-4099'
-    local btdUIDFindCMDStr = string.format("/usr/local/bin/blueutil --paired |/usr/bin/grep %s |/usr/bin/cut -f1 -d',' |cut -c 10-"
-        , favoriteBluetoothName)
+function getBluetoothState()
+    local btState = string.format("/usr/local/bin/blueutil -p")
+    local retVal, status, _, exitCode = hs.execute(btState)
+    if retVal == "1" and exitCode == "0" then
+        return true
+    else
+        return false
+    end
+end
+
+function toggleBluetooth(actState)
+    if getBluetoothState() and actState == "off" then
+        local btOff = string.format("/usr/local/bin/blueutil -p 0")
+        local retVal, status, _, exitCode = hs.execute(btOff)
+        if exitCode == "0" then
+            hs.alert.show("蓝牙设备已关闭", 0.5)
+        end
+    elseif not getBluetoothState() and actState == "on" then
+        local btOn = string.format("/usr/local/bin/blueutil -p 1")
+        local retVal, status, _, exitCode = hs.execute(btOn)
+        if exitCode == "0" then
+            hs.alert.show("蓝牙设备已打开", 0.5)
+        end
+    end
+end
+
+function connetBluetoothDevice()
+    toggleBluetooth("on")
+    local favoriteBluetoothName = superKey_items.favoriteBluetoothName or "小爱音箱-4099"
+    local btdUIDFindCMDStr =
+        string.format("/usr/local/bin/blueutil --paired |awk -F'[: ,]+' '/%s/{print $2}'", favoriteBluetoothName)
     local ok1, btUID, _ = hs.osascript.applescript(string.format('do shell script "%s"', btdUIDFindCMDStr))
     if not ok1 then
         hs.alert.show("未找到目标蓝牙设备", 0.5)
@@ -121,14 +151,16 @@ function toggleDarkMode()
     ]]
 
     local ok, _, _ = hs.osascript.applescript(darkModeOSAScriptStr)
-    if ok then hs.alert.show("暗夜模式切换成功", 0.5) end
+    if ok then
+        hs.alert.show("暗夜模式切换成功", 0.5)
+    end
 end
 
 function enableFocuseMode()
-    if hs.settings.get('enableFocuseMode') then
+    if hs.settings.get("enableFocuseMode") then
         -- hs.window.highlight.stop()
         fhl:stop()
-        hs.settings.set('enableFocuseMode', false)
+        hs.settings.set("enableFocuseMode", false)
     else
         -- hs.window.highlight.ui.overlay = true
         -- hs.window.highlight.ui.flashDuration = 0.1
@@ -140,22 +172,22 @@ function enableFocuseMode()
         fhl.highlightFadeOutDuration = 2
         fhl.highlightFillAlpha = 0.3
         fhl:start()
-        hs.settings.set('enableFocuseMode', true)
+        hs.settings.set("enableFocuseMode", true)
     end
 end
 
 function togglecaffeineMode()
     -- if caffConfig and caffConfig.caffeine == 'on' then
     toggleCaffeine()
-        -- caffConfig.caffeine = 'off'
+    -- caffConfig.caffeine = 'off'
     -- else
     --     unsetCaffeine()
     -- end
 end
 
 function ejectAllDMG()
-
-    local cmdStr = "diskutil list |/usr/bin/grep 'disk image' |/usr/bin/cut -f1 -d' ' |/usr/bin/xargs -I d diskutil eject d"
+    local cmdStr =
+        "diskutil list |/usr/bin/grep 'disk image' |/usr/bin/cut -f1 -d' ' |/usr/bin/xargs -I d diskutil eject d"
     local retVal, _, retCode = os.execute(cmdStr)
     if retVal and retCode == 0 then
         hs.alert.show("成功推出所有DMG", 0.5)
@@ -163,7 +195,6 @@ function ejectAllDMG()
 end
 
 function forceKillCurApp()
-
     local cwin = hs.window.focusedWindow()
     local capp = cwin:application()
     capp:kill9()
@@ -171,14 +202,14 @@ function forceKillCurApp()
 end
 
 function restartMac()
-
     local rebootScrStr = 'tell application "Finder" to restart'
     local ok, _, _ = hs.osascript.applescript(rebootScrStr)
-    if ok then hs.alert.show("重启") end
+    if ok then
+        hs.alert.show("重启")
+    end
 end
 
 function toggleMute()
-
     local curAudio = hs.audiodevice.defaultEffectDevice()
     local isMuted = curAudio:muted()
     if isMuted then
@@ -191,7 +222,6 @@ function toggleMute()
 end
 
 function toggleMicrophoneMute()
-
     local curInputAudio = hs.audiodevice.defaultInputDevice()
     local isMuted = curInputAudio:muted()
     if isMuted then
@@ -204,7 +234,6 @@ function toggleMicrophoneMute()
 end
 
 function openSecAndPrivacy()
-
     hs.alert.show("安全与隐私正在打开...")
     local openSecPrivSetting = [[
 			tell application "System Preferences"
@@ -213,16 +242,17 @@ function openSecAndPrivacy()
 			end tell
 		]]
     local ok, _, _ = hs.osascript.applescript(openSecPrivSetting)
-    if not ok then hs.alert.show("安全与隐私打开失败", 0.5) end
+    if not ok then
+        hs.alert.show("安全与隐私打开失败", 0.5)
+    end
 end
 
 function oneKeyUpgradeBrews()
-
     local proxyCMD = nil
     if superKey_items.httpProxy then
-        proxyCMD = string.format('export http_proxy=%s ;', superKey_items.httpProxy)
+        proxyCMD = string.format("export http_proxy=%s ;", superKey_items.httpProxy)
     else
-        proxyCMD = ''
+        proxyCMD = ""
     end
     local brewUpgradeCMD = "brew outdated |awk '$0 !~ /pin/{print $1}' |xargs -P 0 brew upgrade > /dev/null 2>&1 &"
     local cmd = string.format("%s %s", proxyCMD, brewUpgradeCMD)

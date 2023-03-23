@@ -65,7 +65,7 @@ if spoon.ModalMgr then
         spoon.ModalMgr:deactivate({ "SuperSKey" })
     end)
     skmodal:bind("", "B", "蓝牙开关连接", function()
-        toggleBluetooth()
+          connetBluetoothDevice()
         spoon.ModalMgr:deactivate({ "SuperSKey" })
     end)
     skmodal:bind("", "N", "开关勿扰模式", function()
@@ -157,7 +157,7 @@ local function judge_boot()
         return true
     elseif string.match(retValArr[2], "day") then
         return false
-    elseif string.match(retValArr[2], "mins") and tonumber(retValArr[1]) < 2 then
+    elseif string.match(retValArr[2], "mins") and tonumber(retValArr[1]) <= 2 then
         return true
     end
     return false
@@ -165,7 +165,7 @@ end
 
 local function connect_bluetooth()
     if judge_boot() then
-        toggleBluetooth()
+        connetBluetoothDevice()
     end
 end
 
