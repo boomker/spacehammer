@@ -98,8 +98,9 @@ end
 local function getAppIdFromRunningApp(appNames)
     for _, v in ipairs(appNames) do
         local appTitle = v:gsub("^%l", string.upper) -- 首字母大写
-        local appObj = hs.application.get(appTitle) or hs.application.get(v)
-        if appObj then
+        -- local appObj = hs.application.get(appTitle) or hs.application.get(v)
+        local appObj = hs.application.find(appTitle, true) or hs.application.find(v, true)
+        if appObj and string.len(appObj:title()) == string.len(appTitle) then
             local bundleID = appObj:bundleID()
             local appBundleIDKey = v .. "_bundleId"
             hs.settings.set(appBundleIDKey, bundleID)
