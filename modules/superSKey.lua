@@ -150,14 +150,15 @@ end
 local function judge_boot()
     local uptime_cmd = [[uptime |cut -d',' -f1 |awk '{gsub(/:/, "");print $(NF-1), $NF}']]
     ---@diagnostic disable-next-line: unused-local
-    local retVal, status, _, exitCode = hs.execute(uptime_cmd)
+    local uptime_res, status, _, exitCode = hs.execute(uptime_cmd)
     -- print("retval:-", retVal)
-    local retValArr = split(trim(retVal), " ")
-    if string.match(retValArr[2], "secs") then
+    local retVals = split(trim(uptime_res), " ")
+    if not retVals then return false end
+    if string.match(retVals[2], "secs") then
         return true
-    elseif string.match(retValArr[2], "day") then
+    elseif string.match(retVals[2], "day") then
         return false
-    elseif string.match(retValArr[2], "mins") and tonumber(retValArr[1]) <= 2 then
+    elseif string.match(retVals[2], "mins") and tonumber(retVals[1]) <= 2 then
         return true
     end
     return false

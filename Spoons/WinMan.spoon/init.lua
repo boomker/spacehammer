@@ -497,6 +497,7 @@ function obj:jumpToWindowAndFocus()
 
     table.sort(curSpaceAllWindowsID)
     local curWinIDIndex = hs.fnutils.indexOf(curSpaceAllWindowsID, curWindowID)
+    if not curWinIDIndex then return false end
     local nextFocusedWindowIndex = nil
     if curWinIDIndex == #curSpaceAllWindowsID then
         nextFocusedWindowIndex = 1

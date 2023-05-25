@@ -19,15 +19,15 @@ applications = {
         key = "L",
         message = "VSCode",
         bundleId = "com.microsoft.VSCode", -- 支持 App bundleID
-        alwaysWindowLayout = window_grids.fullScreen,
-        anytimeAdjustWindowLayout = true,
+        -- alwaysWindowLayout = window_grids.fullScreen,
+        -- anytimeAdjustWindowLayout = true,
         onPrimaryScreen = true,
     },
     {
         prefix = HyperKey,
         key = "V",
         message = "neovide",
-        name = {"neovide", "goneovim"},  -- 支持多 AppName
+        name = {"neovide", "nvide", "goneovim"},  -- 支持多 AppName
         alwaysWindowLayout = window_grids.fullScreen,
         anytimeAdjustWindowLayout = true,
         onPrimaryScreen = true,

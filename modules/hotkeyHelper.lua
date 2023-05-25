@@ -230,7 +230,7 @@ local function formatText(tag)
             msg = utf8sub(msg, MAX_LEN + 1, len)
             len = utf8len(msg)
         end
-        for i = 1, MAX_LEN - utf8len(msg), 1 do msg = msg .. ' ' end
+        for _ = 1, MAX_LEN - utf8len(msg), 1 do msg = msg .. ' ' end
         if tag == 'all' then
             table.insert(renderText.appHotKeys , { line = msg })
         else

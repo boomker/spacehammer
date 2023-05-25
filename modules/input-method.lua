@@ -11,11 +11,11 @@ local messageSogou = message.new(" 🇨🇳️ - ON")
 if input_method_config.manualSwitch then
     hs.fnutils.each(input_method_config.input_methods, function(item)
         hs.hotkey.bind(item.prefix, item.key, item.message, function()
-            if string.match(item.inputmethodId, "abc") then
+            --[[ if string.match(item.inputmethodId, "abc") then
                 messageABC:notify()
             else
                 messageSogou:notify()
-            end
+            end ]]
             hs.keycodes.currentSourceID(item.inputmethodId)
         end)
     end)

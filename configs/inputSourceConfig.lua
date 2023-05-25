@@ -23,10 +23,10 @@ input_method_config = {
             prefix = HyperKey,
             key = " ",
             -- key = "C",
-            message = "切换到搜狗输入法",
-            inputmethodId = "com.sogou.inputmethod.sogou.pinyin",
+            message = "切换到rime输入法",
+            inputmethodId = "im.rime.inputmethod.Squirrel.Hans",
         },
-        -- chinese = { prefix = HyperKey, key = "D", message = "双拼", inputmethodId = shuangpinId },
+        -- chinese = { prefix = HyperKey, key = "R", message = "Rime XHUP", inputmethodId = "com.sogou.inputmethod.sogou.pinyin" },
     },
 
     --  以下 App 聚焦后自动切换到目标输入法, 需要配置目标应用名称或应用的 BundleId

@@ -151,7 +151,8 @@ local function launchOrFocusApp(appInfo)
     local appBundleID = appInfo.bundleId
     local appNameItems = appInfo.name
     if appBundleID then
-        hs.application.launchOrFocusByBundleID(appBundleID)
+        local x = hs.application.launchOrFocusByBundleID(appBundleID)
+        -- print(hs.inspect(x))
     else
         appBundleID = getAppIdFromRunningApp(appNameItems)
         if appBundleID then
@@ -176,12 +177,12 @@ local function launchOrFocusApp(appInfo)
     local applications = hs.application.applicationsForBundleID(appBundleID)
     if applications[1] then
         local currentFocusedWindow = applications[1]:focusedWindow()
+        -- print(hs.inspect(applications), currentFocusedWindow)
         if currentFocusedWindow and mousePositions[currentFocusedWindow:id()] then
             hs.mouse.absolutePosition(mousePositions[currentFocusedWindow:id()])
         else
             setMouseToCenter(currentFocusedWindow)
         end
-
     end
 
     if appInfo.initWindowLayout or appInfo.alwaysWindowLayout then
