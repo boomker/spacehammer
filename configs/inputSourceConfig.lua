@@ -38,6 +38,7 @@ input_method_config = {
         "com.jetbrains.intellij",
         "Terminal",
         "com.googlecode.iterm2",
+        "org.alacritty",
         "com.neovide.neovide",
         "nvide",
         "goneovim",
@@ -55,5 +56,6 @@ input_method_config = {
         "网易云音乐",
         "Typora",
         "com.yinxiang.Mac",
+        -- "com.raycast.macos",
     },
 }

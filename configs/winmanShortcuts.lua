@@ -134,6 +134,14 @@ winman_keys = {
 		location = "center",
 		tag = "origin",
 	},
+    {
+        prefix = {"Shift"},
+        key = "M",
+        message = "窗口Maximized",
+        func = "moveAndResize",
+        location = "maximize",
+        tag = "origin",
+    },
 	{
 		prefix = {},
 		key = "Z",

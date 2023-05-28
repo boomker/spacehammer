@@ -55,9 +55,12 @@ superKey_items = {
     bartenderMenuSearch = { { "cmd", "alt", "ctrl" }, "6" },
     bobOCR = { { "cmd", "alt", "ctrl" }, "7" },
     toggleDND = { { "cmd", "alt", "ctrl" }, "\\" },
-    favoriteBluetoothName = "小爱音箱-4099",
+    evernote_todo = { { "cmd", "alt", "ctrl" }, "n" },
+    eudic_lightPeek = { { "cmd", "alt", "ctrl" }, "l" },
+    iterm_floatWindow = { { "cmd", "alt", "ctrl" }, "i" },
     -- 可选填写代理服务器配置
     httpProxy = "http://127.0.0.1:7890",
+    favoriteBluetoothName = "小爱音箱-4099",
 }
 
 -- 表情包搜索配置
@@ -65,6 +68,23 @@ emoji_search = { prefix = HyperKey, key = "E", message = "Search emoji" }
 
 -- JSON 格式化
 json_formater = { prefix = HyperKey, key = "T", message = "JSON 格式化" }
+
+
+-- 当选中某窗口按下 ctrl+command+alt+. 时会显示应用的路径等信息
+hs.hotkey.bind({'ctrl', 'cmd', 'alt'}, ".", function()
+    hs.alert.show("App path:    "
+    ..hs.window.focusedWindow():application():path()
+    .."\n"
+    .."App name:      "
+    ..hs.window.focusedWindow():application():name()
+    .."\n"
+    .."App bundleId:  "
+    ..hs.window.focusedWindow():application():bundleID()
+    .."\n"
+    .."IM source id:  "
+    ..hs.keycodes.currentSourceID())
+end)
+
 
 -- 快捷显示 Hammerspoon 控制台
 ----------------------------------------------------------------------------------------------------

@@ -174,6 +174,10 @@ if spoon.WinMan then
                         spoon.WinMan:moveAndResize(item.location)
                         handleWinManMode("off")
                         return
+                    elseif item.location == "maximize" then
+                        spoon.WinMan:moveAndResize(item.location)
+                        -- handleWinManMode("off")
+                        return
                     elseif item.location ~= "shrink" and item.location ~= "expand" then
                         spoon.WinMan:moveAndResize(item.location)
                     else
