@@ -77,6 +77,13 @@ applications = {
     },
     {
         prefix = HyperKey,
+        key = "M",
+        message = "Foxmail",
+        bundleId = "com.tencent.Foxmail",
+        anytimeAdjustWindowLayout = true,
+    },
+    {
+        prefix = HyperKey,
         key = "B",
         message = "firefox",
         bundleId = "org.mozilla.firefox",

@@ -64,7 +64,7 @@ remapingKeys = { -- trigger target combination key
     },
     {
         prefix = HyperKey,
-        key = "M",
+        key = "X",
         message = "MenuChooser",
         targetFunc = "menuchooser",
     },
