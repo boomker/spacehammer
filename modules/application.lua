@@ -9,7 +9,7 @@ local AppObjInfo = {
     name = nil,
     initWindowLayout = nil,
     alwaysWindowLayout = nil,
-    onPrimaryScreen = true,
+    onPrimaryScreen = false,
 }
 
 -- 存储鼠标位置
@@ -30,12 +30,14 @@ local function setWindowLayout(appName, eventType, appObject)
     local appIdentifier = string.format("%s_%d", appObject:bundleID(), appPID)
     local setAppWindowToSpecScreen = function()
         local screens = hs.screen.allScreens()
-        if AppObjInfo.onPrimaryScreen and #screens == 1 then
+        if AppObjInfo.onPrimaryScreen or (#screens == 1) then
             return hs.screen.primaryScreen()
-        else
+        end
+        if AppObjInfo.onBackupScreen and (#screens ~= 1) then
             local primaryScreenID = hs.screen.primaryScreen():id()
             for _, screen in ipairs(screens) do
-                if screen.id() ~= primaryScreenID then
+                -- print("psid: ", primaryScreenID, "sid: ", screen:id())
+                if screen:id() ~= primaryScreenID then
                     return screen
                 end
             end
@@ -151,7 +153,7 @@ local function launchOrFocusApp(appInfo)
     local appBundleID = appInfo.bundleId
     local appNameItems = appInfo.name
     if appBundleID then
-        local x = hs.application.launchOrFocusByBundleID(appBundleID)
+        hs.application.launchOrFocusByBundleID(appBundleID)
         -- print(hs.inspect(x))
     else
         appBundleID = getAppIdFromRunningApp(appNameItems)
@@ -215,6 +217,8 @@ hs.fnutils.each(applications, function(item)
 
         if item.onPrimaryScreen then
             AppObjInfo.onPrimaryScreen = item.onPrimaryScreen
+        else
+            AppObjInfo.onPrimaryScreen = false
         end
 
         launchOrFocusApp(AppObjInfo)

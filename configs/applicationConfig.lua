@@ -9,6 +9,7 @@
 -- alwaysWindowLayout: App窗口开启全局 HS 快捷键切换后自动调整布局, 没有性能影响, 无卡顿
 -- anytimeAdjustWindowLayout: App窗口开启全局任意方式切换后自动调整布局, 有一定程度性能下降!
 -- onPrimaryScreen: 窗口排列位置在主显示器屏幕上
+-- onBackupScreen:  窗口排列位置在副显示器屏幕上
 
 require("configs.baseConfig")
 require("configs.windowConfig")
@@ -30,7 +31,7 @@ applications = {
         name = {"neovide", "nvide", "goneovim"},  -- 支持多 AppName
         alwaysWindowLayout = window_grids.fullScreen,
         anytimeAdjustWindowLayout = true,
-        onPrimaryScreen = true,
+        onPrimaryScreen = false,
     },
     {
         prefix = HyperKey,
@@ -79,7 +80,8 @@ applications = {
         prefix = HyperKey,
         key = "M",
         message = "Foxmail",
-        bundleId = "com.tencent.Foxmail",
+        -- bundleId = "com.tencent.Foxmail",
+        name = {"Spark", "Foxmail"},
         anytimeAdjustWindowLayout = true,
     },
     {
@@ -98,6 +100,7 @@ applications = {
         -- message = "Chrome",
         name = {"edge", "Chrome", "Arc"},
         -- bundleId = "com.google.Chrome",
+        onBackupScreen = true,
         alwaysWindowLayout = window_grids.fullScreen,
         anytimeAdjustWindowLayout = true,
     },
@@ -124,6 +127,7 @@ applications = {
         key = "9",
         message = "WeChat",
         bundleId = "com.tencent.xinWeChat",
+        onPrimaryScreen = true,
         alwaysWindowLayout = window_grids.centeredMedium,
     },
     {

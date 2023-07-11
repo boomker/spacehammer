@@ -56,6 +56,8 @@ input_method_config = {
         "网易云音乐",
         "Typora",
         "com.yinxiang.Mac",
+        "com.microsoft.edgemac",
+        "com.kingsoft.wpsoffice.mac",
         -- "com.raycast.macos",
     },
 }
