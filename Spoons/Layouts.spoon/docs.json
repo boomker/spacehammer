@@ -1,0 +1,122 @@
+[
+  {
+    "Constant" : [
+
+    ],
+    "submodules" : [
+
+    ],
+    "Function" : [
+
+    ],
+    "Variable" : [
+      {
+        "doc" : "Logger object used within the Spoon. Can be accessed to set the default log level for the",
+        "desc" : "Logger object used within the Spoon. Can be accessed to set the default log level for the",
+        "def" : "Layouts.logger",
+        "stripped_doc" : [
+          "Logger object used within the Spoon. Can be accessed to set the default log level for the"
+        ],
+        "notes" : [
+
+        ],
+        "signature" : "Layouts.logger",
+        "type" : "Variable",
+        "returns" : [
+
+        ],
+        "name" : "logger",
+        "parameters" : [
+
+        ]
+      }
+    ],
+    "stripped_doc" : [
+
+    ],
+    "Deprecated" : [
+
+    ],
+    "type" : "Module",
+    "desc" : "UNKNOWN DESC",
+    "Constructor" : [
+
+    ],
+    "doc" : "",
+    "Field" : [
+
+    ],
+    "Command" : [
+
+    ],
+    "Method" : [
+      {
+        "doc" : "Binds hotkeys for Layouts Chooser\n\nParameters:\n * mapping - A table containing hotkey modifier\/key details for the chooser\n\nReturns:\n * The Layouts object",
+        "desc" : "Binds hotkeys for Layouts Chooser",
+        "def" : "Layouts:bindHotkeys(mapping)",
+        "stripped_doc" : [
+          "Binds hotkeys for Layouts Chooser",
+          ""
+        ],
+        "notes" : [
+
+        ],
+        "signature" : "Layouts:bindHotkeys(mapping)",
+        "type" : "Method",
+        "returns" : [
+          " * The Layouts object"
+        ],
+        "name" : "bindHotkeys",
+        "parameters" : [
+          " * mapping - A table containing hotkey modifier\/key details for the chooser",
+          ""
+        ]
+      }
+    ],
+    "items" : [
+      {
+        "doc" : "Logger object used within the Spoon. Can be accessed to set the default log level for the",
+        "desc" : "Logger object used within the Spoon. Can be accessed to set the default log level for the",
+        "def" : "Layouts.logger",
+        "stripped_doc" : [
+          "Logger object used within the Spoon. Can be accessed to set the default log level for the"
+        ],
+        "notes" : [
+
+        ],
+        "signature" : "Layouts.logger",
+        "type" : "Variable",
+        "returns" : [
+
+        ],
+        "name" : "logger",
+        "parameters" : [
+
+        ]
+      },
+      {
+        "doc" : "Binds hotkeys for Layouts Chooser\n\nParameters:\n * mapping - A table containing hotkey modifier\/key details for the chooser\n\nReturns:\n * The Layouts object",
+        "desc" : "Binds hotkeys for Layouts Chooser",
+        "def" : "Layouts:bindHotkeys(mapping)",
+        "stripped_doc" : [
+          "Binds hotkeys for Layouts Chooser",
+          ""
+        ],
+        "notes" : [
+
+        ],
+        "signature" : "Layouts:bindHotkeys(mapping)",
+        "type" : "Method",
+        "returns" : [
+          " * The Layouts object"
+        ],
+        "name" : "bindHotkeys",
+        "parameters" : [
+          " * mapping - A table containing hotkey modifier\/key details for the chooser",
+          ""
+        ]
+      }
+    ],
+    "name" : "Layouts"
+  }
+]
