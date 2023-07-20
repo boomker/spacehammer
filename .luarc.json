@@ -3,6 +3,7 @@
     "Lua.diagnostics.globals": [
         "hs",
         "input_method_config",
-        "spoon"
+        "spoon",
+        "hshelp_keys"
     ]
 }

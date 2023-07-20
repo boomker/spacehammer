@@ -51,22 +51,22 @@ superKey_toggle = { HyperKey, "S" }
 superKey_items = {
     -- S: 弹出当前 APP 所有快捷键列表面板
     -- H: 查看(canvas 浮层弹出)本项目所有快捷键配置
-    -- hshelp_keys = { prefix = { "Option" }, key = "S" }
     bartenderMenuSearch = { { "cmd", "alt", "ctrl" }, "6" },
     bobOCR = { { "cmd", "alt", "ctrl" }, "7" },
     toggleDND = { { "cmd", "alt", "ctrl" }, "\\" },
     evernote_todo = { { "cmd", "alt", "ctrl" }, "n" },
     eudic_lightPeek = { { "cmd", "alt", "ctrl" }, "l" },
-    iterm_floatWindow = { { "cmd", "alt", "ctrl" }, "i" },
+    -- iterm_floatWindow = { { "cmd", "alt", "ctrl" }, "i" },
     -- 可选填写代理服务器配置
     httpProxy = "http://127.0.0.1:7890",
     favoriteBluetoothName = "小爱音箱-4099",
 }
 
 -- 表情包搜索配置
-emoji_search = { prefix = HyperKey, key = "E", message = "Search emoji" }
+emoji_search = { prefix = HyperKey, key = "4", message = "Search emoji" }
+-- hshelp_keys = { prefix = HyperKey, key = "5" }
 
--- JSON 格式化
+-- -- JSON 格式化
 json_formater = { prefix = HyperKey, key = "T", message = "JSON 格式化" }
 
 

@@ -36,7 +36,6 @@ local function setWindowLayout(appName, eventType, appObject)
         if AppObjInfo.onBackupScreen and (#screens ~= 1) then
             local primaryScreenID = hs.screen.primaryScreen():id()
             for _, screen in ipairs(screens) do
-                -- print("psid: ", primaryScreenID, "sid: ", screen:id())
                 if screen:id() ~= primaryScreenID then
                     return screen
                 end

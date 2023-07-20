@@ -81,7 +81,7 @@ applications = {
         key = "M",
         message = "Foxmail",
         -- bundleId = "com.tencent.Foxmail",
-        name = {"Spark", "Foxmail"},
+        name = {"Outlook", "Foxmail"},
         anytimeAdjustWindowLayout = true,
     },
     {
@@ -109,6 +109,12 @@ applications = {
         key = "D",
         message = "DBeaver",
         name = { "dbeaver", "DBeaverEE", "DataGrip" },
+    },
+    {
+        prefix = HyperKey,
+        key = "E",
+        message = "Word",
+        name = { "word", "wps" },
     },
     {
         prefix = HyperKey,
