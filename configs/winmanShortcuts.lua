@@ -312,22 +312,22 @@ winman_keys = {
 		location = "left",
 		tag = "origin",
 	},
-	-- {
-	--     prefix = {},
-	--     key = "T",
-	--     message = "窗口移至上边屏幕",
-	--     func = "wMoveToScreen",
-	--     location = "up",
-	--     tag = "origin",
-	-- },
-	-- {
-	--     prefix = {},
-	--     key = "B",
-	--     message = "窗口移动下边屏幕",
-	--     func = "wMoveToScreen",
-	--     location = "down",
-	--     tag = "origin",
-	-- },
+    --[[ 	{
+	    prefix = {},
+	    key = "T",
+	    message = "窗口移至上边屏幕",
+	    func = "wMoveToScreen",
+	    location = "up",
+	    tag = "origin",
+	},
+	{
+	    prefix = {},
+	    key = "B",
+	    message = "窗口移动下边屏幕",
+	    func = "wMoveToScreen",
+	    location = "down",
+	    tag = "origin",
+	}, ]]
 	{
 		prefix = {},
 		key = "N",

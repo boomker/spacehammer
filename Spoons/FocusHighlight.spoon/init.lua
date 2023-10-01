@@ -41,7 +41,7 @@ obj.highlightFillAlpha = 0.1
 local previousFrame = nil
 
 function obj:start()
-    self.windowFilter:subscribe(hs.window.filter.windowFocused, function(window, appName)
+    self.windowFilter:subscribe(hs.window.filter.windowFocused, function(window, _)
         local color = self.color
         local nextFrame = window:frame()
 

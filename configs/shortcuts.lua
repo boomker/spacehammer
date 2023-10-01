@@ -56,7 +56,6 @@ superKey_items = {
     toggleDND = { { "cmd", "alt", "ctrl" }, "\\" },
     evernote_todo = { { "cmd", "alt", "ctrl" }, "n" },
     eudic_lightPeek = { { "cmd", "alt", "ctrl" }, "l" },
-    -- iterm_floatWindow = { { "cmd", "alt", "ctrl" }, "i" },
     -- 可选填写代理服务器配置
     httpProxy = "http://127.0.0.1:7890",
     favoriteBluetoothName = "小爱音箱-4099",
@@ -66,7 +65,7 @@ superKey_items = {
 emoji_search = { prefix = HyperKey, key = "4", message = "Search emoji" }
 -- hshelp_keys = { prefix = HyperKey, key = "5" }
 
--- -- JSON 格式化
+-- JSON 格式化
 json_formater = { prefix = HyperKey, key = "T", message = "JSON 格式化" }
 
 
@@ -92,7 +91,7 @@ hsconsole_keys = hsconsole_keys or { "alt", "Z" }
 if string.len(hsconsole_keys[2]) > 0 then
     hs.hotkey.bind(hsconsole_keys[1], hsconsole_keys[2], "打开 Hammerspoon 控制台", function()
         hs.toggleConsole()
-        -- hs.application.launchOrFocusByBundleID("org.hammerspoon.Hammerspoon")
+        hs.application.launchOrFocusByBundleID("org.hammerspoon.Hammerspoon")
     end)
 end
 

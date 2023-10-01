@@ -26,16 +26,19 @@ input_method_config = {
             message = "切换到rime输入法",
             inputmethodId = "im.rime.inputmethod.Squirrel.Hans",
         },
-        -- chinese = { prefix = HyperKey, key = "R", message = "Rime XHUP", inputmethodId = "com.sogou.inputmethod.sogou.pinyin" },
+        -- chinese = { prefix = HyperKey, key = "R", message = "Sogou", inputmethodId = "com.sogou.inputmethod.sogou.pinyin" },
     },
 
     --  以下 App 聚焦后自动切换到目标输入法, 需要配置目标应用名称或应用的 BundleId
     abc_apps = {
         -- "com.microsoft.VSCode", -- VSCode的应用名为"Code"
+        -- "Obsidian",
         -- 从 CLI 启动的APP窗口程序, 如若是别名, 需将别名添加到下面
         "Code",
         "PyCharm",
         "com.jetbrains.intellij",
+        "com.jetbrains.datagrip",
+        "com.dbeaver.product.enterprise",
         "Terminal",
         "com.googlecode.iterm2",
         "org.alacritty",
@@ -44,8 +47,6 @@ input_method_config = {
         "goneovim",
         "com.kapeli.dashdoc",
         "com.runningwithcrayons.Alfred",
-        "Raycast",
-        "Obsidian",
     },
 
     chinese_apps = {
@@ -55,9 +56,10 @@ input_method_config = {
         "QQ",
         "网易云音乐",
         "Typora",
+        "com.apple.TextEdit",
         "com.yinxiang.Mac",
         "com.microsoft.edgemac",
         "com.kingsoft.wpsoffice.mac",
-        -- "com.raycast.macos",
+        "im.monica.desktop.monica",
     },
 }

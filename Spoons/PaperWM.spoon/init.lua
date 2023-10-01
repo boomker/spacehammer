@@ -35,7 +35,8 @@ local WindowFilter<const> = hs.window.filter
 local Window<const> = hs.window
 local Spaces<const> = hs.spaces
 local Screen<const> = hs.screen
-local DoAfter<const> = hs.timer.doAfter
+-- local DoAfter<const> = hs.timer.doAfter
+local Timer <const> = hs.timer
 local Rect<const> = hs.geometry.rect
 local Watcher<const> = hs.uielement.watcher
 
@@ -95,6 +96,9 @@ PaperWM.window_filter = WindowFilter.new():setOverrideFilter({
 
 -- number of pixels between windows
 PaperWM.window_gap = 8
+
+-- ratios to use when cycling widths and heights, golden ratio by default
+PaperWM.window_ratios = { 0.23607, 0.38195, 0.61804 }
 
 -- logger
 PaperWM.logger = hs.logger.new(PaperWM.name)
@@ -172,7 +176,7 @@ local function windowEventHandler(window, event, self)
 
     if event == "windowFocused" then
         if pending_window and window == pending_window then
-            DoAfter(Window.animationDuration,
+            Timer.doAfter(Window.animationDuration,
                     function()
                 windowEventHandler(window, event, self)
             end)
@@ -186,14 +190,16 @@ local function windowEventHandler(window, event, self)
             pending_window = nil -- tried to add window for the second time
         elseif not space then
             pending_window = window
-            DoAfter(Window.animationDuration,
+            Timer.doAfter(Window.animationDuration,
                     function()
                 windowEventHandler(window, event, self)
             end)
             return
         end
-    elseif event == "windowNotVisible" or event == "windowFullscreened" then
-        space = self:removeWindow(window) -- destroyed windows don't have a space
+    elseif event == "windowNotVisible" then
+        self:removeWindow(window)               -- destroyed windows don't have a space
+    elseif event == "windowFullscreened" then
+        space = self:removeWindow(window, true) -- don't focus new window if fullscreened
     elseif event == "AXWindowMoved" or event == "AXWindowResized" then
         space = Spaces.windowSpaces(window)[1]
     end
@@ -205,6 +211,7 @@ function PaperWM:bindHotkeys(mapping)
     local partial = hs.fnutils.partial
     local spec = {
         stop_events = partial(self.stop, self),
+        refresh_windows = partial(self.refreshWindows, self),
         focus_left = partial(self.focusWindow, self, Direction.LEFT),
         focus_right = partial(self.focusWindow, self, Direction.RIGHT),
         focus_up = partial(self.focusWindow, self, Direction.UP),
@@ -257,7 +264,7 @@ function PaperWM:start()
     self:refreshWindows()
 
     -- set initial layout
-    for space, _ in pairs(window_list) do self:tileSpace(space) end
+    -- for space, _ in pairs(window_list) do self:tileSpace(space) end
 
     -- listen for window events
     self.window_filter:subscribe({
@@ -410,22 +417,22 @@ function PaperWM:refreshWindows()
     -- get all windows across spaces
     local all_windows = self.window_filter:getWindows()
 
-    local refresh_needed = false
+    local retile_spaces = {} -- spaces that need to be retiled
     for _, window in ipairs(all_windows) do
         local index = index_table[window:id()]
         if not index then
             -- add window
-            self:addWindow(window)
-            refresh_needed = true
+            local space = self:addWindow(window)
+            if space then retile_spaces[space] = true end
         elseif index.space ~= Spaces.windowSpaces(window)[1] then
             -- move to window list in new space
             self:removeWindow(window)
-            self:addWindow(window)
-            refresh_needed = true
+            local space = self:addWindow(window)
+            if space then retile_spaces[space] = true end
         end
     end
 
-    return refresh_needed
+    for space, _ in pairs(retile_spaces) do self:tileSpace(space) end
 end
 
 function PaperWM:addWindow(add_window)
@@ -477,7 +484,7 @@ function PaperWM:addWindow(add_window)
     return space
 end
 
-function PaperWM:removeWindow(remove_window)
+function PaperWM:removeWindow(remove_window, skip_new_window_focus)
     -- get index of window
     local remove_index = index_table[remove_window:id()]
     if not remove_index then
@@ -486,9 +493,12 @@ function PaperWM:removeWindow(remove_window)
     end
 
     -- find nearby window to focus
-    for _, direction in ipairs({
-        Direction.DOWN, Direction.UP, Direction.LEFT, Direction.RIGHT
-    }) do if self:focusWindow(direction, remove_index) then break end end
+
+    if not skip_new_window_focus then -- find nearby window to focus
+        for _, direction in ipairs({
+            Direction.DOWN, Direction.UP, Direction.LEFT, Direction.RIGHT
+        }) do if self:focusWindow(direction, remove_index) then break end end
+    end
 
     -- remove window
     table.remove(window_list[remove_index.space][remove_index.col],
@@ -698,9 +708,9 @@ function PaperWM:cycleWindowSize(direction)
 
     local function findNewSize(area_size, frame_size)
         -- calculate pixel widths from ratios
-        local sizes<const> = {0.38195, 0.5, 0.61804}
-        for index, size in ipairs(sizes) do
-            sizes[index] = size * area_size
+        local sizes = {}
+        for index, ratio in ipairs(self.window_ratios) do
+            sizes[index] = ratio * (area_size + self.window_gap) - self.window_gap
         end
 
         -- find new size
@@ -852,6 +862,21 @@ function PaperWM:switchToSpace(index)
         self.logger.d("space not found")
         return
     end
+    -- find a window to focus in new space
+    local windows = Spaces.windowsForSpace(space)
+    for _, id in ipairs(windows) do
+        local index = index_table[id]
+        if index then
+            -- https://github.com/Hammerspoon/hammerspoon/issues/370
+            -- raise app before focusing window
+            local window = getWindow(index.space, index.col, index.row)
+            local app = window:application()
+            app:activate()
+            Timer.usleep(10000)
+            window:focus()
+            break
+        end
+    end
 
     Spaces.gotoSpace(space)
 end
@@ -919,7 +944,7 @@ function PaperWM:moveWindow(window, frame)
 
     watcher:stop()
     window:setFrame(frame)
-    DoAfter(Window.animationDuration + padding, function()
+    Timer.doAfter(Window.animationDuration + padding, function()
         watcher:start({Watcher.windowMoved, Watcher.windowResized})
     end)
 end

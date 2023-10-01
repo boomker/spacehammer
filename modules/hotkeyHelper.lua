@@ -1,5 +1,5 @@
 ---@diagnostic disable: lowercase-global
--- -- 展示本工程快捷键列表
+-- 展示本工程快捷键列表
 
 hs.loadSpoon("ModalMgr")
 require 'modules.base'
@@ -77,13 +77,14 @@ local function drawText(tag, renderTextData, ccanvas)
         xl = 1
     else
         MAX_LINE_NUM = 29
-        xl = 1.97
+        xl = 1
+        -- xl = 1.97
     end
 
     local w = 0
     local h = 0
     -- 文本距离分割线的距离
-    local SEPRATOR_W = 5;
+    local SEPRATOR_W = 3;
 
     -- 每一列需要显示的文本
     local column = ''
@@ -158,8 +159,8 @@ local function formatText(tag)
     local applicationSwitchText = {}
     local windowManagement = {}
 
-    -- 每行最多 35 个字符
-    local MAX_LEN = 35
+    -- 每行最多 38 个字符
+    local MAX_LEN = 38
     if tag == 'WindowMOnly' then
         -- 窗口管理类
         table.insert(windowManagement, { msg = '[Window Management]:' })

@@ -10,7 +10,6 @@ if spoon.ModalMgr then
     spoon.ModalMgr:new("SuperSKey")
     skmodal = spoon.ModalMgr.modal_list["SuperSKey"]
 
-    -- skmodal = hs.hotkey.modal.new(superKey_toggle[1], superKey_toggle[2], "进入SuperSKey模式")
     skmodal:bind("", "escape", "exit SuperSKey模式", function()
         spoon.ModalMgr:deactivate({ "SuperSKey" })
     end)
@@ -149,9 +148,7 @@ end
 --------------- 开机登陆后自动化任务 -----------------------
 local function judge_boot()
     local uptime_cmd = [[uptime |cut -d',' -f1 |awk '{gsub(/:/, "");print $(NF-1), $NF}']]
-    ---@diagnostic disable-next-line: unused-local
     local uptime_res, status, _, exitCode = hs.execute(uptime_cmd)
-    -- print("retval:-", retVal)
     local retVals = split(trim(uptime_res), " ")
     if not retVals then return false end
     if string.match(retVals[2], "secs") then

@@ -70,8 +70,9 @@ applications = {
     {
         prefix = HyperKey,
         key = "F",
-        message = "PathFinder",
-        bundleId = "com.cocoatech.PathFinder",
+        message = "Finder",
+        -- bundleId = "com.cocoatech.PathFinder",
+        name = {"ForkLift", "Finder", "PathFinder"},
         -- initWindowLayout = window_grids.centeredMedium,
         -- alwaysWindowLayout = window_grids.centerHorizontal,
         anytimeAdjustWindowLayout = true,
@@ -114,7 +115,7 @@ applications = {
         prefix = HyperKey,
         key = "E",
         message = "Word",
-        name = { "word", "wps" },
+        name = { "Excel", "word", "wps" },
     },
     {
         prefix = HyperKey,
