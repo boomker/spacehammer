@@ -4,13 +4,18 @@ require "configs.baseConfig"
 
 remapingKeys = { -- trigger target combination key
     -- 将系统设置的" 切换到桌面 1 "快捷键配置如下
-    switchToFirstDesktopSpaceHotKey = { { "cmd", "alt", "ctrl" }, "," },
+    switchToFirstDesktopSpaceHotKey = { { "cmd", "alt", "ctrl" }, "1" },
 
     {
         prefix = HyperKey,
-        key = ",",
-        message = "切换到第一个桌面空间",
-        targetKey = { { "cmd", "alt", "ctrl" }, "," },
+        key = "1",
+        message = "切换到第1个桌面空间",
+        targetKey = { { "cmd", "alt", "ctrl" }, "1" },
+    },{
+        prefix = HyperKey,
+        key = "2",
+        message = "切换到第2个桌面空间",
+        targetKey = { { "cmd", "alt", "ctrl" }, "2" },
     },
     {
         prefix = HyperKey,
@@ -85,6 +90,7 @@ remapingKeys = { -- trigger target combination key
         prefix = HyperKey,
         key = "tab",
         message = "jumpToWindowAndFocus",
-        targetFunc = "jumpToWindowAndFocus",
+        -- targetFunc = "jumpToWindowAndFocus",
+        targetKey = { { "ctrl" , "Fn"}, "F4" },
     },
 }

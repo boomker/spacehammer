@@ -9,7 +9,7 @@ local WIDTH = 300
 local HEIGHT = 300
 
 -- 清除 Canvas
-function cleanCanvas(c)
+local function cleanCanvas(c)
     if c ~= nil then
         -- 渐出
         c:hide(.3)
@@ -22,7 +22,7 @@ function cleanCanvas(c)
 end
 
 -- 下班提醒
-function afterWork()
+local function afterWork()
     local canvas = hs.canvas.new({x = COORIDNATE_X - WIDTH / 2, y = COORIDNATE_Y - HEIGHT / 2, w = WIDTH, h = HEIGHT})
     canvas:appendElements({
         id = 'after-work',
@@ -45,6 +45,7 @@ end
 -- afterWork()
 
 -- 每天 18:00 提醒下班
-kstart = hs.timer.doAt('18:00', hs.timer.days(1), afterWork):start()
+hs.timer.doAt('18:00', hs.timer.days(1), afterWork):start()
+-- kstart = hs.timer.doAt('18:00', hs.timer.days(1), afterWork):start()
 -- 1 分钟后清除 Canvas
 -- kend = hs.timer.doAt('18:01', hs.timer.days(1), cleanCanvas):start()

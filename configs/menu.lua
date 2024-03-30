@@ -1,7 +1,7 @@
 -- 功能菜单
 
 require 'modules.base'
-require 'configs.config'
+require 'modules.config'
 
 local HSMenubar = hs.menubar.new()
 

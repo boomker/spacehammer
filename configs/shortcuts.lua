@@ -57,7 +57,7 @@ superKey_items = {
     evernote_todo = { { "cmd", "alt", "ctrl" }, "n" },
     eudic_lightPeek = { { "cmd", "alt", "ctrl" }, "l" },
     -- 可选填写代理服务器配置
-    httpProxy = "http://127.0.0.1:7890",
+    httpProxy = "http://127.0.0.1:1087",
     favoriteBluetoothName = "小爱音箱-4099",
 }
 
@@ -68,22 +68,22 @@ emoji_search = { prefix = HyperKey, key = "4", message = "Search emoji" }
 -- JSON 格式化
 json_formater = { prefix = HyperKey, key = "T", message = "JSON 格式化" }
 
-
 -- 当选中某窗口按下 ctrl+command+alt+. 时会显示应用的路径等信息
-hs.hotkey.bind({'ctrl', 'cmd', 'alt'}, ".", function()
-    hs.alert.show("App path:    "
-    ..hs.window.focusedWindow():application():path()
-    .."\n"
-    .."App name:      "
-    ..hs.window.focusedWindow():application():name()
-    .."\n"
-    .."App bundleId:  "
-    ..hs.window.focusedWindow():application():bundleID()
-    .."\n"
-    .."IM source id:  "
-    ..hs.keycodes.currentSourceID())
+hs.hotkey.bind({ "ctrl", "cmd", "alt" }, ".", function()
+    hs.alert.show(
+        "App path:    "
+            .. hs.window.focusedWindow():application():path()
+            .. "\n"
+            .. "App name:      "
+            .. hs.window.focusedWindow():application():name()
+            .. "\n"
+            .. "App bundleId:  "
+            .. hs.window.focusedWindow():application():bundleID()
+            .. "\n"
+            .. "IM source id:  "
+            .. hs.keycodes.currentSourceID()
+    )
 end)
-
 
 -- 快捷显示 Hammerspoon 控制台
 ----------------------------------------------------------------------------------------------------
@@ -101,7 +101,9 @@ hsreload_keys = hsreload_keys or { { "cmd", "alt", "ctrl" }, "Z" }
 if string.len(hsreload_keys[2]) > 0 then
     hs.hotkey.bind(hsreload_keys[1], hsreload_keys[2], "重新加载配置", function()
         -- clear all settings data
-        for _, v in ipairs(hs.settings.getKeys()) do hs.settings.clear(v) end
+        for _, v in ipairs(hs.settings.getKeys()) do
+            hs.settings.clear(v)
+        end
         hs.reload()
     end)
 

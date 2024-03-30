@@ -41,31 +41,6 @@ local keycodes = {
     kfn = { char = "fn", duplicate_removal = false },
 }
 
-visualizer_key = hs.eventtap
-    .new({ hs.eventtap.event.types.keyDown, hs.eventtap.event.types.flagsChanged }, function(event)
-        local keycode = event:getKeyCode()
-        if keycode == 255 or keycode == 179 then
-            goto continue
-        end
-        local key = hs.keycodes.map[keycode]
-        local tmp = keycodes["k" .. key]
-        if tmp ~= nil then
-            if tmp.duplicate_removal then
-                if tmp.first then
-                    tmp.first = false
-                else
-                    tmp.first = true
-                    goto continue
-                end
-            end
-            key = tmp.char
-        end
-        -- 渲染
-        render(key)
-        ::continue::
-    end)
-    :start()
-
 -- 当前画布属性
 local ele = {
     -- 展示的文本
@@ -87,7 +62,40 @@ local ele = {
     }),
 }
 
-function render(key)
+local function now()
+    -- 精确到毫秒（Lua os.time() 只能精确到秒）
+    return hs.timer.secondsSinceEpoch() * 1000
+end
+
+local function hideCanvas()
+    if now() - ele.last_time > duration then
+        ele.canvas:hide(fade_out)
+    end
+end
+
+local  function styleKeystrokeText(text)
+    return hs.styledtext.new(text, {
+        font = {
+            name = "Monaco",
+            size = 40,
+        },
+        -- 加粗
+        strokeWidth = -5,
+        color = {
+            hex = "#ffffff",
+        },
+        backgroundColor = {
+            hex = "#000000",
+            alpha = 0.5,
+        },
+        paragraphStyle = {
+            -- 超过画布宽度后自动换行
+            lineBreak = "wordWrap",
+        },
+    })
+end
+
+local function render(key)
     local now_time = now()
 
     if ele.first_key then
@@ -142,37 +150,30 @@ function render(key)
     ele.last_time = now_time
 end
 
-function hideCanvas()
-    if now() - ele.last_time > duration then
-        ele.canvas:hide(fade_out)
-    end
-end
+hs.eventtap
+    .new({ hs.eventtap.event.types.keyDown, hs.eventtap.event.types.flagsChanged }, function(event)
+        local keycode = event:getKeyCode()
+        if keycode == 255 or keycode == 179 then
+            goto continue
+        end
+        local key = hs.keycodes.map[keycode]
+        local tmp = keycodes["k" .. key]
+        if tmp ~= nil then
+            if tmp.duplicate_removal then
+                if tmp.first then
+                    tmp.first = false
+                else
+                    tmp.first = true
+                    goto continue
+                end
+            end
+            key = tmp.char
+        end
+        -- 渲染
+        render(key)
+        ::continue::
+    end)
+    :start()
 
-function now()
-    -- 精确到毫秒（Lua os.time() 只能精确到秒）
-    return hs.timer.secondsSinceEpoch() * 1000
-end
-
-function styleKeystrokeText(text)
-    return hs.styledtext.new(text, {
-        font = {
-            name = "Monaco",
-            size = 40,
-        },
-        -- 加粗
-        strokeWidth = -5,
-        color = {
-            hex = "#ffffff",
-        },
-        backgroundColor = {
-            hex = "#000000",
-            alpha = 0.5,
-        },
-        paragraphStyle = {
-            -- 超过画布宽度后自动换行
-            lineBreak = "wordWrap",
-        },
-    })
-end
-
-ktimer = hs.timer.doEvery(5, hideCanvas, true):start()
+hs.timer.doEvery(5, hideCanvas, true):start()
+-- ktimer = hs.timer.doEvery(5, hideCanvas, true):start()
