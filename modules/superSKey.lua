@@ -1,8 +1,8 @@
 hs.loadSpoon("ModalMgr")
-require("configs.shortcuts")
 require("modules.base")
-require("modules.superSCore")
 require("modules.ksheet")
+require("configs.shortcuts")
+require("modules.superSCore")
 require("modules.hotkeyHelper")
 
 local skmodal = nil
@@ -64,7 +64,7 @@ if spoon.ModalMgr then
         spoon.ModalMgr:deactivate({ "SuperSKey" })
     end)
     skmodal:bind("", "B", "蓝牙开关连接", function()
-          connetBluetoothDevice()
+        connetBluetoothDevice()
         spoon.ModalMgr:deactivate({ "SuperSKey" })
     end)
     skmodal:bind("", "N", "开关勿扰模式", function()
@@ -78,7 +78,6 @@ if spoon.ModalMgr then
     end)
     skmodal:bind("", "F", "开启专注模式", function()
         enableFocuseMode()
-        -- hs.window.highlight.toggleIsolate(true)
         spoon.ModalMgr:deactivate({ "SuperSKey" })
     end)
     skmodal:bind("", "C", "caffeineMode", function()
@@ -150,7 +149,9 @@ local function judge_boot()
     local uptime_cmd = [[uptime |cut -d',' -f1 |awk '{gsub(/:/, "");print $(NF-1), $NF}']]
     local uptime_res, status, _, exitCode = hs.execute(uptime_cmd)
     local retVals = split(trim(uptime_res), " ")
-    if not retVals then return false end
+    if not retVals then
+        return false
+    end
     if string.match(retVals[2], "secs") then
         return true
     elseif string.match(retVals[2], "day") then
@@ -169,7 +170,7 @@ end
 
 connect_bluetooth()
 
-------------------------------------
+------------------------------------------------------------
 local message = require("modules.status-message")
 skmodal.statusMessage = message.new("SuperSKey Mode")
 skmodal.entered = function()

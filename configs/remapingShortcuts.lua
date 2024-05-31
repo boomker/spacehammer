@@ -1,17 +1,18 @@
 ---@diagnostic disable: lowercase-global
 
-require "configs.baseConfig"
+require("configs.baseConfig")
 
 remapingKeys = { -- trigger target combination key
     -- 将系统设置的" 切换到桌面 1 "快捷键配置如下
-    switchToFirstDesktopSpaceHotKey = { { "cmd", "alt", "ctrl" }, "1" },
+    switchToFirstSpaceHotKey = { { "cmd", "alt", "ctrl" }, "1" },
 
     {
         prefix = HyperKey,
         key = "1",
         message = "切换到第1个桌面空间",
         targetKey = { { "cmd", "alt", "ctrl" }, "1" },
-    },{
+    },
+    {
         prefix = HyperKey,
         key = "2",
         message = "切换到第2个桌面空间",
@@ -28,12 +29,6 @@ remapingKeys = { -- trigger target combination key
         key = "J",
         message = "AppSwitch",
         targetKey = { { "cmd" }, "tab" },
-    },
-    {
-        prefix = HyperKey,
-        key = "Y",
-        message = "EudicLightPeek",
-        targetKey = { { "cmd", "alt", "ctrl" }, "L" },
     },
     {
         prefix = HyperKey,
@@ -91,6 +86,6 @@ remapingKeys = { -- trigger target combination key
         key = "tab",
         message = "jumpToWindowAndFocus",
         -- targetFunc = "jumpToWindowAndFocus",
-        targetKey = { { "ctrl" , "Fn"}, "F4" },
+        targetKey = { { "ctrl", "Fn" }, "F4" },
     },
 }

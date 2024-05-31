@@ -28,7 +28,7 @@ applications = {
         prefix = HyperKey,
         key = "V",
         message = "neovide",
-        name = {"neovide", "nvide", "goneovim"},  -- 支持多 AppName
+        name = { "neovide", "nvide", "goneovim" }, -- 支持多 AppName
         alwaysWindowLayout = window_grids.fullScreen,
         anytimeAdjustWindowLayout = true,
         onPrimaryScreen = false,
@@ -61,8 +61,8 @@ applications = {
     {
         prefix = HyperKey,
         key = "I",
-        message = "iTerm2",
-        name = {"Alacritty", "iTerm", "iTerm2", "warp"},
+        message = "terminal",
+        name = { "Alacritty", "iTerm", "iTerm2", "warp" },
         -- bundleId = "com.googlecode.iterm2",
         alwaysWindowLayout = window_grids.fullScreen,
         anytimeAdjustWindowLayout = true,
@@ -72,7 +72,7 @@ applications = {
         key = "F",
         message = "Finder",
         -- bundleId = "com.cocoatech.PathFinder",
-        name = {"ForkLift", "Finder", "PathFinder"},
+        name = { "ForkLift", "Finder", "PathFinder" },
         -- initWindowLayout = window_grids.centeredMedium,
         -- alwaysWindowLayout = window_grids.centerHorizontal,
         anytimeAdjustWindowLayout = true,
@@ -82,7 +82,7 @@ applications = {
         key = "M",
         message = "Foxmail",
         -- bundleId = "com.tencent.Foxmail",
-        name = {"Outlook", "Foxmail"},
+        name = { "Outlook", "Foxmail" },
         anytimeAdjustWindowLayout = true,
     },
     {
@@ -97,10 +97,9 @@ applications = {
     {
         prefix = HyperKey,
         key = "K",
-        message = "Edge",
-        -- message = "Chrome",
-        name = {"edge", "Chrome", "Arc"},
-        -- bundleId = "com.google.Chrome",
+        message = "browser",
+        name = { "Microsoft Edge", "Google Chrome", "Arc" },
+        -- bundleId = "com.microsoft.edgemac",
         onBackupScreen = true,
         alwaysWindowLayout = window_grids.fullScreen,
         anytimeAdjustWindowLayout = true,
@@ -114,7 +113,7 @@ applications = {
     {
         prefix = HyperKey,
         key = "E",
-        message = "Word",
+        message = "Excel",
         name = { "Excel", "word", "wps" },
     },
     {

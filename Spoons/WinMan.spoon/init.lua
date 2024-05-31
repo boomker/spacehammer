@@ -4,12 +4,12 @@
 ---
 --- Download: [原 WinWin Spoon 地址](https://github.com/Hammerspoon/Spoons/raw/master/Spoons/WinWin.spoon.zip)
 
-local obj={}
+local obj = {}
 obj.__index = obj
 
 -- Metadata
 obj.name = "WinMan"
-obj.version = "1.1"
+obj.version = "1.2"
 obj.author = "shingo <gmboomker@gmail.com>"
 obj.homepage = "https://github.com/boomker/spacehammer"
 obj.license = "MIT - https://opensource.org/licenses/MIT"
@@ -17,12 +17,10 @@ obj.license = "MIT - https://opensource.org/licenses/MIT"
 -- Windows manipulation history. Only the last operation is stored.
 obj.history = {}
 
-
 --- WinMan.gridparts
 --- Variable
 --- An integer specifying how many gridparts the screen should be divided into. Defaults to 30.
 obj.gridparts = 30
-
 
 -- Internal method to find out what part of the screen a window gravitates towards (left/right, top/bottom)
 --      +------------------+------------------+
@@ -35,6 +33,7 @@ obj.gridparts = 30
 --      |                  |                  |
 --      +------------------+------------------+
 -- Perhaps there is a much easier way to calculate this?
+
 function obj:_getWindowGravity(window)
     local screen = window:screen()
     local sFrame = screen:frame()
@@ -66,22 +65,23 @@ end
 ---
 --- Parameters:
 ---  * direction - A string specifying the direction, valid strings are: `left`, `right`, `up`, `down`.
+
 function obj:stepMove(direction)
     local cwin = hs.window.focusedWindow()
     if cwin then
         local cscreen = cwin:screen()
         local cres = cscreen:fullFrame()
-        local stepw = cres.w/obj.gridparts
-        local steph = cres.h/obj.gridparts
+        local stepw = cres.w / obj.gridparts
+        local steph = cres.h / obj.gridparts
         local wtopleft = cwin:topLeft()
         if direction == "left" then
-            cwin:setTopLeft({x=wtopleft.x-stepw, y=wtopleft.y})
+            cwin:setTopLeft({ x = wtopleft.x - stepw, y = wtopleft.y })
         elseif direction == "right" then
-            cwin:setTopLeft({x=wtopleft.x+stepw, y=wtopleft.y})
+            cwin:setTopLeft({ x = wtopleft.x + stepw, y = wtopleft.y })
         elseif direction == "up" then
-            cwin:setTopLeft({x=wtopleft.x, y=wtopleft.y-steph})
+            cwin:setTopLeft({ x = wtopleft.x, y = wtopleft.y - steph })
         elseif direction == "down" then
-            cwin:setTopLeft({x=wtopleft.x, y=wtopleft.y+steph})
+            cwin:setTopLeft({ x = wtopleft.x, y = wtopleft.y + steph })
         end
     else
         hs.alert.show("No focused window!")
@@ -94,35 +94,36 @@ end
 ---
 --- Parameters:
 ---  * direction - A string specifying the direction, valid strings are: `left`, `right`, `up`, `down`.
+
 function obj:stepResize(direction)
     local cwin = hs.window.focusedWindow()
     if cwin then
         local cscreen = cwin:screen()
         local cres = cscreen:fullFrame()
         local wf = cwin:frame()
-        local stepw = cres.w/obj.gridparts
-        local steph = cres.h/obj.gridparts
+        local stepw = cres.w / obj.gridparts
+        local steph = cres.h / obj.gridparts
         local wsize = cwin:size()
         if direction == "left" then
-            cwin:setSize({w=wsize.w-stepw, h=wsize.h})
+            cwin:setSize({ w = wsize.w - stepw, h = wsize.h })
         elseif direction == "right" then
-            cwin:setSize({w=wsize.w+stepw, h=wsize.h})
+            cwin:setSize({ w = wsize.w + stepw, h = wsize.h })
         elseif direction == "up" then
-            cwin:setSize({w=wsize.w, h=wsize.h-steph})
+            cwin:setSize({ w = wsize.w, h = wsize.h - steph })
         elseif direction == "down" then
-            cwin:setSize({w=wsize.w, h=wsize.h+steph})
+            cwin:setSize({ w = wsize.w, h = wsize.h + steph })
         elseif direction == "expand" then
-            cwin:setSize({w=wsize.w+stepw, h=wsize.h+steph})
+            cwin:setSize({ w = wsize.w + stepw, h = wsize.h + steph })
         elseif direction == "shrink" then
-            cwin:setSize({w=wsize.w-stepw, h=wsize.h-steph})
+            cwin:setSize({ w = wsize.w - stepw, h = wsize.h - steph })
         elseif direction == "rightExpanToScreen" then
-            cwin:setSize({w=cres.w-wf.x, h=wsize.h})
+            cwin:setSize({ w = cres.w - wf.x, h = wsize.h })
         elseif direction == "leftExpanToScreen" then
-            cwin:setFrame({x=cres.x, y=wf.y, w=wsize.w + wf.x, h=wf.h})
+            cwin:setFrame({ x = cres.x, y = wf.y, w = wsize.w + wf.x, h = wf.h })
         elseif direction == "upExpanToScreen" then
-            cwin:setFrame({x=wf.x, y=cres.y, w=wf.w, h=wf.h + wf.y})
+            cwin:setFrame({ x = wf.x, y = cres.y, w = wf.w, h = wf.h + wf.y })
         elseif direction == "downExpanToScreen" then
-            cwin:setSize({w=wsize.w, h=cres.h})
+            cwin:setSize({ w = wsize.w, h = cres.h })
         end
     else
         hs.alert.show("No focused window!")
@@ -146,6 +147,7 @@ end
 --- * If window is more to the left, it resizes on the right border.
 --- * The same principal applies to `up` and `down`.
 --- * When a window is full width or full height, it will shrink/expand in the 'direction' direction.
+
 function obj:smartStepResize(direction)
     local cwin = hs.window.focusedWindow()
     if cwin then
@@ -169,56 +171,52 @@ function obj:smartStepResize(direction)
                 gravity.right = false
             end
             if gravity.left then
-                obj:stepResize('left')
+                obj:stepResize("left")
             else
-                obj:stepMove('left')
-                obj:stepResize('right')
+                obj:stepMove("left")
+                obj:stepResize("right")
             end
-
         elseif direction == "right" then
             if isFullWidth then
                 gravity.left = false
                 gravity.right = true
             end
             if gravity.right then
-                obj:stepResize('left')
-                obj:stepMove('right')
+                obj:stepResize("left")
+                obj:stepMove("right")
             else
-                obj:stepResize('right')
+                obj:stepResize("right")
             end
-
         elseif direction == "up" then
             if isFullHeight then
                 gravity.top = true
                 gravity.bottom = false
             end
             if gravity.top then
-                obj:stepResize('up')
+                obj:stepResize("up")
             else
-                obj:stepMove('up')
-                obj:stepResize('down')
+                obj:stepMove("up")
+                obj:stepResize("down")
             end
-
         elseif direction == "down" then
             if isFullHeight then
                 gravity.top = false
                 gravity.bottom = true
             end
             if gravity.bottom then
-                obj:stepResize('up')
-                obj:stepMove('down')
+                obj:stepResize("up")
+                obj:stepMove("down")
             else
-                obj:stepResize('down')
+                obj:stepResize("down")
             end
-
         elseif direction == "rightExpanToScreen" then
-            cwin:setSize({w=cres.w-wf.x, h=wsize.h})
+            cwin:setSize({ w = cres.w - wf.x, h = wsize.h })
         elseif direction == "leftExpanToScreen" then
-            cwin:setFrame({x=cres.x, y=wf.y, w=wsize.w + wf.x, h=wf.h})
+            cwin:setFrame({ x = cres.x, y = wf.y, w = wsize.w + wf.x, h = wf.h })
         elseif direction == "upExpanToScreen" then
-            cwin:setFrame({x=wf.x, y=cres.y, w=wf.w, h=wf.h + wf.y})
+            cwin:setFrame({ x = wf.x, y = cres.y, w = wf.w, h = wf.h + wf.y })
         elseif direction == "downExpanToScreen" then
-            cwin:setSize({w=wsize.w, h=cres.h})
+            cwin:setSize({ w = wsize.w, h = cres.h })
         else
             hs.alert.show("Unknown direction: " .. direction)
         end
@@ -227,9 +225,8 @@ function obj:smartStepResize(direction)
     end
 end
 
-
 local function isInHistory(windowid)
-    for idx,val in ipairs(obj.history) do
+    for idx, val in ipairs(obj.history) do
         if val[1] == windowid then
             return idx
         end
@@ -250,18 +247,24 @@ function obj:stash()
             table.insert(obj.history, 1, tmptable)
             -- Make sure the history for each application doesn't reach the maximum (100 items)
             local id_history = obj.history[1][2]
-            if #id_history > 100 then table.remove(id_history) end
+            if #id_history > 100 then
+                table.remove(id_history)
+            end
             table.insert(id_history, 1, winf)
         else
             local id_history = obj.history[id_idx][2]
-            if #id_history > 100 then table.remove(id_history) end
+            if #id_history > 100 then
+                table.remove(id_history)
+            end
             table.insert(id_history, 1, winf)
         end
     else
         -- Make sure the history of window id doesn't reach the maximum (100 items).
-        if #obj.history > 100 then table.remove(obj.history) end
+        if #obj.history > 100 then
+            table.remove(obj.history)
+        end
         -- Stash new window id and its first history
-        local newtable = {winid, {winf}}
+        local newtable = { winid, { winf } }
         table.insert(obj.history, 1, newtable)
     end
 end
@@ -284,28 +287,72 @@ function obj:moveAndResize(option)
         -- local steph = cres.h/obj.gridparts
         local wf = cwin:frame()
         local options = {
-            halfleft = function() cwin:setFrame({x=cres.x, y=cres.y, w=cres.w/2, h=cres.h}) end,
-            halfright = function() cwin:setFrame({x=cres.x+cres.w/2, y=cres.y, w=cres.w/2, h=cres.h}) end,
-            halfup = function() cwin:setFrame({x=cres.x, y=cres.y, w=cres.w, h=cres.h/2}) end,
-            halfdown = function() cwin:setFrame({x=cres.x, y=cres.y+cres.h/2, w=cres.w, h=cres.h/2}) end,
-            cornerNW = function() cwin:setFrame({x=cres.x, y=cres.y, w=cres.w/2, h=cres.h/2}) end,
-            cornerNE = function() cwin:setFrame({x=cres.x+cres.w/2, y=cres.y, w=cres.w/2, h=cres.h/2}) end,
-            cornerSW = function() cwin:setFrame({x=cres.x, y=cres.y+cres.h/2, w=cres.w/2, h=cres.h/2}) end,
-            cornerSE = function() cwin:setFrame({x=cres.x+cres.w/2, y=cres.y+cres.h/2, w=cres.w/2, h=cres.h/2}) end,
-            fullscreen = function() cwin:toggleFullScreen() end,
-            maximize = function() cwin:maximize() end,
-            minimize = function() cwin:minimize() end,
-            center = function() cwin:centerOnScreen() end,
-            screenRB = function () cwin:setFrame({x=cres.w-wf.w, y=wf.y, w=wf.w, h=wf.h}) end,
-            screenLB = function () cwin:setFrame({x=cres.x, y=wf.y, w=wf.w, h=wf.h}) end,
-            screenUB = function () cwin:setFrame({x=wf.x, y=cres.y, w=wf.w, h=wf.h}) end,
-            screenDB = function ()  cwin:setFrame({x=wf.x, y=cres.h-wf.h, w=wf.w, h=wf.h}) end,
-            screenCornerNW = function() cwin:setFrame({x=cres.x, y=cres.y, w=wf.w, h=wf.h}) end,
-            screenCornerNE = function() cwin:setFrame({x=cres.w-wf.w, y=cres.y, w=wf.w, h=wf.h}) end,
-            screenCornerSW = function() cwin:setFrame({x=cres.x, y=cres.y+(cres.h-wf.h), w=wf.w, h=wf.h}) end,
-            screenCornerSE = function() cwin:setFrame({x=cres.x+(cres.w-wf.w), y=cres.y+(cres.h-wf.h), w=wf.w, h=wf.h}) end,
-            expand = function() obj:stepResize("expand") end,
-            shrink = function() obj:stepResize("shrink") end,
+            halfleft = function()
+                cwin:setFrame({ x = cres.x, y = cres.y, w = cres.w / 2, h = cres.h })
+            end,
+            halfright = function()
+                cwin:setFrame({ x = cres.x + cres.w / 2, y = cres.y, w = cres.w / 2, h = cres.h })
+            end,
+            halfup = function()
+                cwin:setFrame({ x = cres.x, y = cres.y, w = cres.w, h = cres.h / 2 })
+            end,
+            halfdown = function()
+                cwin:setFrame({ x = cres.x, y = cres.y + cres.h / 2, w = cres.w, h = cres.h / 2 })
+            end,
+            cornerNW = function()
+                cwin:setFrame({ x = cres.x, y = cres.y, w = cres.w / 2, h = cres.h / 2 })
+            end,
+            cornerNE = function()
+                cwin:setFrame({ x = cres.x + cres.w / 2, y = cres.y, w = cres.w / 2, h = cres.h / 2 })
+            end,
+            cornerSW = function()
+                cwin:setFrame({ x = cres.x, y = cres.y + cres.h / 2, w = cres.w / 2, h = cres.h / 2 })
+            end,
+            cornerSE = function()
+                cwin:setFrame({ x = cres.x + cres.w / 2, y = cres.y + cres.h / 2, w = cres.w / 2, h = cres.h / 2 })
+            end,
+            fullscreen = function()
+                cwin:toggleFullScreen()
+            end,
+            maximize = function()
+                cwin:maximize()
+            end,
+            minimize = function()
+                cwin:minimize()
+            end,
+            center = function()
+                cwin:centerOnScreen()
+            end,
+            screenRB = function()
+                cwin:setFrame({ x = cres.w - wf.w, y = wf.y, w = wf.w, h = wf.h })
+            end,
+            screenLB = function()
+                cwin:setFrame({ x = cres.x, y = wf.y, w = wf.w, h = wf.h })
+            end,
+            screenUB = function()
+                cwin:setFrame({ x = wf.x, y = cres.y, w = wf.w, h = wf.h })
+            end,
+            screenDB = function()
+                cwin:setFrame({ x = wf.x, y = cres.h - wf.h, w = wf.w, h = wf.h })
+            end,
+            screenCornerNW = function()
+                cwin:setFrame({ x = cres.x, y = cres.y, w = wf.w, h = wf.h })
+            end,
+            screenCornerNE = function()
+                cwin:setFrame({ x = cres.w - wf.w, y = cres.y, w = wf.w, h = wf.h })
+            end,
+            screenCornerSW = function()
+                cwin:setFrame({ x = cres.x, y = cres.y + (cres.h - wf.h), w = wf.w, h = wf.h })
+            end,
+            screenCornerSE = function()
+                cwin:setFrame({ x = cres.x + (cres.w - wf.w), y = cres.y + (cres.h - wf.h), w = wf.w, h = wf.h })
+            end,
+            expand = function()
+                obj:stepResize("expand")
+            end,
+            shrink = function()
+                obj:stepResize("shrink")
+            end,
         }
 
         if options[option] then
@@ -337,7 +384,7 @@ function obj:moveAndResize(option)
         --     -- cwin:setFrame({x=cres.x+cres.w/3/2, y=cres.h/96, w=cres.w/3*2, h=cres.h})
         --     cwin:setFrame({x=cres.x+cres.w/3/2, y=cres.y, w=cres.w/3*2, h=cres.h})
 
-        -- -- 定义 show 
+        -- -- 定义 show
         -- -- 宽度为24 分之 22
         -- elseif option == "show" then
         --     -- cwin:setFrame({x=cres.x+cres.w/3/2/2/2/2, y=cres.h/96, w=cres.w/48*46, h=cres.h})
@@ -348,7 +395,7 @@ function obj:moveAndResize(option)
         --     -- cwin:setFrame({x=cres.x+cres.w/3/2/2, y=cres.h/96, w=cres.w/12*10, h=cres.h})
         --     cwin:setFrame({x=cres.x+cres.w/3/2/2, y=cres.y, w=cres.w/12*10, h=cres.h})
 
-        -- -- 定义 center-2 
+        -- -- 定义 center-2
         -- elseif option == "center-2" then
         --     cwin:setFrame({x=cres.x+cres.w/2/2, y=cres.y, w=cres.w/2, h=cres.h})
 
@@ -387,13 +434,13 @@ function obj:moveAndResize(option)
         -- elseif option == "screenCornerSW" then
         --     cwin:setFrame({x=cres.x, y=cres.y+(cres.h-wf.h), w=wf.w, h=wf.h})
         -- elseif option == "screenCornerSE" then
-            cwin:setFrame({x=cres.x+(cres.w-wf.w), y=cres.y+(cres.h-wf.h), w=wf.w, h=wf.h})
+        cwin:setFrame({ x = cres.x + (cres.w - wf.w), y = cres.y + (cres.h - wf.h), w = wf.w, h = wf.h })
         -- elseif option == "expand" then
         --     -- cwin:setFrame({x=wf.x-stepw, y=wf.y-steph, w=wf.w+(stepw*2), h=wf.h+(steph*2)})
         --     obj:stepResize("expand")
         -- elseif option == "shrink" then
-            obj:stepResize("shrink")
-            -- cwin:setFrame({x=wf.x+stepw, y=wf.y+steph, w=wf.w-(stepw*2), h=wf.h-(steph*2)})
+        obj:stepResize("shrink")
+        -- cwin:setFrame({x=wf.x+stepw, y=wf.y+steph, w=wf.w-(stepw*2), h=wf.h-(steph*2)})
         -- end
     else
         hs.alert.show("No focused window!")
@@ -406,6 +453,7 @@ end
 ---
 --- Parameters:
 ---  * direction - A string specifying the direction, valid strings are: `left`, `right`, `up`, `down`, `next`.
+
 function obj:cMoveToScreen(direction)
     local cwin = hs.window.focusedWindow()
     if cwin then
@@ -426,37 +474,47 @@ function obj:cMoveToScreen(direction)
     end
 end
 
-local function getSpaceID(direction)
+local function getTargetSpaceID(direction)
     local curSpaceID = hs.spaces.focusedSpace()
     local curScreenAllSpaceIDs = hs.spaces.spacesForScreen()
-    local targetSpaceID = 0
-    local targetSpaceIndex = 0
-    local curSpaceIndex = hs.fnutils.indexOf(curScreenAllSpaceIDs, curSpaceID)
-    if direction == "right" then
-        targetSpaceIndex = curSpaceIndex + 1
+    table.sort(curScreenAllSpaceIDs)
+    local nextSpaceIndex = hs.fnutils.indexOf(curScreenAllSpaceIDs, curSpaceID)
+    if nextSpaceIndex == #curScreenAllSpaceIDs then
+        if direction == "next" then
+            nextSpaceIndex = 1
+        else
+            nextSpaceIndex = nextSpaceIndex - 1
+        end
     else
-        targetSpaceIndex = curSpaceIndex - 1
+        if direction == "next" then
+            nextSpaceIndex = nextSpaceIndex + 1
+        else
+            nextSpaceIndex = nextSpaceIndex - 1
+            -- if nextSpaceIndex == 0 then
+            --     nextSpaceIndex = #curScreenAllSpaceIDs
+            -- end
+        end
     end
-    if targetSpaceIndex == 0 then
-        targetSpaceID = curScreenAllSpaceIDs[#curScreenAllSpaceIDs]
-    elseif targetSpaceIndex > #curScreenAllSpaceIDs then
-        targetSpaceID = curScreenAllSpaceIDs[1]
-    else
-        targetSpaceID = curScreenAllSpaceIDs[targetSpaceIndex]
-    end
-    return targetSpaceID
+    return curScreenAllSpaceIDs[nextSpaceIndex], nextSpaceIndex
 end
+
+local PaperWM = hs.loadSpoon("PaperWM")
 
 function obj:moveToSpace(direction, followWindow)
     local windowObj = hs.window.focusedWindow()
     local mousePosition = hs.mouse.absolutePosition()
-    if not windowObj then hs.alert.show("No focused window!") end
+    if not windowObj then
+        hs.alert.show("No focused window!")
+    end
     if direction == "right" then
-        local nextSpaceID = getSpaceID("right")
-        hs.spaces.moveWindowToSpace(windowObj, nextSpaceID)
+        local nextSpaceID, nextSpaceIndex = getTargetSpaceID("next")
+
+        -- hs.spaces.moveWindowToSpace(windowObj, nextSpaceID)
+        PaperWM:moveWindowToSpace(nextSpaceIndex, windowObj)
     elseif direction == "left" then
-        local prevSpaceID = getSpaceID("left")
-        hs.spaces.moveWindowToSpace(windowObj, prevSpaceID)
+        local prevSpaceID, prevSpaceIndex = getTargetSpaceID("prev")
+        -- hs.spaces.moveWindowToSpace(windowObj, prevSpaceID)
+        PaperWM:moveWindowToSpace(prevSpaceIndex, windowObj)
     end
     -- 跟随窗口一起移动到下一个 space
     if followWindow then
@@ -467,7 +525,7 @@ function obj:moveToSpace(direction, followWindow)
     end
 end
 
-
+--[[
 function obj:jumpToWindowAndFocus()
     local windowObj = hs.window.focusedWindow()
     local curWindowID = nil
@@ -482,8 +540,8 @@ function obj:jumpToWindowAndFocus()
         visible = true,
         fullscreen = false,
         hasTitlebar = true,
-        currentSpace=true,
-        allowRoles = "AXStandardWindow"
+        currentSpace = true,
+        allowRoles = "AXStandardWindow",
     })
 
     local _curSpaceAllWindows = window_filter:getWindows()
@@ -497,7 +555,9 @@ function obj:jumpToWindowAndFocus()
 
     table.sort(curSpaceAllWindowsID)
     local curWinIDIndex = hs.fnutils.indexOf(curSpaceAllWindowsID, curWindowID)
-    if not curWinIDIndex then return false end
+    if not curWinIDIndex then
+        return false
+    end
     local nextFocusedWindowIndex = nil
     if curWinIDIndex == #curSpaceAllWindowsID then
         nextFocusedWindowIndex = 1
@@ -514,8 +574,8 @@ function obj:jumpToWindowAndFocus()
         hs.alert.show("No focused window!")
         return false
     end
-
 end
+--]]
 
 --- WinMan:undo()
 --- Method
@@ -593,10 +653,10 @@ function obj:centerCursor()
     local cres = cscreen:fullFrame()
     if cwin then
         -- Center the cursor one the focused window
-        hs.mouse.setAbsolutePosition({x=wf.x+wf.w/2, y=wf.y+wf.h/2})
+        hs.mouse.setAbsolutePosition({ x = wf.x + wf.w / 2, y = wf.y + wf.h / 2 })
     else
         -- Center the cursor on the screen
-        hs.mouse.setAbsolutePosition({x=cres.x+cres.w/2, y=cres.y+cres.h/2})
+        hs.mouse.setAbsolutePosition({ x = cres.x + cres.w / 2, y = cres.y + cres.h / 2 })
     end
 end
 

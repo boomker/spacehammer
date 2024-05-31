@@ -54,16 +54,13 @@ superKey_items = {
     bartenderMenuSearch = { { "cmd", "alt", "ctrl" }, "6" },
     bobOCR = { { "cmd", "alt", "ctrl" }, "7" },
     toggleDND = { { "cmd", "alt", "ctrl" }, "\\" },
-    evernote_todo = { { "cmd", "alt", "ctrl" }, "n" },
-    eudic_lightPeek = { { "cmd", "alt", "ctrl" }, "l" },
     -- 可选填写代理服务器配置
     httpProxy = "http://127.0.0.1:1087",
     favoriteBluetoothName = "小爱音箱-4099",
 }
 
 -- 表情包搜索配置
-emoji_search = { prefix = HyperKey, key = "4", message = "Search emoji" }
--- hshelp_keys = { prefix = HyperKey, key = "5" }
+-- emoji_search = { prefix = HyperKey, key = "4", message = "Search emoji" }
 
 -- JSON 格式化
 json_formater = { prefix = HyperKey, key = "T", message = "JSON 格式化" }
