@@ -498,7 +498,7 @@ local function getTargetSpaceID(direction)
     return curScreenAllSpaceIDs[nextSpaceIndex], nextSpaceIndex
 end
 
-local PaperWM = hs.loadSpoon("PaperWM")
+-- local PaperWM = hs.loadSpoon("PaperWM")
 
 function obj:moveToSpace(direction, followWindow)
     local windowObj = hs.window.focusedWindow()
@@ -509,12 +509,12 @@ function obj:moveToSpace(direction, followWindow)
     if direction == "right" then
         local nextSpaceID, nextSpaceIndex = getTargetSpaceID("next")
 
-        -- hs.spaces.moveWindowToSpace(windowObj, nextSpaceID)
-        PaperWM:moveWindowToSpace(nextSpaceIndex, windowObj)
+        hs.spaces.moveWindowToSpace(windowObj, nextSpaceID)
+        -- PaperWM:moveWindowToSpace(nextSpaceIndex, windowObj)
     elseif direction == "left" then
         local prevSpaceID, prevSpaceIndex = getTargetSpaceID("prev")
-        -- hs.spaces.moveWindowToSpace(windowObj, prevSpaceID)
-        PaperWM:moveWindowToSpace(prevSpaceIndex, windowObj)
+        hs.spaces.moveWindowToSpace(windowObj, prevSpaceID)
+        -- PaperWM:moveWindowToSpace(prevSpaceIndex, windowObj)
     end
     -- 跟随窗口一起移动到下一个 space
     if followWindow then

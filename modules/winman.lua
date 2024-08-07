@@ -10,7 +10,7 @@ require("configs.windowConfig")
 require("configs.winmanShortcuts")
 
 local TWM = hs.loadSpoon("TilingWindowManagerMod")
--- TWM:setLogLevel("debug")                     -- 可选开启 Tile 模式下 debug 日志
+-- TWM:setLogLevel("debug")                  -- 可选开启 Tile 模式下 debug 日志
 TWMObj = TWM:start({
     menubar = true,
     dynamic = winman_dynamicAdjustWindowLayout, -- 是否开启实时动态窗口布局调整, 默认关闭, 开启会有些许性能下降
@@ -23,7 +23,8 @@ TWMObj = TWM:start({
     },
     displayLayout = true,
     floatApps = {},
-    fullscreenRightApps = { "md.obsidian" }, -- 支持指定 App 窗口右半屏布局(全屏模式下)
+    fullscreenRightApps = {},
+    -- fullscreenRightApps = { "md.obsidian" }, -- 支持指定 App 窗口右半屏布局(全屏模式下)
 })
 
 local WGL = spoon.Layouts
@@ -35,7 +36,7 @@ WindowLayoutForSpaceStatus = {
     tmpWindowLayoutName = nil,
 }
 
--- ==== 窗口管理传统/Tile模式 ==== --
+-- ==== 窗口管理传统(Tile)模式 ==== --
 if spoon.WinMan then
     -- SpaceUID 由 ScreenID_SpaceID 构成
     local getSpaceUID = function()
@@ -162,7 +163,7 @@ if spoon.WinMan then
         spoon.ModalMgr:toggleCheatsheet()
     end)
 
-    -- {{{ 窗口管理之 原始模式/Tile模式 Start
+    -- {{{ 窗口管理之 原始模式(Tile) 模式 Start
     hs.fnutils.each(winman_keys, function(item)
         -- 原始模式: 同时只能对一个窗口进行操作, 一个按键只会对应映射一个操作
         if item.tag == "origin" then
@@ -189,7 +190,6 @@ if spoon.WinMan then
             elseif wfn == "stepResize" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     spoon.WinMan:stash()
-                    -- spoon.WinMan:stepResize(item.direction)
                     spoon.WinMan:smartStepResize(item.direction)
                     handleWinManMode("on")
                 end)
@@ -211,13 +211,6 @@ if spoon.WinMan then
                     spoon.WinMan:moveToSpace(item.direction, item.followWindow)
                     handleWinManMode("off")
                 end)
-            --[[ elseif wfn == "moveAndFocusToSpace" then
-                cmodal:bind(item.prefix, item.key, item.message, function()
-                    spoon.WinMan:stash()
-                    spoon.WinMan:moveToSpace(item.direction)
-                    handleWinManMode("on")
-                end)
-			--]]
             elseif wfn == "killSameAppAllWindow" then
                 cmodal:bind(item.prefix, item.key, item.message, function()
                     kill_same_application()
@@ -437,12 +430,12 @@ end
 
 spoon.ModalMgr.supervisor:enter()
 
---! App 窗口开启全局任意方式切换后自动调整布局, 有一定程度性能会下降!
-local Count = 0
+--! App 窗口开启全局任意方式切换后自动调整布局, 有一定程度性能下降!
 local function execAppWindowAutoLayout()
     AppWindowAutoLayout()
-    Count = Count + 1
-    if #alwaysAdjustAppWindowLayoutData ~= 0 or Count > 1 then
+    -- local Count = 0
+    -- Count = Count + 1 or Count > 1
+    if #alwaysAdjustAppWindowLayoutData ~= 0 then
         AppWindowAutoLayoutTimer:stop()
     end
 end

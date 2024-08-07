@@ -27,7 +27,7 @@ applications = {
     {
         prefix = HyperKey,
         key = "V",
-        message = "neovide",
+        message = "Neovide",
         name = { "neovide", "nvide", "goneovim" }, -- 支持多 AppName
         alwaysWindowLayout = window_grids.fullScreen,
         anytimeAdjustWindowLayout = true,
@@ -46,24 +46,21 @@ applications = {
         prefix = HyperKey,
         key = "A",
         message = "ApiPost",
-        name = { "apipost", "apifox" }, -- 支持 App 名称模糊匹配(ApiPost7)
+        name = { "applite", "apipost", "apifox" }, -- 支持 App 名称模糊匹配(ApiPost7)
     },
     {
         prefix = HyperKey,
         key = "U",
         message = "FDM",
         name = { "fdm", "Folx" }, -- 支持 APP 名称简写
-        -- name = "Free Download Manager",
-        -- initWindowLayout = window_grids.centeredMedium,
         alwaysWindowLayout = window_grids.centeredMedium,
         anytimeAdjustWindowLayout = true,
     },
     {
         prefix = HyperKey,
         key = "I",
-        message = "terminal",
-        name = { "Alacritty", "iTerm", "iTerm2", "warp" },
-        -- bundleId = "com.googlecode.iterm2",
+        message = "Terminal",
+        name = { "Alacritty", "iTerm", "Terminal", "warp" },
         alwaysWindowLayout = window_grids.fullScreen,
         anytimeAdjustWindowLayout = true,
     },
@@ -71,8 +68,7 @@ applications = {
         prefix = HyperKey,
         key = "F",
         message = "Finder",
-        -- bundleId = "com.cocoatech.PathFinder",
-        name = { "ForkLift", "Finder", "PathFinder" },
+        name = { "PathFinder", "ForkLift", "Finder" },
         -- initWindowLayout = window_grids.centeredMedium,
         -- alwaysWindowLayout = window_grids.centerHorizontal,
         anytimeAdjustWindowLayout = true,
@@ -80,16 +76,16 @@ applications = {
     {
         prefix = HyperKey,
         key = "M",
-        message = "Foxmail",
-        -- bundleId = "com.tencent.Foxmail",
+        message = "Outlook",
         name = { "Outlook", "Foxmail" },
         anytimeAdjustWindowLayout = true,
     },
     {
         prefix = HyperKey,
-        key = "B",
-        message = "firefox",
-        bundleId = "org.mozilla.firefox",
+        key = "P",
+        message = "PDF , BDPan",
+        -- bundleId = "com.brother.pdfreaderprofree.mac",
+        name = { "PDF Reader Pro", "百度网盘" },
         initWindowLayout = window_grids.centeredMedium,
         alwaysWindowLayout = window_grids.fullScreen,
         anytimeAdjustWindowLayout = true,
@@ -97,9 +93,10 @@ applications = {
     {
         prefix = HyperKey,
         key = "K",
-        message = "browser",
-        name = { "Microsoft Edge", "Google Chrome", "Arc" },
+        message = "Browser",
+        -- bundleId = "org.mozilla.firefox",
         -- bundleId = "com.microsoft.edgemac",
+        name = { "Microsoft Edge", "firefox", "Google Chrome", "Arc" },
         onBackupScreen = true,
         alwaysWindowLayout = window_grids.fullScreen,
         anytimeAdjustWindowLayout = true,
@@ -113,8 +110,9 @@ applications = {
     {
         prefix = HyperKey,
         key = "E",
-        message = "Excel",
-        name = { "Excel", "word", "wps" },
+        message = "ONLYOFFICE",
+        bundleId = "asc.onlyoffice.ONLYOFFICE",
+        -- name = { "Excel", "ONLYOFFICE", "wps" },
     },
     {
         prefix = HyperKey,

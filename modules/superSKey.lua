@@ -132,8 +132,8 @@ if spoon.ModalMgr then
         hs.eventtap.keyStroke(superKey_items.bartenderMenuSearch[1], superKey_items.bartenderMenuSearch[2])
         spoon.ModalMgr:deactivate({ "SuperSKey" })
     end)
-    skmodal:bind({ "Shift" }, "O", "打开BobOCR", function()
-        hs.eventtap.keyStroke(superKey_items.bobOCR[1], superKey_items.bobOCR[2])
+    skmodal:bind({ "Shift" }, "O", "打开EasydictOCR", function()
+        hs.eventtap.keyStroke(superKey_items.EasydictOCR[1], superKey_items.EasydictOCR[2])
         spoon.ModalMgr:deactivate({ "SuperSKey" })
     end)
 

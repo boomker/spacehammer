@@ -24,12 +24,12 @@ remapingKeys = { -- trigger target combination key
         message = "WindowSwitch",
         targetKey = { { "cmd" }, "`" },
     },
-    {
-        prefix = HyperKey,
-        key = "J",
-        message = "AppSwitch",
-        targetKey = { { "cmd" }, "tab" },
-    },
+    -- {
+    --     prefix = HyperKey,
+    --     key = "J",
+    --     message = "AppSwitch",
+    --     targetKey = { { "cmd" }, "tab" },
+    -- },
     {
         prefix = HyperKey,
         key = "H",
@@ -44,7 +44,7 @@ remapingKeys = { -- trigger target combination key
     },
     {
         prefix = HyperKey,
-        key = "P",
+        key = "B",
         message = "Snipaste",
         targetKey = { { "cmd", "alt", "ctrl" }, "9" },
     },

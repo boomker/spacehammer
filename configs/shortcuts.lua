@@ -51,8 +51,8 @@ superKey_toggle = { HyperKey, "S" }
 superKey_items = {
     -- S: 弹出当前 APP 所有快捷键列表面板
     -- H: 查看(canvas 浮层弹出)本项目所有快捷键配置
-    bartenderMenuSearch = { { "cmd", "alt", "ctrl" }, "6" },
-    bobOCR = { { "cmd", "alt", "ctrl" }, "7" },
+    bartenderMenuSearch = { { "cmd", "alt", "ctrl" }, "b" },
+    EasydictOCR = { { "cmd", "alt", "ctrl" }, "o" },
     toggleDND = { { "cmd", "alt", "ctrl" }, "\\" },
     -- 可选填写代理服务器配置
     httpProxy = "http://127.0.0.1:1087",
@@ -60,7 +60,7 @@ superKey_items = {
 }
 
 -- 表情包搜索配置
--- emoji_search = { prefix = HyperKey, key = "4", message = "Search emoji" }
+-- emoji_search = { prefix = HyperKey, key = "3", message = "Search emoji" }
 
 -- JSON 格式化
 json_formater = { prefix = HyperKey, key = "T", message = "JSON 格式化" }
