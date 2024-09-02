@@ -40,13 +40,13 @@ remapingKeys = { -- trigger target combination key
         prefix = HyperKey,
         key = "N",
         message = "Snipaste",
-        targetKey = { { "cmd", "alt", "ctrl" }, "0" },
+        targetKey = { { "cmd", "alt", "ctrl" }, "N" },
     },
     {
         prefix = HyperKey,
         key = "B",
         message = "Snipaste",
-        targetKey = { { "cmd", "alt", "ctrl" }, "9" },
+        targetKey = { { "cmd", "alt", "ctrl" }, "P" },
     },
 
     -- trigger function
@@ -86,6 +86,6 @@ remapingKeys = { -- trigger target combination key
         key = "tab",
         message = "jumpToWindowAndFocus",
         -- targetFunc = "jumpToWindowAndFocus",
-        targetKey = { { "ctrl", "Fn" }, "F4" },
+        targetKey = { { "ctrl", "Fn" }, "F9" },
     },
 }

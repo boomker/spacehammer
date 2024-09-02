@@ -1,6 +1,8 @@
 -- 输入法切换
 
 ---@diagnostic disable: lowercase-global
+hs.loadSpoon("InputMethodIndicator")
+
 require("configs.inputSourceConfig")
 -- require 'modules.status-message'
 
@@ -74,8 +76,18 @@ local inputmethodWatcher = function()
     hs.application.watcher.new(appWatcher):start()
 end
 
+local IMI = spoon.InputMethodIndicator
+IMI:start({
+    ABCColor = "#62C555",           -- the dot color when the input method is ABC
+    LocalLanguageColor = "#ED6A5E", -- the dot color when the input method is not
+    mode = "adaptive",              -- the mode of the indicator
+    deltaY = 7,                     -- the distance between the dot and the center of the selection or
+    dotSize = 6,                    -- the size of the dot
+    checkInterval = 0.1,            -- seconds to check the input method
+    showOnChangeDuration = 3,       -- seconds to show the indicator when the input met
+})
+
 -- inputmethodWatcher()
 local interval = 2
-
 AppTimer = hs.timer.new(interval, inputmethodWatcher)
 AppTimer:start()

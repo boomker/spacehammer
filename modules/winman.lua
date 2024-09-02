@@ -357,7 +357,7 @@ if spoon.WinMan then
     end)
 
     hs.fnutils.each(winman_keys, function(item)
-        if not item.mapGridGroup and not item.func then
+        if not (item.mapGridGroup or item.func) then
             return
         end
 
