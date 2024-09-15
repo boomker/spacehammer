@@ -29,8 +29,8 @@ require("configs.baseConfig")
 -- tag: 窗口管理模式
 -- layout: 窗口布局
 -- initWindowLayout: App窗口初始(每次启动后)位置和大小
--- alwaysWindowLayout: App窗口开启全局 HS 快捷键切换后自动调整布局, 没有性能影响, 无卡顿
--- anytimeAdjustWindowLayout: App窗口开启全局任意方式切换后自动调整布局, 有一定程度性能下降!
+-- alwaysWindowLayout: App窗口开启全局 HS 快捷键切换后自动调整布局, 没有性能影响
+-- anytimeAdjustWindowLayout: App窗口开启全局任意方式切换后自动调整布局, 或有性能下降!
 -- onPrimaryScreen: 窗口排列位置在主显示器屏幕上
 -- inputmethodId: 输入法唯一标示ID, 即对应输入法 App 的 BundleId
 
@@ -53,18 +53,19 @@ superKey_items = {
     -- H: 查看(canvas 浮层弹出)本项目所有快捷键配置
     bartenderMenuSearch = { { "cmd", "alt", "ctrl" }, "b" },
     EasydictOCR = { { "cmd", "alt", "ctrl" }, "o" },
-    toggleDND = { { "cmd", "alt", "ctrl" }, "\\" },
-    -- 可选填写代理服务器配置
-    httpProxy = "http://127.0.0.1:1087",
+    -- toggleDND = { { "cmd", "alt", "ctrl" }, "\\" },
+
+    httpProxy = "http://127.0.0.1:1087", -- 可选填写代理服务器配置
     favoriteBluetoothName = "小爱音箱-4099",
 }
 
--- 表情包搜索配置
--- emoji_search = { prefix = HyperKey, key = "3", message = "Search emoji" }
-
 -- JSON 格式化
-json_formater = { prefix = HyperKey, key = "T", message = "JSON 格式化" }
+json_formater = { prefix = HyperKey, key = "Y", message = "JSON 格式化" }
 
+-- 表情包搜索配置
+-- emoji_search = { prefix = HyperKey, key = "5", message = "Search emoji" }
+
+----------------------------------------------------------------------------------------
 -- 当选中某窗口按下 ctrl+command+alt+. 时会显示应用的路径等信息
 hs.hotkey.bind({ "ctrl", "cmd", "alt" }, ".", function()
     hs.alert.show(
@@ -83,7 +84,6 @@ hs.hotkey.bind({ "ctrl", "cmd", "alt" }, ".", function()
 end)
 
 -- 快捷显示 Hammerspoon 控制台
-----------------------------------------------------------------------------------------------------
 hsconsole_keys = hsconsole_keys or { "alt", "Z" }
 if string.len(hsconsole_keys[2]) > 0 then
     hs.hotkey.bind(hsconsole_keys[1], hsconsole_keys[2], "打开 Hammerspoon 控制台", function()
@@ -93,8 +93,8 @@ if string.len(hsconsole_keys[2]) > 0 then
 end
 
 -- 快捷显示 重载 Hammerspoon 配置
-----------------------------------------------------------------------------------------------------
 hsreload_keys = hsreload_keys or { { "cmd", "alt", "ctrl" }, "Z" }
+
 if string.len(hsreload_keys[2]) > 0 then
     hs.hotkey.bind(hsreload_keys[1], hsreload_keys[2], "重新加载配置", function()
         -- clear all settings data

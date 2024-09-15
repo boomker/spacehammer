@@ -17,9 +17,10 @@ require("configs.windowConfig")
 applications = {
     {
         prefix = HyperKey,
-        key = "L",
-        message = "VSCode",
-        bundleId = "com.microsoft.VSCode", -- 支持 App bundleID
+        key = "C",
+        message = "Cursor Code",
+        -- bundleId = "com.microsoft.VSCode", -- 支持 App bundleID
+        name = { "Cursor", "Code", "xcode"},
         -- alwaysWindowLayout = window_grids.fullScreen,
         -- anytimeAdjustWindowLayout = true,
         onPrimaryScreen = true,
@@ -27,7 +28,7 @@ applications = {
     {
         prefix = HyperKey,
         key = "V",
-        message = "Neovide",
+        message = "Neovim",
         name = { "neovide", "nvide", "goneovim" }, -- 支持多 AppName
         alwaysWindowLayout = window_grids.fullScreen,
         anytimeAdjustWindowLayout = true,
@@ -35,8 +36,8 @@ applications = {
     },
     {
         prefix = HyperKey,
-        key = "O",
-        message = "Obsidian",
+        key = "M",
+        message = "markdown",
         name = { "obsidian", "typora" }, -- 支持 APP 名称
         -- initWindowLayout = grid.centeredMedium,
         alwaysWindowLayout = window_grids.fullScreen,
@@ -44,13 +45,34 @@ applications = {
     },
     {
         prefix = HyperKey,
+        key = "T",
+        message = "Terminal",
+        name = { "Terminal","Alacritty", "iTerm",  "Warp", "Kitty" },
+        alwaysWindowLayout = window_grids.fullScreen,
+        anytimeAdjustWindowLayout = true,
+    },
+    {
+        prefix = HyperKey,
+        key = "O",
+        message = "OFFICE",
+        -- bundleId = "asc.onlyoffice.ONLYOFFICE",
+        name = { "Excel", "ONLYOFFICE", "WPS" },
+    },
+    {
+        prefix = HyperKey,
         key = "A",
         message = "ApiPost",
-        name = { "applite", "apipost", "apifox" }, -- 支持 App 名称模糊匹配(ApiPost7)
+        name = { "Apipost", "Apifox" }, -- 支持 App 名称模糊匹配(ApiPost7)
     },
     {
         prefix = HyperKey,
         key = "U",
+        message = "Update",
+        name = { "Latest", "Applite", "App Store" },
+    },
+    {
+        prefix = HyperKey,
+        key = "X",
         message = "FDM",
         name = { "fdm", "Folx" }, -- 支持 APP 名称简写
         alwaysWindowLayout = window_grids.centeredMedium,
@@ -58,32 +80,27 @@ applications = {
     },
     {
         prefix = HyperKey,
-        key = "I",
-        message = "Terminal",
-        name = { "Alacritty", "iTerm", "Terminal", "warp" },
-        alwaysWindowLayout = window_grids.fullScreen,
-        anytimeAdjustWindowLayout = true,
-    },
-    {
-        prefix = HyperKey,
         key = "F",
         message = "Finder",
-        name = { "PathFinder", "ForkLift", "Finder" },
-        -- initWindowLayout = window_grids.centeredMedium,
-        -- alwaysWindowLayout = window_grids.centerHorizontal,
-        anytimeAdjustWindowLayout = true,
+        name = { "Finder", "Path Finder", "ForkLift", },
     },
     {
         prefix = HyperKey,
-        key = "M",
-        message = "Outlook",
+        key = "E",
+        message = "email",
         name = { "Outlook", "Foxmail" },
         anytimeAdjustWindowLayout = true,
     },
     {
         prefix = HyperKey,
+        key = "R",
+        message = "RSS",
+        name = { "NetNewsWire", "Feeds" },
+    },
+    {
+        prefix = HyperKey,
         key = "P",
-        message = "PDF , BDPan",
+        message = "PDF, BDPan",
         -- bundleId = "com.brother.pdfreaderprofree.mac",
         name = { "PDF Reader Pro", "百度网盘" },
         anytimeAdjustWindowLayout = true,
@@ -95,7 +112,7 @@ applications = {
         key = "K",
         message = "Browser",
         -- bundleId = "com.microsoft.edgemac",
-        name = { "Arc", "Microsoft Edge", "Firefox", "Google Chrome" },
+        name = { "Arc", "Microsoft Edge", "Google Chrome", "Firefox", "safari" },
         onBackupScreen = true,
         alwaysWindowLayout = window_grids.fullScreen,
     },
@@ -107,16 +124,23 @@ applications = {
     },
     {
         prefix = HyperKey,
-        key = "E",
-        message = "ONLYOFFICE",
-        bundleId = "asc.onlyoffice.ONLYOFFICE",
-        -- name = { "Excel", "ONLYOFFICE", "wps" },
+        key = "8",
+        message = "Telegram",
+        name = { "Telegram Desktop"},
     },
     {
         prefix = HyperKey,
         key = "Q",
         message = "QQ",
         bundleId = "com.tencent.qq",
+    },
+    {
+        prefix = HyperKey,
+        key = "i",
+        message = "WeChat",
+        bundleId = "com.tencent.xinWeChat",
+        onPrimaryScreen = true,
+        alwaysWindowLayout = window_grids.centeredMedium,
     },
     {
         prefix = HyperKey,
@@ -127,14 +151,6 @@ applications = {
     {
         prefix = HyperKey,
         key = "9",
-        message = "WeChat",
-        bundleId = "com.tencent.xinWeChat",
-        onPrimaryScreen = true,
-        alwaysWindowLayout = window_grids.centeredMedium,
-    },
-    {
-        prefix = HyperKey,
-        key = "8",
         message = "NeteaseMusic",
         bundleId = "com.netease.163music",
         anytimeAdjustWindowLayout = true,

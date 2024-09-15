@@ -113,28 +113,22 @@ end
 
 local function getAppID(appName)
     local appBundleID = hs.settings.get(appName .. "_bundleId")
-    if appBundleID then
-        return appBundleID
-    end
+    if appBundleID then return appBundleID end
 
-        --[[
+    --[[
             "kMDItemDisplayName = '*iterm*'c                                    -- "c": 大小写不敏感
                 && (kMDItemKind = 'Application' || kMDItemKind = '应用程序')    -- "指定文件后缀为 `.app`"
                 && kMDItemContentType = 'com.apple.application-bundle'"         -- "指定仅App 应用程序"
         ]]
-    local cmdOpts = string.format(
-        "(kMDItemDisplayName = '*%s*'c  || kMDItemCFBundleIdentifier = '*%s*'c) \
-        && (kMDItemKind = 'Application' || kMDItemKind = '应用程序') \
-        && kMDItemContentType = 'com.apple.application-bundle'",
-        appName,
-        appName
-    )
-    local cmdStr = "mdfind " .. '"' .. cmdOpts .. '"'
+    local cmdOpts =
+        string.format("(kMDItemDisplayName = '*%s*'c  || kMDItemCFBundleIdentifier = '*%s*'c)", appName, appName)
+    local cmdStr = [[mdfind -onlyin '/Applications' ]] .. '"' ..  cmdOpts .. '"'
     local results, status, _, rc = hs.execute(cmdStr)
     local result = split(results, "\n")[1]
-    if result and status and rc == 0 then
+    if (result:len() > 1) and status and (rc == 0) then
         local osaScriptCodeStr = string.format('id of app "%s"', trim(result))
         local ok, bundleID, _ = hs.osascript.applescript(osaScriptCodeStr)
+
         if ok then
             local appBundleIDKey = appName .. "_bundleId"
             hs.settings.set(appBundleIDKey, bundleID)
@@ -145,7 +139,7 @@ end
 
 local function launchOrFocusApp(appInfo)
     local previousFocusedWindow = hs.window.focusedWindow()
-    if previousFocusedWindow ~= nil then
+    if previousFocusedWindow then
         mousePositions[previousFocusedWindow:id()] = hs.mouse.absolutePosition()
     end
 
@@ -153,23 +147,22 @@ local function launchOrFocusApp(appInfo)
     local appNameItems = appInfo.name
     if appBundleID then
         hs.application.launchOrFocusByBundleID(appBundleID)
-        -- print(hs.inspect(x))
     else
         appBundleID = getAppIdFromRunningApp(appNameItems)
         if appBundleID then
-            -- AppLaunchState = hs.application.launchOrFocusByBundleID(appBundleID)
+            -- print(hs.inspect(appBundleID))
             local appDetails = hs.application.infoForBundleID(appBundleID)
-            WhetherIsAgent = appDetails.LSUIElement
+            local _isLSUIE = appDetails.LSUIElement
+            if _isLSUIE then goto GetBundelID end
+            goto StartAPP
         end
-        if WhetherIsAgent or not appBundleID then
-            for _, v in ipairs(appNameItems) do
-                appBundleID = getAppID(v)
-                if appBundleID then break end
-            end
-            if not appBundleID then
-                return false
-            end
+        ::GetBundelID::
+        for _, v in ipairs(appNameItems) do
+            appBundleID = getAppID(v)
+            if appBundleID then goto StartAPP end
         end
+
+        ::StartAPP::
         hs.application.launchOrFocusByBundleID(appBundleID)
         appInfo.bundleId = appBundleID
     end

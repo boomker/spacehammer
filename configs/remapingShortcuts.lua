@@ -20,6 +20,12 @@ remapingKeys = { -- trigger target combination key
     },
     {
         prefix = HyperKey,
+        key = "3",
+        message = "切换到第3个桌面空间",
+        targetKey = { { "cmd", "alt", "ctrl" }, "3" },
+    },
+    {
+        prefix = HyperKey,
         key = ".",
         message = "WindowSwitch",
         targetKey = { { "cmd" }, "`" },
@@ -64,7 +70,7 @@ remapingKeys = { -- trigger target combination key
     },
     {
         prefix = HyperKey,
-        key = "R",
+        key = "L",
         message = "MenuChooser",
         targetFunc = "menuchooser",
     },
@@ -85,7 +91,6 @@ remapingKeys = { -- trigger target combination key
         prefix = HyperKey,
         key = "tab",
         message = "jumpToWindowAndFocus",
-        -- targetFunc = "jumpToWindowAndFocus",
         targetKey = { { "ctrl", "Fn" }, "F9" },
     },
 }
