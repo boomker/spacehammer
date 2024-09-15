@@ -15,7 +15,7 @@ function checkUpdate()
     -- 用户配置文件
     local customConfig = unserialize(loadConfig())
     -- 用户配置文件版本号 < 默认配置文件版本号
-    if customConfig[1].configVersion < defaultConfig[1].configVersion then
+    if customConfig and customConfig[1].configVersion < defaultConfig[1].configVersion then
         local newConfig = {}
         -- 开始合并配置文件
         for k, v in ipairs(defaultConfig) do
@@ -55,7 +55,7 @@ end
 -- 每次重载配置后，检查默认配置和用户配置版本号是否相同，如果不同，则主动检查一遍更新，否则无需检查更新
 function checkUpdateForReload()
     local customConfig = unserialize(loadConfig())
-    if customConfig[1].configVersion == defaultConfig[1].configVersion then
+    if customConfig and customConfig[1].configVersion == defaultConfig[1].configVersion then
         return
     else
         checkUpdate()

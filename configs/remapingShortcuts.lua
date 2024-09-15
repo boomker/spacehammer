@@ -90,7 +90,7 @@ remapingKeys = { -- trigger target combination key
     {
         prefix = HyperKey,
         key = "tab",
-        message = "jumpToWindowAndFocus",
+        message = "轮切当前空间APP",
         targetKey = { { "ctrl", "Fn" }, "F9" },
     },
 }

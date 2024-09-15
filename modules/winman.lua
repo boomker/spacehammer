@@ -317,7 +317,7 @@ if spoon.WinMan then
     -- 定义窗口管理模式快捷键
     local winman_toggle = winman_toggle or { "alt", "R" }
     if string.len(winman_toggle[2]) > 0 then
-        spoon.ModalMgr.supervisor:bind(winman_toggle[1], winman_toggle[2], "进入窗口管理传统模式", function()
+        spoon.ModalMgr.supervisor:bind(winman_toggle[1], winman_toggle[2], "窗口管理传统模式", function()
             spoon.ModalMgr:deactivateAll()
             -- 显示状态指示器，方便查看所处模式
             spoon.ModalMgr:activate({ "windowM" }, "#B22222")
@@ -418,7 +418,7 @@ if spoon.WinMan then
         spoon.ModalMgr.supervisor:bind(
             winGridMan_toggle[1],
             winGridMan_toggle[2],
-            "进入窗口管理 Grid 轮切模式",
+            "窗口管理Grid轮切模式",
             function()
                 spoon.ModalMgr:deactivateAll()
                 -- 显示状态指示器，方便查看所处模式

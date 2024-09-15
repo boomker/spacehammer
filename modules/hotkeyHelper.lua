@@ -9,7 +9,7 @@ require("configs.remapingShortcuts")
 -- 禁用快捷键alert消息
 hs.hotkey.alertDuration = 0
 
-local keyName2Symbol = {
+local Key2Symbol = {
     Ctrl = "⌃",
     Option = "⌥",
     Alt = "⌥",
@@ -27,7 +27,7 @@ local COORIDNATE_X = screenFrame.w / 2
 local COORIDNATE_Y = screenFrame.h / 2
 
 -- 快捷键总数
-local num = 0
+-- local num = 0
 
 -- 创建 Canvas
 canvass = {}
@@ -73,18 +73,17 @@ end
 local function drawText(tag, renderTextData, ccanvas)
     -- 每列最多 22 行
     if tag == "all" then
-        MAX_LINE_NUM = 21
-        xl = 1
+        MAX_LINE_NUM = 22
+        xl = 1.1
     else
-        MAX_LINE_NUM = 29
-        xl = 1
-        -- xl = 1.97
+        MAX_LINE_NUM = 30
+        xl = 2
     end
 
     local w = 0
     local h = 0
     -- 文本距离分割线的距离
-    local SEPRATOR_W = 3
+    local SEPRATOR_W = 1
 
     -- 每一列需要显示的文本
     local column = ""
@@ -124,7 +123,7 @@ local function drawText(tag, renderTextData, ccanvas)
         end
     end
 
-    if column ~= nil then
+    if column then
         local itemText = styleText(column)
         local size = ccanvas:minimumTextSize(itemText)
         w = w + size.w
@@ -160,48 +159,46 @@ local function formatText(tag)
     table.insert(tooltip, { msg = "Hyper: Space键 = ⌃⌥⇧" })
 
     table.insert(tooltip, { msg = " " })
-    local applicationSwitchText = {}
-    local windowManagement = {}
+    local applicationSwitchMenuItems = {}
+    local windowManageMenuItems = {}
 
-    -- 每行最多 38 个字符
-    local MAX_LEN = 38
     if tag == "WindowMOnly" then
         -- 窗口管理类
-        table.insert(windowManagement, { msg = "[Window Management]:" })
+        -- local windowManageMessage = {}
+        table.insert(windowManageMenuItems, { msg = "[Window Management]:" })
 
         for _, v in ipairs(winman_keys) do
-            if v.tag == "origin" or v.tag == "tile" then
+            if (v.tag == "origin") or (v.tag == "tile") then
                 if #v.prefix == 0 then
                     v.prefix = "⌃⌥⇧ + W + "
                 elseif #v.prefix == 1 then
-                    v.prefix = "⌃⌥⇧ + W + " .. keyName2Symbol[v.prefix[1]]
-                else
-                    v.prefix = "⌃⌥⇧ + W + " .. keyName2Symbol[v.prefix[1]] .. keyName2Symbol[v.prefix[2]]
+                    v.prefix = "⌃⌥⇧ + W + " .. Key2Symbol[v.prefix[1]]
+                elseif #v.prefix >= 2 then
+                    v.prefix = "⌃⌥⇧ + W + " .. Key2Symbol[v.prefix[1]] .. Key2Symbol[v.prefix[2]]
                 end
             elseif v.tag == "grid" then
                 if #v.prefix == 0 then
                     v.prefix = "⌃⌥⇧ + G + "
                 end
-            else
-                print(hs.inspect(v))
+                --     print(hs.inspect(v))
             end
 
-            table.insert(windowManagement, { msg = v.prefix .. (keyName2Symbol[v.key] or v.key) .. " : " .. v.message })
+            table.insert(windowManageMenuItems, { msg = v.prefix .. v.key .. " : " .. v.message })
         end
     else
         -- 加载所有绑定的快捷键
         local Hotkeys = hs.hotkey.getHotkeys()
         -- 应用切换类
-        table.insert(applicationSwitchText, { msg = "[应用切换和自定按键映射]:" })
+        table.insert(applicationSwitchMenuItems, { msg = "[应用切换和自定按键映射]:" })
 
         for i, v in ipairs(Hotkeys) do
             -- 以 ⌥ 开头，表示为应用切换快捷键
-            if string.find(v.idx, "^⌃⌥") ~= nil then
-                table.insert(applicationSwitchText, { msg = v.msg })
+            if string.find(v.idx, "^⌃⌥") then
+                table.insert(applicationSwitchMenuItems, { msg = v.msg })
             end
 
             if i == #Hotkeys then
-                table.insert(applicationSwitchText, { msg = "" })
+                table.insert(applicationSwitchMenuItems, { msg = "" })
             end
         end
     end
@@ -211,21 +208,28 @@ local function formatText(tag)
         table.insert(regHotkeys, { msg = v.msg })
     end
 
-    if #applicationSwitchText > 1 then
-        for _, v in ipairs(applicationSwitchText) do
+    if #applicationSwitchMenuItems > 1 then
+        for _, v in ipairs(applicationSwitchMenuItems) do
             table.insert(regHotkeys, { msg = v.msg })
         end
     end
 
-    if #windowManagement > 1 then
-        for _, v in ipairs(windowManagement) do
+    if #windowManageMenuItems > 1 then
+        for _, v in ipairs(windowManageMenuItems) do
             table.insert(regHotkeys, { msg = v.msg })
         end
     end
 
+    -- 快捷键总数
+    local key_nums = 0
+    local MAX_LEN = 25
+    -- 每行最多 38 个字符
+    if tag == "WindowMOnly" then
+        MAX_LEN = 38
+    end
     -- 文本定长
     for _, v in ipairs(regHotkeys) do
-        num = num + 1
+        key_nums = key_nums + 1
         local msg = v.msg
         local len = utf8len(msg)
         -- 超过最大长度，截断多余部分，截断的部分作为新的一行
@@ -239,6 +243,7 @@ local function formatText(tag)
             msg = utf8sub(msg, MAX_LEN + 1, len)
             len = utf8len(msg)
         end
+
         for _ = 1, MAX_LEN - utf8len(msg), 1 do
             msg = msg .. " "
         end
@@ -268,11 +273,11 @@ local function closeHotKeyShow()
 end
 
 function showHSHotKeysPane(tag)
-    if tag == "all" and #renderText.appHotKeys == 0 then
+    if (tag == "all") and (#renderText.appHotKeys == 0) then
         formatText("all")
         drawText("all", renderText.appHotKeys, canvass[1])
         ccanvas = canvass[1]
-    elseif tag == "WindowMOnly" and #renderText.windowMHotKeys == 0 then
+    elseif (tag == "WindowMOnly") and (#renderText.windowMHotKeys == 0) then
         formatText("WindowMOnly")
         drawText("WindowMOnly", renderText.windowMHotKeys, canvass[2])
         ccanvas = canvass[2]
