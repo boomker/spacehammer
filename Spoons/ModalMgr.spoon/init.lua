@@ -32,15 +32,17 @@ obj.alignmentRightColumn = "right"
 obj.fillByRow = false
 
 function obj:init()
-    hsupervisor_keys = hsupervisor_keys or { { "cmd", "shift", "ctrl" }, "Q" }
+    local hsupervisor_keys =  { { "cmd", "alt", "ctrl", "Fn" }, "Q" }
     obj.supervisor = hs.hotkey.modal.new(hsupervisor_keys[1], hsupervisor_keys[2], "Initialize Modal Environment")
     obj.supervisor:bind(hsupervisor_keys[1], hsupervisor_keys[2], "Reset Modal Environment", function()
         obj.supervisor:exit()
     end)
-    hshelp_keys = hshelp_keys or { { "alt", "shift" }, "/" }
+
+    hshelp_keys = hshelp_keys or { { "alt" }, "/" }
     obj.supervisor:bind(hshelp_keys[1], hshelp_keys[2], "Toggle Help Panel", function()
         obj:toggleCheatsheet({ all = obj.supervisor })
     end)
+
     obj.modal_tray = hs.canvas.new({ x = 0, y = 0, w = 0, h = 0 })
     obj.modal_tray:level(hs.canvas.windowLevels.tornOffMenu)
     obj.modal_tray[1] = {
@@ -73,7 +75,7 @@ end
 --
 -- by default, it fills by row
 -- but it can be customized to fill by column
-function insertIntoSheet(position, st, row, column, n)
+local function insertIntoSheet(position, st, row, column, n)
     local textAlign = "left"
     local xpos
     local ypos

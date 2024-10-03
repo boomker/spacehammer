@@ -308,14 +308,14 @@ function AppWindowAutoLayout()
         hs.alert.show("!!!start: 即将自动调整窗口布局", 0.5)
 
         if item.anytimeAdjustWindowLayout and item.alwaysWindowLayout then
-            local Appname = nil
+            local appName = nil
             if item.bundleId then
-                Appname = hs.application.nameForBundleID(item.bundleId)
+                appName = hs.application.nameForBundleID(item.bundleId)
             else
-                Appname = item.name
+                appName = item.name
             end
-            local appMaplayout = { [Appname] = item.alwaysWindowLayout }
-            table.insert(alwaysAdjustAppWindowLayoutData.appNames, Appname)
+            local appMaplayout = { [appName] = item.alwaysWindowLayout }
+            table.insert(alwaysAdjustAppWindowLayoutData.appNames, appName)
             table.insert(alwaysAdjustAppWindowLayoutData, appMaplayout)
         end
 

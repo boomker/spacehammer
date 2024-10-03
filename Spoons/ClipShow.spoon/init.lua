@@ -422,21 +422,17 @@ function obj:openWithCommand(command)
     end
 end
 
-
 function obj:base64EncodeOrDecode(action)
     local base64_str = obj.canvas[4].text
     local result = nil
-    local status = nil
+    -- local status = nil
     if action == "decode" then
         result = hs.base64.decode(base64_str)
-        local function check_result() return utf8.codepoint(result) end
-        status, _ = pcall(check_result)
-        if not status then
-            return
-        end
+        -- local function check_result() return utf8.codepoint(result) end
+        -- status, _ = pcall(check_result)
+        -- if not status then return end
     else
         result = hs.base64.encode(base64_str)
-        -- print(hs.inspect(result))
     end
     obj:saveToSession()
     hs.pasteboard.setContents(result)
@@ -461,7 +457,6 @@ function obj:urlEncodeOrDecode(action)
     hs.pasteboard.setContents(result)
     obj:processClipboard()
 end
-
 
 function obj:md5sum()
     local cstr = obj.canvas[4].text

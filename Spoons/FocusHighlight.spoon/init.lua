@@ -52,15 +52,15 @@ function obj:start()
         end
 
         -- Draw an arrow if the frame moved significantly
-        if previousFrame ~= nil then
+        if previousFrame then
             local arrowSize = self.arrowSize
             local arrowFrame = hs.geometry(previousFrame.x + previousFrame.w / 2 - arrowSize / 2,
                 previousFrame.y + previousFrame.h / 2 - arrowSize / 2, arrowSize, arrowSize)
             local arrowFrameIntersection = arrowFrame:intersect(nextFrame)
             if arrowFrameIntersection.w * arrowFrameIntersection.h == 0 then
                 local angle = math.atan(
-                    (nextFrame.y + nextFrame.h / 2) - (previousFrame.y + previousFrame.h / 2),
-                    (nextFrame.x + nextFrame.w / 2) - (previousFrame.x + previousFrame.w / 2)
+                    (nextFrame.y + nextFrame.h / 2) - (previousFrame.y + previousFrame.h / 2)
+                    -- (nextFrame.x + nextFrame.w / 2) - (previousFrame.x + previousFrame.w / 2)
                 ) * 180 / 3.1415
 
                 hs.canvas.new(arrowFrame):appendElements(

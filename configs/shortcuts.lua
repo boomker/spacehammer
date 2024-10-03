@@ -51,9 +51,9 @@ superKey_toggle = { HyperKey, "S" }
 superKey_items = {
     -- S: 弹出当前 APP 所有快捷键列表面板
     -- H: 查看(canvas 浮层弹出)本项目所有快捷键配置
-    bartenderMenuSearch = { { "cmd", "alt", "ctrl" }, "b" },
-    EasydictOCR = { { "cmd", "alt", "ctrl" }, "o" },
-    -- toggleDND = { { "cmd", "alt", "ctrl" }, "\\" },
+    bartenderMenuSearch = { { "cmd", "alt", "ctrl", "shift"  }, "b" },
+    EasydictOCR = { { "cmd", "alt", "ctrl" , "shift" }, "o" },
+    -- toggleDND = { { "cmd", "alt", "ctrl", "shift"  }, "\\" },
 
     httpProxy = "http://127.0.0.1:1087", -- 可选填写代理服务器配置
     favoriteBluetoothName = "小爱音箱-4099",
@@ -63,10 +63,10 @@ superKey_items = {
 json_formater = { prefix = HyperKey, key = "Y", message = "JSON 格式化" }
 
 -- 表情包搜索配置
--- emoji_search = { prefix = HyperKey, key = "5", message = "Search emoji" }
+emoji_search = { prefix = HyperKey, key = "f24", message = "Search emoji" }
 
 ----------------------------------------------------------------------------------------
--- 当选中某窗口按下 ctrl+command+alt+. 时会显示应用的路径等信息
+-- 当选中某窗口按下 ctrl+command+alt+shift+. 时会显示应用的路径等信息
 hs.hotkey.bind({ "ctrl", "cmd", "alt" }, ".", function()
     hs.alert.show(
         "App path:    "
@@ -93,7 +93,7 @@ if string.len(hsconsole_keys[2]) > 0 then
 end
 
 -- 快捷显示 重载 Hammerspoon 配置
-hsreload_keys = hsreload_keys or { { "cmd", "alt", "ctrl" }, "Z" }
+hsreload_keys = hsreload_keys or { { "cmd", "alt", "ctrl", "shift" }, "Z" }
 
 if string.len(hsreload_keys[2]) > 0 then
     hs.hotkey.bind(hsreload_keys[1], hsreload_keys[2], "重新加载配置", function()

@@ -5,10 +5,22 @@ require("configs.shortcuts")
 require("modules.superSCore")
 require("modules.hotkeyHelper")
 
-local skmodal = nil
+-- local skmodal = {}
 if spoon.ModalMgr then
     spoon.ModalMgr:new("SuperSKey")
-    skmodal = spoon.ModalMgr.modal_list["SuperSKey"]
+    ------------------------------------------------------------
+    local skmodal = spoon.ModalMgr.modal_list["SuperSKey"]
+    local message = require("modules.status-message")
+    skmodal.statusMessage = message.new("SuperSKey Mode")
+    skmodal.entered = function()
+        skmodal.statusMessage:show()
+        skmodal.statusMessage:SMWatcher(skmodal.statusMessage)
+    end
+
+    skmodal.exited = function()
+        skmodal.statusMessage:hide()
+        skmodal.statusMessage:SMWatcher("off")
+    end
 
     skmodal:bind("", "escape", "exit SuperSKey模式", function()
         spoon.ModalMgr:deactivate({ "SuperSKey" })
@@ -147,11 +159,9 @@ end
 --------------- 开机登陆后自动化任务 -----------------------
 local function judge_boot()
     local uptime_cmd = [[uptime |cut -d',' -f1 |awk '{gsub(/:/, "");print $(NF-1), $NF}']]
-    local uptime_res, status, _, exitCode = hs.execute(uptime_cmd)
+    local uptime_res, _, _, _ = hs.execute(uptime_cmd)
     local retVals = split(trim(uptime_res), " ")
-    if not retVals then
-        return false
-    end
+    if not retVals then return false end
     if string.match(retVals[2], "secs") then
         return true
     elseif string.match(retVals[2], "day") then
@@ -169,18 +179,5 @@ local function connect_bluetooth()
 end
 
 connect_bluetooth()
-
-------------------------------------------------------------
-local message = require("modules.status-message")
-skmodal.statusMessage = message.new("SuperSKey Mode")
-skmodal.entered = function()
-    skmodal.statusMessage:show()
-    skmodal.statusMessage:SMWatcher(skmodal.statusMessage)
-end
-
-skmodal.exited = function()
-    skmodal.statusMessage:hide()
-    skmodal.statusMessage:SMWatcher("off")
-end
 
 spoon.ModalMgr.supervisor:enter()

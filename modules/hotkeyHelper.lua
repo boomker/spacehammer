@@ -156,7 +156,7 @@ local function formatText(tag)
     table.insert(tooltip, { msg = "[ToolTips]:" })
     table.insert(tooltip, { msg = "Q: 退出当前面板" })
     table.insert(tooltip, { msg = "Escape: 退出当前面板" })
-    table.insert(tooltip, { msg = "Hyper: Space键 = ⌃⌥⇧" })
+    table.insert(tooltip, { msg = "Hyper: Space键 = ⌃⌥⌘" })
 
     table.insert(tooltip, { msg = " " })
     local applicationSwitchMenuItems = {}
@@ -170,15 +170,15 @@ local function formatText(tag)
         for _, v in ipairs(winman_keys) do
             if (v.tag == "origin") or (v.tag == "tile") then
                 if #v.prefix == 0 then
-                    v.prefix = "⌃⌥⇧ + W + "
+                    v.prefix = "⌃⌥⌘ + W + "
                 elseif #v.prefix == 1 then
-                    v.prefix = "⌃⌥⇧ + W + " .. Key2Symbol[v.prefix[1]]
+                    v.prefix = "⌃⌥⌘ + W + " .. Key2Symbol[v.prefix[1]]
                 elseif #v.prefix >= 2 then
-                    v.prefix = "⌃⌥⇧ + W + " .. Key2Symbol[v.prefix[1]] .. Key2Symbol[v.prefix[2]]
+                    v.prefix = "⌃⌥⌘ + W + " .. Key2Symbol[v.prefix[1]] .. Key2Symbol[v.prefix[2]]
                 end
             elseif v.tag == "grid" then
                 if #v.prefix == 0 then
-                    v.prefix = "⌃⌥⇧ + G + "
+                    v.prefix = "⌃⌥⌘ + G + "
                 end
                 --     print(hs.inspect(v))
             end
@@ -192,8 +192,8 @@ local function formatText(tag)
         table.insert(applicationSwitchMenuItems, { msg = "[应用切换和自定按键映射]:" })
 
         for i, v in ipairs(Hotkeys) do
-            -- 以 ⌥ 开头，表示为应用切换快捷键
-            if string.find(v.idx, "^⌃⌥") then
+            -- 以 ⌘⌃⌥ 开头，表示为应用切换快捷键
+            if string.find(v.idx, "^⌘⌃⌥") then
                 table.insert(applicationSwitchMenuItems, { msg = v.msg })
             end
 

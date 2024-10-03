@@ -1,6 +1,6 @@
 ---@diagnostic disable: lowercase-global
 
--- require "configs.windowConfig"
+require "configs.windowConfig"
 
 -- prefix：表示快捷键前缀，可选值：Ctrl、Option、Shift, Cmd
 -- key：可选值 [A-Z]、[1-9]、Left、Right、Up、Down、-、=、/
