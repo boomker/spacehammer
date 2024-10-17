@@ -66,8 +66,8 @@ json_formater = { prefix = HyperKey, key = "Y", message = "JSON 格式化" }
 emoji_search = { prefix = HyperKey, key = "f24", message = "Search emoji" }
 
 ----------------------------------------------------------------------------------------
--- 当选中某窗口按下 ctrl+command+alt+shift+. 时会显示应用的路径等信息
-hs.hotkey.bind({ "ctrl", "cmd", "alt" }, ".", function()
+-- 当选中某窗口按下 ctrl+command+alt+shift+\ 时会显示应用的路径等信息
+hs.hotkey.bind({ "ctrl", "cmd", "alt", "shift" }, "\\", function()
     hs.alert.show(
         "App path:    "
             .. hs.window.focusedWindow():application():path()

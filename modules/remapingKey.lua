@@ -41,16 +41,16 @@ local function execTargetFunc(tgtfn)
         local nextSpaceID, nextSpaceIndex = getTargetSpaceID("next")
         if nextSpaceIndex == 1 then
             -- 仅能通过调用快捷键来切换到第一个桌面空间
-            if remapingKeys.switchToFirstSpaceHotKey then
-                pressTargetKey(remapingKeys.switchToFirstSpaceHotKey)
-            end
+            -- if remapingKeys.switchToFirstSpaceHotKey then
+            --     pressTargetKey(remapingKeys.switchToFirstSpaceHotKey)
+            -- end
         else
             hs.spaces.gotoSpace(nextSpaceID)
         end
     elseif tgtfn == "goToPreSpace" then
         local prevSpaceID, prevSpaceIndex = getTargetSpaceID("prev")
         -- 无法在桌面空间(Space)个数不确定情况下, 从第一个 Space 跳到最后一个
-        if prevSpaceID or prevSpaceIndex then
+        if prevSpaceID then
             hs.spaces.gotoSpace(prevSpaceID)
         end
     elseif tgtfn == "windowMaximze" then
