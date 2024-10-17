@@ -39,12 +39,12 @@ local function execTargetFunc(tgtfn)
         MC.chooseMenuItem()
     elseif tgtfn == "goToNextSpace" then
         local nextSpaceID, nextSpaceIndex = getTargetSpaceID("next")
-        if nextSpaceIndex == 1 then
+        if nextSpaceIndex ~= 1 then
             -- 仅能通过调用快捷键来切换到第一个桌面空间
             -- if remapingKeys.switchToFirstSpaceHotKey then
             --     pressTargetKey(remapingKeys.switchToFirstSpaceHotKey)
             -- end
-        else
+        -- else
             hs.spaces.gotoSpace(nextSpaceID)
         end
     elseif tgtfn == "goToPreSpace" then
