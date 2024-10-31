@@ -14,9 +14,7 @@ LAYOUT_COUNT = {
     vflatten = 0,
 }
 
-alwaysAdjustAppWindowLayoutData = {
-    appNames = {},
-}
+alwaysAdjustAppWindowLayoutData = {}    -- appNames = {}
 
 -- 窗口枚举
 AUTO_LAYOUT_TYPE = {
@@ -308,15 +306,18 @@ function AppWindowAutoLayout()
         hs.alert.show("!!!start: 即将自动调整窗口布局", 0.5)
 
         if item.anytimeAdjustWindowLayout and item.alwaysWindowLayout then
-            local appName = nil
+            local appNames = {}
             if item.bundleId then
-                appName = hs.application.nameForBundleID(item.bundleId)
+                local appName = hs.application.nameForBundleID(item.bundleId)
+                table.insert(appNames, appName)
             else
-                appName = item.name
+                appNames = item.names
             end
-            local appMaplayout = { [appName] = item.alwaysWindowLayout }
-            table.insert(alwaysAdjustAppWindowLayoutData.appNames, appName)
-            table.insert(alwaysAdjustAppWindowLayoutData, appMaplayout)
+            table.insert(alwaysAdjustAppWindowLayoutData['appNames'], appNames)
+            for _, app_name in ipairs(appNames) do
+                local appMaplayout = { [app_name] = item.alwaysWindowLayout }
+                table.insert(alwaysAdjustAppWindowLayoutData, appMaplayout)
+            end
         end
 
         if #alwaysAdjustAppWindowLayoutData ~= 0 then

@@ -20,7 +20,7 @@ applications = {
         key = "C",
         message = "Cursor Code",
         -- bundleId = "com.microsoft.VSCode", -- 支持 App bundleID
-        name = { "Cursor", "Code", "Xcode"},
+        names = { "Cursor", "Code", "Xcode"},
         alwaysWindowLayout = window_grids.fullScreen,
         -- anytimeAdjustWindowLayout = true,
         onPrimaryScreen = true,
@@ -29,7 +29,7 @@ applications = {
         prefix = HyperKey,
         key = "V",
         message = "Neovim",
-        name = { "neovide", "nvide", "goneovim" }, -- 支持多 AppName
+        names = { "neovide", "nvide", "goneovim" }, -- 支持多 AppName
         alwaysWindowLayout = window_grids.fullScreen,
         anytimeAdjustWindowLayout = true,
         onPrimaryScreen = false,
@@ -38,7 +38,7 @@ applications = {
         prefix = HyperKey,
         key = "M",
         message = "markdown",
-        name = { "obsidian", "typora" }, -- 支持 APP 名称
+        names = { "obsidian", "typora" }, -- 支持 APP 名称
         initWindowLayout = window_grids.fullScreen,
         alwaysWindowLayout = window_grids.fullScreen,
         anytimeAdjustWindowLayout = true,
@@ -47,7 +47,7 @@ applications = {
         prefix = HyperKey,
         key = "T",
         message = "Terminal",
-        name = { "Terminal","Alacritty", "iTerm",  "Warp", "Kitty" },
+        names = { "Terminal", "Alacritty", "Kitty", "wezterm", "iTerm", "Warp", },
         initWindowLayout = window_grids.fullScreen,
         alwaysWindowLayout = window_grids.fullScreen,
         anytimeAdjustWindowLayout = true,
@@ -57,19 +57,19 @@ applications = {
         key = "O",
         message = "OFFICE",
         -- bundleId = "asc.onlyoffice.ONLYOFFICE",
-        name = { "Excel", "ONLYOFFICE", "WPS" },
+        names = { "Excel", "ONLYOFFICE", "WPS" },
     },
     {
         prefix = HyperKey,
         key = "A",
         message = "ApiPost",
-        name = { "Apipost", "Apifox" }, -- 支持 App 名称模糊匹配(ApiPost7)
+        names = { "Apipost", "Apifox" }, -- 支持 App 名称模糊匹配(ApiPost7)
     },
     {
         prefix = HyperKey,
         key = "U",
         message = "Update",
-        name = { "Latest", "Applite", "App Store" },
+        names = { "Latest", "Applite", "App Store" },
         anytimeAdjustWindowLayout = true,
         initWindowLayout = window_grids.centeredMedium,
     },
@@ -77,7 +77,7 @@ applications = {
         prefix = HyperKey,
         key = "X",
         message = "FDM",
-        name = { "fdm", "Folx" }, -- 支持 APP 名称简写
+        names = { "fdm", "Folx" }, -- 支持 APP 名称简写
         alwaysWindowLayout = window_grids.centeredMedium,
         anytimeAdjustWindowLayout = true,
     },
@@ -85,26 +85,26 @@ applications = {
         prefix = HyperKey,
         key = "F",
         message = "Finder",
-        name = { "Finder", "Path Finder", "ForkLift", },
+        names = { "Finder", "Path Finder", "ForkLift", },
     },
     {
         prefix = HyperKey,
         key = "E",
         message = "email",
-        name = { "Outlook", "Foxmail" },
+        names = { "Airmail" ,"Outlook", "Foxmail" },
         anytimeAdjustWindowLayout = true,
     },
     {
         prefix = HyperKey,
         key = "R",
         message = "RSS",
-        name = { "NetNewsWire", "Follow", "Feeds" },
+        names = { "NetNewsWire", "Follow", "Feeds" },
     },
     {
         prefix = HyperKey,
         key = "P",
         message = "PDF, BDPan",
-        name = { "PDF Reader Pro", "百度网盘" },
+        names = { "PDF Reader Pro", "百度网盘" },
         anytimeAdjustWindowLayout = true,
         alwaysWindowLayout = window_grids.fullScreen,
         initWindowLayout = window_grids.centeredMedium,
@@ -114,7 +114,7 @@ applications = {
         key = "K",
         message = "Browser",
         -- bundleId = "com.microsoft.edgemac",
-        name = { "Arc", "Microsoft Edge", "Google Chrome", "Firefox", "safari" },
+        names = { "Arc", "Microsoft Edge", "Google Chrome", "Firefox", "safari" },
         onBackupScreen = true,
         alwaysWindowLayout = window_grids.fullScreen,
     },
@@ -122,13 +122,13 @@ applications = {
         prefix = HyperKey,
         key = "D",
         message = "DBeaver",
-        name = { "DBeaverUltimate", "Navicat Premium",  "DataGrip" },
+        names = { "DBeaverUltimate", "Navicat Premium",  "DataGrip" },
     },
     {
         prefix = HyperKey,
         key = "8",
         message = "Telegram",
-        name = { "Telegram Desktop"},
+        names = { "Telegram Desktop"},
     },
     {
         prefix = HyperKey,
@@ -153,8 +153,9 @@ applications = {
     {
         prefix = HyperKey,
         key = "9",
-        message = "NeteaseMusic",
-        bundleId = "com.netease.163music",
+        message = "Music",
+        -- bundleId = "com.netease.163music",
+        names = {'NeteaseMusic', 'Music', 'Spotify'},
         anytimeAdjustWindowLayout = true,
         alwaysWindowLayout = window_grids.fullScreen,
         initWindowLayout = window_grids.centeredMedium,

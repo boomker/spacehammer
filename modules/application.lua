@@ -6,7 +6,7 @@ hs.application.enableSpotlightForNameSearches(true)
 
 local AppObjInfo = {
     bundleId = nil,
-    name = nil,
+    names = nil,
     initWindowLayout = nil,
     alwaysWindowLayout = nil,
     onPrimaryScreen = false,
@@ -144,7 +144,7 @@ local function launchOrFocusApp(appInfo)
     end
 
     local appBundleID = appInfo.bundleId
-    local appNameItems = appInfo.name
+    local appNameItems = appInfo.names
     if appBundleID then
         hs.application.launchOrFocusByBundleID(appBundleID)
     else
@@ -189,9 +189,9 @@ hs.fnutils.each(applications, function(item)
     hs.hotkey.bind(item.prefix, item.key, item.message, function()
         if item.bundleId then
             AppObjInfo.bundleId = item.bundleId
-            AppObjInfo.name = nil
+            AppObjInfo.names = nil
         else
-            AppObjInfo.name = item.name
+            AppObjInfo.names = item.names
             AppObjInfo.bundleId = nil
         end
 
