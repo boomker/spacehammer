@@ -55,14 +55,16 @@ local function file_exists(file_path)
     end
 end
 
----@diagnostic disable-next-line: unused-local
 local function async_download_callback(exitCode, stdOut, stdErr)
     local len = #choices
     if len == 0 then return end
     -- 下载完一张图片，就刷新整个列表（不得已而为之）
     for i = 1, len do
         if choices[i].path then
-            choices[i].image = hs.image.imageFromPath(choices[i].path)
+            local image = hs.image.imageFromPath(choices[i].path)
+            if image ~= choices[i].image then
+                choices[i].image = image
+            end
         end
     end
     chooser:choices(choices)
@@ -86,7 +88,6 @@ local function download_file(url, file_path)
 end
 
 local function parse_html(body)
-
     local htmlparser = require("modules.htmlparser")
 
     local root = htmlparser.parse(body)
@@ -106,7 +107,7 @@ local function parse_html(body)
                         if av then img_url = av end
                     end
                     local is_exist = img_url and hs.fnutils.contains(img_urls, img_url)
-                    if filename and img_url and (not is_exist) then
+                    if filename and img_url and not is_exist then
                         table.insert(response_data, { filename, img_url })
                         table.insert(img_urls, filename)
                     end
@@ -118,9 +119,7 @@ local function parse_html(body)
 end
 
 local function preview(path)
-    if not path then
-        return
-    end
+    if not path then return end
     emoji_canvas[1] = {
         type = "image",
         image = hs.image.imageFromPath(path),
@@ -152,7 +151,7 @@ local function request(query_kw)
                 local title = v[1]
                 local img_url = v[2]
                 -- local file_path = cache_dir .. hs.http.urlParts(v.url).lastPathComponent
-                local filename_ext =  hs.http.urlParts(img_url).pathExtension
+                local filename_ext = hs.http.urlParts(img_url).pathExtension
                 local file_path = cache_dir .. title .. "." .. filename_ext
                 -- 下载图片
                 download_file(img_url, file_path)
@@ -168,7 +167,6 @@ local function request(query_kw)
     end)
 end
 
-choices = {}
 chooser = hs.chooser.new(function(selected)
     if selected then
         hs.pasteboard.writeObjects(selected.image)
@@ -183,6 +181,7 @@ chooser:placeholderText("搜索表情包")
 
 hs.hotkey.bind(emoji_search.prefix, emoji_search.key, emoji_search.message, function()
     page = 1
+    choices = {}
     chooser:show()
     chooser:query("")
 end)
@@ -238,6 +237,7 @@ select_key = hs.eventtap
 changed_chooser = chooser:queryChangedCallback(function()
     hs.timer.doAfter(0.1, function()
         page = 1
+        choices = {}
         local query = chooser:query()
         request(query)
     end)
