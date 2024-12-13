@@ -71,13 +71,13 @@ local function styleText(text)
 end
 
 local function drawText(tag, renderTextData, ccanvas)
-    -- 每列最多 22 行
+    -- 每列最多 25 行
     if tag == "all" then
-        MAX_LINE_NUM = 22
-        xl = 1.1
+        MAX_LINE_NUM = 25
+        xl = 1.06
     else
         MAX_LINE_NUM = 30
-        xl = 2
+        xl = 1.94
     end
 
     local w = 0

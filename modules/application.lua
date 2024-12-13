@@ -54,8 +54,8 @@ local function setWindowLayout(appName, eventType, appObject)
             local cwin = hs.window.focusedWindow()
             if cwin then
                 local windowForAppObj = cwin:application()
+                if not windowForAppObj then return false end
                 local windowForAppID = windowForAppObj:bundleID()
-                -- return windowForAppID == appObject:bundleID()
                 return windowForAppID == AppObjInfo.bundleId
             end
         end
@@ -111,15 +111,17 @@ local function getAppIdFromRunningApp(appNames)
     return false
 end
 
-local function getAppID(appName)
-    local appBundleID = hs.settings.get(appName .. "_bundleId")
-    if appBundleID then return appBundleID end
+local function getAppID(appName, skip_cache)
+    if not skip_cache then
+        local appBundleID = hs.settings.get(appName .. "_bundleId")
+        if appBundleID then return appBundleID end
+    end
 
     --[[
             "kMDItemDisplayName = '*iterm*'c                                    -- "c": 大小写不敏感
                 && (kMDItemKind = 'Application' || kMDItemKind = '应用程序')    -- "指定文件后缀为 `.app`"
                 && kMDItemContentType = 'com.apple.application-bundle'"         -- "指定仅App 应用程序"
-        ]]
+    --]]
     local cmdOpts =
         string.format("(kMDItemDisplayName = '*%s*'c  || kMDItemCFBundleIdentifier = '*%s*'c)", appName, appName)
     local cmdStr = [[mdfind -onlyin '/Applications' ]] .. '"' ..  cmdOpts .. '"'
@@ -149,21 +151,26 @@ local function launchOrFocusApp(appInfo)
         hs.application.launchOrFocusByBundleID(appBundleID)
     else
         appBundleID = getAppIdFromRunningApp(appNameItems)
+        local skip_cache = false
         if appBundleID then
             -- print(hs.inspect(appBundleID))
             local appDetails = hs.application.infoForBundleID(appBundleID)
-            local _isLSUIE = appDetails.LSUIElement
-            if _isLSUIE then goto GetBundelID end
+            local isLSUIE = appDetails.LSUIElement
+            if isLSUIE then goto GetBundelID end
             goto StartAPP
         end
         ::GetBundelID::
         for _, v in ipairs(appNameItems) do
-            appBundleID = getAppID(v)
-            if appBundleID then goto StartAPP end
+            appBundleID = getAppID(v, skip_cache)
+            if appBundleID then break end
         end
 
         ::StartAPP::
-        hs.application.launchOrFocusByBundleID(appBundleID)
+        local islaunched = hs.application.launchOrFocusByBundleID(appBundleID)
+        if not islaunched then
+            skip_cache = true
+            goto GetBundelID
+        end
         appInfo.bundleId = appBundleID
     end
 

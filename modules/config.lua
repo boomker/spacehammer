@@ -3,7 +3,7 @@
 defaultConfig = {{
     -- 配置版本号
     -- 每次新增功能项，需将版本号加 1
-    configVersion = '9'
+    configVersion = '10'
 }, {
     module = 'modules.winman',
     name = '窗口管理',
@@ -13,8 +13,8 @@ defaultConfig = {{
     name = '应用快启快切 🚀 ',
     enable = true
 }, {
-    module = 'modules.emoji',
-    name = '快发表情 😄 ',
+    module = 'modules.emoji-face',
+    name = '快发表情包 😄 ',
     enable = true
 }, {
     module = 'modules.input-method',
@@ -68,6 +68,7 @@ function loadConfig()
         file = io.open(config_path, 'w+')
     end
     -- 读取文件所有内容
+    if not file then return end
     local config = file:read('*a')
     -- 配置文件中不存在配置
     if config == '' then

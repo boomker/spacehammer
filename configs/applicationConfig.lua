@@ -18,9 +18,9 @@ applications = {
     {
         prefix = HyperKey,
         key = "C",
-        message = "Cursor Code",
+        message = "Code Editor",
         -- bundleId = "com.microsoft.VSCode", -- 支持 App bundleID
-        names = { "Cursor", "Code", "Xcode"},
+        names = { "Cursor", "Visual Studio Code", "Xcode"},
         alwaysWindowLayout = window_grids.fullScreen,
         -- anytimeAdjustWindowLayout = true,
         onPrimaryScreen = true,
@@ -56,7 +56,6 @@ applications = {
         prefix = HyperKey,
         key = "O",
         message = "OFFICE",
-        -- bundleId = "asc.onlyoffice.ONLYOFFICE",
         names = { "Excel", "ONLYOFFICE", "WPS" },
     },
     {
@@ -64,6 +63,12 @@ applications = {
         key = "A",
         message = "ApiPost",
         names = { "Apipost", "Apifox" }, -- 支持 App 名称模糊匹配(ApiPost7)
+    },
+    {
+        prefix = HyperKey,
+        key = "N",
+        message = "AI-ChatBox",
+        names = { "Cherry Studio", "NextChat", "ChatBox", "BoltAI" },
     },
     {
         prefix = HyperKey,
@@ -85,7 +90,7 @@ applications = {
         prefix = HyperKey,
         key = "F",
         message = "Finder",
-        names = { "Finder", "Path Finder", "ForkLift", },
+        names = { "QSpace Pro", "Finder", "Path Finder", },
     },
     {
         prefix = HyperKey,
@@ -111,10 +116,17 @@ applications = {
     },
     {
         prefix = HyperKey,
+        key = "B",
+        message = "Backup Browser",
+        names = {  "Firefox", "Zen Browser", "safari" },
+        onBackupScreen = true,
+        alwaysWindowLayout = window_grids.fullScreen,
+    },
+    {
+        prefix = HyperKey,
         key = "K",
         message = "Browser",
-        -- bundleId = "com.microsoft.edgemac",
-        names = { "Arc", "Microsoft Edge", "Google Chrome", "Firefox", "safari" },
+        names = { "Arc", "Microsoft Edge", "Google Chrome" },
         onBackupScreen = true,
         alwaysWindowLayout = window_grids.fullScreen,
     },
@@ -140,7 +152,7 @@ applications = {
         prefix = HyperKey,
         key = "i",
         message = "WeChat",
-        bundleId = "com.tencent.xinWeChat",
+        names = {"WeChat", "Wexin"},
         onPrimaryScreen = true,
         alwaysWindowLayout = window_grids.centeredMedium,
     },

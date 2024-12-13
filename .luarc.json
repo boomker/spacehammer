@@ -5,5 +5,10 @@
         "input_method_config",
         "spoon",
         "hshelp_keys"
+    ],
+    "diagnostics.disable": [
+        "different-requires",
+        "undefined-field",
+        "undefined-global"
     ]
 }

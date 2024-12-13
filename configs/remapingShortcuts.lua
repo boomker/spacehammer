@@ -34,26 +34,26 @@ remapingKeys = { -- trigger target combination key
         prefix = HyperKey,
         key = "J",
         message = "AppSwitch",
-        targetKey = { { "cmd", "alt", "ctrl", "shift"  }, "J" },
+        targetKey = { { "cmd", "alt", "ctrl", "shift" }, "J" },
     },
     {
         prefix = HyperKey,
         key = "H",
         message = "Raycast clipboard",
-        targetKey = { { "cmd", "alt", "ctrl",  "shift"  }, "H" },
+        targetKey = { { "cmd", "alt", "ctrl", "shift" }, "H" },
     },
-    {
-        prefix = HyperKey,
-        key = "N",
-        message = "Snipaste",
-        targetKey = { { "cmd", "alt", "ctrl", "shift" }, "S" },
-    },
-    {
-        prefix = HyperKey,
-        key = "B",
-        message = "Snipaste",
-        targetKey = { { "cmd", "alt", "ctrl", "shift"  }, "P" },
-    },
+    -- {
+    --     prefix = HyperKey,
+    --     key = "N",
+    --     message = "PixPin",
+    --     targetKey = { { "cmd", "alt", "ctrl", "shift" }, "S" },
+    -- },
+    -- {
+    --     prefix = HyperKey,
+    --     key = "B",
+    --     message = "Snipaste",
+    --     targetKey = { { "cmd", "alt", "ctrl", "shift" }, "P" },
+    -- },
 
     -- trigger function
     {

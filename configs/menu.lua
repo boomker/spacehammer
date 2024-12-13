@@ -12,6 +12,7 @@ local function renderMenubar(config)
 
     -- 字符串反序列化为 table
     config = unserialize(config)
+    if not config  then return end
 
     -- 渲染配置到 Menubar 中
     for k, v in ipairs(config) do
