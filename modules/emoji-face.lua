@@ -4,7 +4,13 @@
 require("modules.base")
 require("configs.shortcuts")
 
+page = 1
+choices = {}
+waitlist_render = {}
+chooser_raw_len = 0
+default_download_tool = "curl" -- or aria2c
 base_url = "https://www.doutub.com"
+cache_dir = os.getenv("HOME") .. "/.hammerspoon/.emoji/"
 local focusedWindow = hs.window.focusedWindow()
 if not focusedWindow then return end
 local screen = focusedWindow:screen():frame()
@@ -22,67 +28,71 @@ emoji_canvas = hs.canvas.new({
     h = HEIGHT,
 })
 
----@diagnostic disable-next-line: unused-local, unused-function
-local function utf8_gsub(str, pattern, repl)
-    local result = {}
-    local i = 1
-    while i <= #str do
-        local codepoint = utf8.codepoint(str, i)
-        if codepoint then
-            local char = utf8.char(codepoint)
-            if char:match(pattern) then
-                table.insert(result, repl)
-            else
-                table.insert(result, char)
-            end
-            i = i + utf8.len(char)
-        else
-            -- 如果遇到无效的 UTF-8 序列，直接跳过一个字节
-            table.insert(result, str:sub(i, i))
-            i = i + 1
-        end
-    end
-    return table.concat(result)
-end
-
-local function file_exists(file_path)
-    local f = io.open(file_path, "r")
-    if f then
-        io.close(f)
-        return true
-    else
-        return false
-    end
-end
 
 local function async_download_callback(exitCode, stdOut, stdErr)
-    local len = #choices
-    if len == 0 then return end
-    -- 下载完一张图片，就刷新整个列表（不得已而为之）
-    for i = 1, len do
-        if choices[i].path then
-            local image = hs.image.imageFromPath(choices[i].path)
-            if image ~= choices[i].image then
-                choices[i].image = image
-            end
-        end
+    local queue_len = #waitlist_render
+    if queue_len == 0 then return end
+    local cur_url = waitlist_render[1].subText
+    local last_url = (#choices > 0) and choices[#choices].subText or nil
+    if (#choices < 1) or (cur_url ~= last_url) then
+        table.insert(choices, waitlist_render[1])
+        chooser:choices(choices)
+        if #choices >= 10 then waitlist_render = {} end
+
     end
-    chooser:choices(choices)
+    table.remove(waitlist_render, 1)
 end
 
 local function download_file(url, file_path)
-    if not file_exists(file_path) then
-        -- 同步方式下载
-        -- hs.execute('curl --header \'Referer: http://kuranado.com\' --request GET ' .. url .. ' --create-dirs -o ' .. file_path)
+    local filename = file_path:gsub(cache_dir, "")
+    local save_path = hs.fs.pathToAbsolute(cache_dir)
+    local download_tools = {
+        ['curl'] = {
+            ['path'] = "/usr/bin/curl",
+            ['args'] = {
+                "--header",
+                "Referer: " .. base_url,
+                "--connect-timeout",
+                "3",
+                "-L",
+                url,
+                "--create-dirs",
+                "-o",
+                file_path,
+            }
+        },
+        ['aria2c'] = {
+            ['path'] = "/usr/local/bin/aria2c",
+            ['args'] = {
+                "--header=Referer: " .. base_url,
+                "--enable-rpc=false",
+                "--continue=true",
+                "-t",
+                "3",
+                "-x",
+                "3",
+                "-s",
+                "3",
+                "-j",
+                "10",
+                "-d",
+                save_path,
+                "-o",
+                filename,
+                url,
+            }
+        }
+    }
+    local exist_ok, err = hs.fs.attributes(file_path)
+    if exist_ok then
+        async_download_callback()
+    else
         -- 异步方式下载
-        down_emoji_task = hs.task.new("/usr/bin/curl", async_download_callback, {
-            "--header",
-            "Referer: " .. base_url,
-            url,
-            "--create-dirs",
-            "-o",
-            file_path,
-        })
+        down_emoji_task = hs.task.new(
+            download_tools[default_download_tool]["path"],
+            async_download_callback,
+            download_tools[default_download_tool]["args"]
+        )
         down_emoji_task:start()
     end
 end
@@ -130,10 +140,9 @@ local function preview(path)
 end
 
 local function request(query_kw)
-    local page = 1
+    waitlist_render = {}
     local req_url = base_url .. "/search/"
     local request_headers = { Referer = base_url }
-    local cache_dir = os.getenv("HOME") .. "/.hammerspoon/.emoji/"
 
     query_kw = trim(query_kw)
 
@@ -143,33 +152,65 @@ local function request(query_kw)
     local url = req_url .. hs.http.encodeForQuery(query_kw) .. "/" .. page
 
     hs.http.doAsyncRequest(url, "GET", nil, request_headers, function(code, body, response_headers)
-        -- rawjson = hs.json.decode(body)
         local response_data = parse_html(body)
         if code == 200 and response_data then
-            raw_len = #response_data
+            chooser_raw_len = #response_data
             for _, v in ipairs(response_data) do
-                local title = v[1]
+                local title = v[1]:gsub(" ", "")
                 local img_url = v[2]
-                -- local file_path = cache_dir .. hs.http.urlParts(v.url).lastPathComponent
                 local filename_ext = hs.http.urlParts(img_url).pathExtension
                 local file_path = cache_dir .. title .. "." .. filename_ext
-                -- 下载图片
-                download_file(img_url, file_path)
-                table.insert(choices, {
+                table.insert(waitlist_render, {
                     text = title,
                     subText = img_url,
                     path = file_path,
                     image = hs.image.imageFromPath(file_path),
                 })
+                -- 下载图片
+                download_file(img_url, file_path)
             end
-            chooser:choices(choices)
         end
     end)
 end
 
+local function search_emoji_from_local(query_kw)
+    local choices = {}
+    local limit_count = 10
+    -- local opts = {["except"] = {query_kw}}
+    local filelist, filecount, _dircount = hs.fs.fileListForPath(cache_dir)
+    if filecount == 0 then return false end
+    chooser_raw_len = (filecount > 10) and 10 or filecount
+    local start_index = (page > 1) and ((page - 1) * 10) or 0
+    for i, _f in ipairs(filelist) do
+        -- for i = start_index, filecount do
+        local file_path = filelist[i]
+        local filename = hs.fs.displayName(file_path)
+        local filename_ext = string.match(filename, "^.+%.([^%.]+)$")
+        local short_fn = filename:gsub("." .. filename_ext, "")
+        if short_fn:find(trim(query_kw)) then
+            if start_index > 0 then
+                start_index = start_index - 1
+                goto SKIP_LAST_PAGE
+            end
+            table.insert(choices, {
+                text = short_fn,
+                subText = "",
+                path = file_path,
+                image = hs.image.imageFromPath(file_path),
+            })
+            limit_count = limit_count - 1
+            if limit_count == 0 then break end
+            ::SKIP_LAST_PAGE::
+        end
+    end
+    chooser:choices(choices)
+    if limit_count == 0 then return true end
+end
+
 chooser = hs.chooser.new(function(selected)
     if selected then
-        hs.pasteboard.writeObjects(selected.image)
+        local image = hs.image.imageFromPath(selected.path)
+        hs.pasteboard.writeObjects(image)
         hs.eventtap.keyStroke({ "cmd" }, "v")
     end
 end)
@@ -177,27 +218,23 @@ chooser:width(30)
 chooser:rows(10)
 chooser:bgDark(false)
 chooser:fgColor({ hex = "#000000" })
-chooser:placeholderText("搜索表情包")
-
-hs.hotkey.bind(emoji_search.prefix, emoji_search.key, emoji_search.message, function()
-    page = 1
-    choices = {}
-    chooser:show()
-    chooser:query("")
-end)
+chooser:placeholderText("输入关键词搜索表情包")
 
 -- 上下键选择表情包预览
 select_key = hs.eventtap
     .new({ hs.eventtap.event.types.keyDown }, function(event)
         -- 只在 chooser 显示时，才监听键盘按下
-        if not chooser:isVisible() then
-            return
-        end
+        if not chooser:isVisible() then return end
         local keycode = event:getKeyCode()
         local key = hs.keycodes.map[keycode]
         if "right" == key then
             page = page + 1
-            request(chooser:query())
+            local query = chooser:query()
+            local exist_local = search_emoji_from_local(query)
+            if not exist_local then
+                choices = {}
+                request(chooser:query())
+            end
             return
         end
         if "left" == key then
@@ -206,17 +243,15 @@ select_key = hs.eventtap
                 return
             end
             page = page - 1
-            request(chooser:query())
+            local exist_local = search_emoji_from_local(chooser:query())
+            if not exist_local then request(chooser:query()) end
             return
         end
 
-        if "down" ~= key and "up" ~= key then
-            return
-        end
-        -- TODO-JING 第一项需要直接预览
+        if "down" ~= key and "up" ~= key then return end
         number = chooser:selectedRow()
         if "down" == key then
-            if number < raw_len then
+            if number < chooser_raw_len then
                 number = number + 1
             else
                 number = 1
@@ -226,7 +261,7 @@ select_key = hs.eventtap
             if number > 1 then
                 number = number - 1
             else
-                number = raw_len
+                number = chooser_raw_len
             end
         end
         row_contents = chooser:selectedRowContents(number)
@@ -235,14 +270,22 @@ select_key = hs.eventtap
     :start()
 
 changed_chooser = chooser:queryChangedCallback(function()
-    hs.timer.doAfter(0.1, function()
-        page = 1
-        choices = {}
+    hs.timer.doAfter(0.2, function()
         local query = chooser:query()
-        request(query)
+        local exist_local = search_emoji_from_local(query)
+        if not exist_local then
+            page = 1
+            choices = {}
+            request(query)
+        end
     end)
 end)
 
 hide_chooser = chooser:hideCallback(function()
     emoji_canvas:hide(0.3)
+end)
+
+hs.hotkey.bind(emoji_search.prefix, emoji_search.key, emoji_search.message, function()
+    chooser:show()
+    chooser:query("")
 end)
