@@ -6,9 +6,8 @@ require("configs.shortcuts")
 
 page = 1
 choices = {}
-waitlist_render = {}
 chooser_raw_len = 0
-default_download_tool = "curl" -- or aria2c
+default_download_tool = "aria2c" -- or aria2c, curl
 base_url = "https://www.doutub.com"
 cache_dir = os.getenv("HOME") .. "/.hammerspoon/.emoji/"
 local focusedWindow = hs.window.focusedWindow()
@@ -29,18 +28,20 @@ emoji_canvas = hs.canvas.new({
 })
 
 
-local function async_download_callback(exitCode, stdOut, stdErr)
-    local queue_len = #waitlist_render
-    if queue_len == 0 then return end
-    local cur_url = waitlist_render[1].subText
-    local last_url = (#choices > 0) and choices[#choices].subText or nil
-    if (#choices < 1) or (cur_url ~= last_url) then
-        table.insert(choices, waitlist_render[1])
-        chooser:choices(choices)
-        if #choices >= 10 then waitlist_render = {} end
-
-    end
-    table.remove(waitlist_render, 1)
+local function render_chooser(file_path, resource_origin)
+    local image = hs.image.imageFromPath(file_path)
+    if (#choices >= 10) or (not image) then return end
+    local filename_ext = file_path:match("^.+%.([^%.]+)$")
+    local title = file_path:gsub(cache_dir, ""):gsub("." .. filename_ext, "")
+    if (#choices > 0) and (title == choices[#choices]["text"]) then return end
+    local subtext = "来源: " .. ((resource_origin == "local") and "本地" or "网络")
+    table.insert(choices, {
+        text = title,
+        subText = subtext,
+        path = file_path,
+        image = image,
+    })
+    chooser:choices(choices)
 end
 
 local function download_file(url, file_path)
@@ -67,14 +68,6 @@ local function download_file(url, file_path)
                 "--header=Referer: " .. base_url,
                 "--enable-rpc=false",
                 "--continue=true",
-                "-t",
-                "3",
-                "-x",
-                "3",
-                "-s",
-                "3",
-                "-j",
-                "10",
                 "-d",
                 save_path,
                 "-o",
@@ -85,12 +78,12 @@ local function download_file(url, file_path)
     }
     local exist_ok, err = hs.fs.attributes(file_path)
     if exist_ok then
-        async_download_callback()
+        render_chooser(file_path, "local")
     else
         -- 异步方式下载
         down_emoji_task = hs.task.new(
             download_tools[default_download_tool]["path"],
-            async_download_callback,
+            render_chooser(file_path,  "internet"),
             download_tools[default_download_tool]["args"]
         )
         down_emoji_task:start()
@@ -140,7 +133,6 @@ local function preview(path)
 end
 
 local function request(query_kw)
-    waitlist_render = {}
     local req_url = base_url .. "/search/"
     local request_headers = { Referer = base_url }
 
@@ -160,12 +152,6 @@ local function request(query_kw)
                 local img_url = v[2]
                 local filename_ext = hs.http.urlParts(img_url).pathExtension
                 local file_path = cache_dir .. title .. "." .. filename_ext
-                table.insert(waitlist_render, {
-                    text = title,
-                    subText = img_url,
-                    path = file_path,
-                    image = hs.image.imageFromPath(file_path),
-                })
                 -- 下载图片
                 download_file(img_url, file_path)
             end
@@ -174,10 +160,12 @@ local function request(query_kw)
 end
 
 local function search_emoji_from_local(query_kw)
+	if not query_kw then return end
     local choices = {}
     local limit_count = 10
-    -- local opts = {["except"] = {query_kw}}
-    local filelist, filecount, _dircount = hs.fs.fileListForPath(cache_dir)
+    local query = trim(query_kw)
+    local opts = { --[["except"] = {query},--]] ["subdirs"] = true}
+    local filelist, filecount, _dircount = hs.fs.fileListForPath(cache_dir, opts)
     if filecount == 0 then return false end
     chooser_raw_len = (filecount > 10) and 10 or filecount
     local start_index = (page > 1) and ((page - 1) * 10) or 0
@@ -187,14 +175,14 @@ local function search_emoji_from_local(query_kw)
         local filename = hs.fs.displayName(file_path)
         local filename_ext = string.match(filename, "^.+%.([^%.]+)$")
         local short_fn = filename:gsub("." .. filename_ext, "")
-        if short_fn:find(trim(query_kw)) then
+        if short_fn:find(query) then
             if start_index > 0 then
                 start_index = start_index - 1
                 goto SKIP_LAST_PAGE
             end
             table.insert(choices, {
                 text = short_fn,
-                subText = "",
+                subText = "来源: 本地",
                 path = file_path,
                 image = hs.image.imageFromPath(file_path),
             })
@@ -210,6 +198,7 @@ end
 chooser = hs.chooser.new(function(selected)
     if selected then
         local image = hs.image.imageFromPath(selected.path)
+        if not image then return end
         hs.pasteboard.writeObjects(image)
         hs.eventtap.keyStroke({ "cmd" }, "v")
     end
@@ -264,13 +253,13 @@ select_key = hs.eventtap
                 number = chooser_raw_len
             end
         end
-        row_contents = chooser:selectedRowContents(number)
-        preview(row_contents.path)
+        local selrowcontent = chooser:selectedRowContents(number)
+        preview(selrowcontent.path)
     end)
     :start()
 
 changed_chooser = chooser:queryChangedCallback(function()
-    hs.timer.doAfter(0.2, function()
+    hs.timer.doAfter(0.3, function()
         local query = chooser:query()
         local exist_local = search_emoji_from_local(query)
         if not exist_local then
