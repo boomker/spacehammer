@@ -44,23 +44,24 @@ require("configs.baseConfig")
 -- configs/remapingShortcuts.lua
 
 -- 剪贴板工具
-clipBoardTools = { HyperKey, "C" }
+clipBoardTools = { HyperKey, "Y" }
 
 -- SuperSKey 配置
 superKey_toggle = { HyperKey, "S" }
 superKey_items = {
     -- S: 弹出当前 APP 所有快捷键列表面板
     -- H: 查看(canvas 浮层弹出)本项目所有快捷键配置
-    bartenderMenuSearch = { { "cmd", "alt", "ctrl", "shift"  }, "b" },
-    EasydictOCR = { { "cmd", "alt", "ctrl" , "shift" }, "o" },
+    bartenderMenuSearch = { { "cmd", "alt", "ctrl", "shift" }, "b" },
+    EasydictOCR = { { "cmd", "alt", "ctrl", "shift" }, "o" },
     -- toggleDND = { { "cmd", "alt", "ctrl", "shift"  }, "\\" },
 
-    httpProxy = "http://127.0.0.1:1087", -- 可选填写代理服务器配置
+    httpProxy = "http://127.0.0.1:7890", -- 可选填写代理服务器配置
+    -- httpProxy = "http://127.0.0.1:1087", -- 可选填写代理服务器配置
     favoriteBluetoothName = "小爱音箱-4099",
 }
 
 -- JSON 格式化
-json_formater = { prefix = HyperKey, key = "Y", message = "JSON 格式化" }
+json_formater = { prefix = HyperKey, key = "5", message = "JSON 格式化" }
 
 -- 表情包搜索配置
 emoji_search = { prefix = HyperKey, key = "`", message = "Search emoji" }
