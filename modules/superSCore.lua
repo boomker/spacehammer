@@ -187,7 +187,7 @@ end
 
 function ejectAllDMG()
     local cmdStr =
-        "diskutil list |/usr/bin/grep 'disk image' |/usr/bin/cut -f1 -d' ' |/usr/bin/xargs -I d diskutil eject d"
+        "diskutil list |/usr/bin/grep 'disk image' |/usr/bin/cut -f1 -d' ' |/usr/bin/sort -rn |/usr/bin/xargs -I% diskutil eject %"
     local retVal, _, retCode = os.execute(cmdStr)
     if retVal and retCode == 0 then
         hs.alert.show("成功推出所有DMG", 0.5)
@@ -235,14 +235,16 @@ end
 
 function openSecAndPrivacy()
     hs.alert.show("安全与隐私正在打开...")
-    local openSecPrivSetting = [[
-			tell application "System Preferences"
-				reveal anchor "Privacy_Accessibility" of pane "com.apple.preference.security"
-				activate
-			end tell
-		]]
-    local ok, _, _ = hs.osascript.applescript(openSecPrivSetting)
-    if not ok then
+    --   local openSecPrivSetting = [[
+    -- 	tell application "System Preferences"
+    -- 		reveal anchor "Privacy_Accessibility" of pane "com.apple.preference.security"
+    -- 		activate
+    -- 	end tell
+    -- ]]
+    --   local ok, _, _ = hs.osascript.applescript(openSecPrivSetting)
+    local openSecPane = string.format("open /System/Library/PreferencePanes/Security.prefPane")
+    local retVal, status, _, exitCode = hs.execute(openSecPane)
+    if not status then
         hs.alert.show("安全与隐私打开失败", 0.5)
     end
 end

@@ -90,13 +90,13 @@ applications = {
         prefix = HyperKey,
         key = "F",
         message = "Finder",
-        names = { "访达", "QSpace Pro", "Path Finder" },
+        names = { "Path Finder", "访达", "QSpace Pro" },
     },
     {
         prefix = HyperKey,
         key = "E",
         message = "email",
-        names = { "Airmail", "Outlook", "Foxmail" },
+        names = { "Spark Desktop", "Airmail", "Outlook", "Foxmail" },
         anytimeAdjustWindowLayout = true,
     },
     {

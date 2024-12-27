@@ -10,6 +10,8 @@ chooser_raw_len = 0
 default_download_tool = "aria2c" -- or aria2c, curl
 base_url = "https://www.doutub.com"
 cache_dir = os.getenv("HOME") .. "/.hammerspoon/.emoji/"
+if not hs.fs.pathToAbsolute(cache_dir) then hs.fs.mkdir(cache_dir) end
+
 local focusedWindow = hs.window.focusedWindow()
 if not focusedWindow then return end
 local screen = focusedWindow:screen():frame()
@@ -27,10 +29,9 @@ emoji_canvas = hs.canvas.new({
     h = HEIGHT,
 })
 
-
 local function render_chooser(file_path, resource_origin)
     local image = hs.image.imageFromPath(file_path)
-    if (#choices >= 10) or (not image) then return end
+    if (#choices >= 10) or not image then return end
     local filename_ext = file_path:match("^.+%.([^%.]+)$")
     local title = file_path:gsub(cache_dir, ""):gsub("." .. filename_ext, "")
     if (#choices > 0) and (title == choices[#choices]["text"]) then return end
@@ -48,9 +49,9 @@ local function download_file(url, file_path)
     local filename = file_path:gsub(cache_dir, "")
     local save_path = hs.fs.pathToAbsolute(cache_dir)
     local download_tools = {
-        ['curl'] = {
-            ['path'] = "/usr/bin/curl",
-            ['args'] = {
+        ["curl"] = {
+            ["path"] = "/usr/bin/curl",
+            ["args"] = {
                 "--header",
                 "Referer: " .. base_url,
                 "--connect-timeout",
@@ -60,11 +61,11 @@ local function download_file(url, file_path)
                 "--create-dirs",
                 "-o",
                 file_path,
-            }
+            },
         },
-        ['aria2c'] = {
-            ['path'] = "/usr/local/bin/aria2c",
-            ['args'] = {
+        ["aria2c"] = {
+            ["path"] = "/usr/local/bin/aria2c",
+            ["args"] = {
                 "--header=Referer: " .. base_url,
                 "--enable-rpc=false",
                 "--continue=true",
@@ -73,8 +74,8 @@ local function download_file(url, file_path)
                 "-o",
                 filename,
                 url,
-            }
-        }
+            },
+        },
     }
     local exist_ok, err = hs.fs.attributes(file_path)
     if exist_ok then
@@ -83,7 +84,7 @@ local function download_file(url, file_path)
         -- 异步方式下载
         down_emoji_task = hs.task.new(
             download_tools[default_download_tool]["path"],
-            render_chooser(file_path,  "internet"),
+            render_chooser(file_path, "internet"),
             download_tools[default_download_tool]["args"]
         )
         down_emoji_task:start()
@@ -160,11 +161,11 @@ local function request(query_kw)
 end
 
 local function search_emoji_from_local(query_kw)
-	if not query_kw then return end
+    if not query_kw then return end
     local choices = {}
     local limit_count = 10
     local query = trim(query_kw)
-    local opts = { --[["except"] = {query},--]] ["subdirs"] = true}
+    local opts = { --[["except"] = {query},--]] ["subdirs"] = true, }
     local filelist, filecount, _dircount = hs.fs.fileListForPath(cache_dir, opts)
     if filecount == 0 then return false end
     chooser_raw_len = (filecount > 10) and 10 or filecount
@@ -233,7 +234,9 @@ select_key = hs.eventtap
             end
             page = page - 1
             local exist_local = search_emoji_from_local(chooser:query())
-            if not exist_local then request(chooser:query()) end
+            if not exist_local then
+                request(chooser:query())
+            end
             return
         end
 
