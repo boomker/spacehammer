@@ -44,7 +44,7 @@ local function execTargetFunc(tgtfn)
             -- if remapingKeys.switchToFirstSpaceHotKey then
             --     pressTargetKey(remapingKeys.switchToFirstSpaceHotKey)
             -- end
-        -- else
+            -- else
             hs.spaces.gotoSpace(nextSpaceID)
         end
     elseif tgtfn == "goToPreSpace" then
@@ -55,11 +55,15 @@ local function execTargetFunc(tgtfn)
         end
     elseif tgtfn == "windowMaximze" then
         local cwin = hs.window.focusedWindow()
-        cwin:maximize()
+        if cwin then
+            cwin:maximize()
+        end
     elseif tgtfn == "windowMinimize" then
         local cwin = hs.window.focusedWindow()
-        cwin:minimize()
-        hs.eventtap.keyStroke({ "cmd" }, "H")
+        if cwin then
+            cwin:minimize()
+        end
+        -- hs.eventtap.keyStroke({ "cmd" }, "H")
     else
         spoon.WinMan:jumpToWindowAndFocus()
     end

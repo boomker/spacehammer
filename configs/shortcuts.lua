@@ -70,16 +70,16 @@ emoji_search = { prefix = HyperKey, key = "`", message = "Search emoji" }
 -- 当选中某窗口按下 ctrl+command+alt+shift+\ 时会显示应用的路径等信息
 hs.hotkey.bind({ "ctrl", "cmd", "alt", "shift" }, "\\", function()
     hs.alert.show(
-        "App path:    "
+        "App path: "
             .. hs.window.focusedWindow():application():path()
             .. "\n"
-            .. "App name:      "
+            .. "App name: "
             .. hs.window.focusedWindow():application():name()
             .. "\n"
-            .. "App bundleId:  "
+            .. "App bundleId: "
             .. hs.window.focusedWindow():application():bundleID()
             .. "\n"
-            .. "IM source id:  "
+            .. "IM source id: "
             .. hs.keycodes.currentSourceID()
     )
 end)

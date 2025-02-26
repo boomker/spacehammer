@@ -20,7 +20,7 @@ applications = {
         key = "C",
         message = "Code Editor",
         -- bundleId = "com.microsoft.VSCode", -- 支持 App bundleID
-        names = { "Cursor", "Visual Studio Code", "Xcode" },
+        names = { "com.trae.app", "Cursor", "Visual Studio Code", "Xcode" },
         alwaysWindowLayout = window_grids.fullScreen,
         -- anytimeAdjustWindowLayout = true,
         onPrimaryScreen = true,
@@ -47,7 +47,7 @@ applications = {
         prefix = HyperKey,
         key = "T",
         message = "Terminal",
-        names = { "Terminal", "Alacritty", "Kitty", "wezterm", "iTerm", "Warp" },
+        names = { "Terminal", "Ghostty", "Alacritty", "Kitty", "wezterm", "iTerm", "Warp" },
         initWindowLayout = window_grids.fullScreen,
         alwaysWindowLayout = window_grids.fullScreen,
         anytimeAdjustWindowLayout = true,
@@ -82,7 +82,7 @@ applications = {
         prefix = HyperKey,
         key = "X",
         message = "FDM",
-        names = { "fdm", "Folx" }, -- 支持 APP 名称简写
+        names = { "Progressive Downloader", "fdm", "Folx" }, -- 支持 APP 名称简写
         alwaysWindowLayout = window_grids.centeredMedium,
         anytimeAdjustWindowLayout = true,
     },
@@ -90,7 +90,7 @@ applications = {
         prefix = HyperKey,
         key = "F",
         message = "Finder",
-        names = { "Path Finder", "访达", "QSpace Pro" },
+        names = { "QSpace Pro", "Path Finder", "访达" },
     },
     {
         prefix = HyperKey,
