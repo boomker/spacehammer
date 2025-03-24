@@ -15,11 +15,9 @@ local AppObjInfo = {
 -- 存储鼠标位置
 local mousePositions = {}
 
-local function setMouseToCenter(foucusedWindow)
-    if foucusedWindow == nil then
-        return
-    end
-    local frame = foucusedWindow:frame()
+local function setMouseToCenter(focusedWindow)
+    if not focusedWindow then return end
+    local frame = focusedWindow:frame()
     local centerPosition = hs.geometry.point(frame.x + frame.w / 2, frame.y + frame.h / 2)
     hs.mouse.absolutePosition(centerPosition)
 end
@@ -113,7 +111,7 @@ local function getAppIdFromRunningApp(appNames)
     return false
 end
 
-local function getAppID(appName, skip_cache)
+local function getAppIDFromAppName(appName, skip_cache)
     if not skip_cache then
         local appBundleID = hs.settings.get(appName .. "_bundleId")
         if appBundleID then
@@ -140,6 +138,7 @@ local function getAppID(appName, skip_cache)
             hs.settings.set(appBundleIDKey, bundleID)
             return bundleID
         end
+        return false
     end
 end
 
@@ -149,6 +148,7 @@ local function launchOrFocusApp(appInfo)
         mousePositions[previousFocusedWindow:id()] = hs.mouse.absolutePosition()
     end
 
+    local appWindowObj = nil
     local appBundleID = appInfo.bundleId
     local appNameItems = appInfo.names
     if appBundleID then
@@ -157,39 +157,48 @@ local function launchOrFocusApp(appInfo)
         appBundleID = getAppIdFromRunningApp(appNameItems)
         local skip_cache = false
         if appBundleID then
-            -- print(hs.inspect(appBundleID))
             local appDetails = hs.application.infoForBundleID(appBundleID)
             local isLSUIE = appDetails.LSUIElement
-            if isLSUIE then
-                goto GetBundelID
+            if isLSUIE then goto GetBundleID end
+            if not isLSUIE then
+                appInfo.bundleId = appBundleID
+                goto FocusWindow
             end
-            goto StartAPP
-        end
-        ::GetBundelID::
-        for _, v in ipairs(appNameItems) do
-            appBundleID = getAppID(v, skip_cache)
-            if appBundleID then
-                break
-            end
-        end
-        if not appBundleID then
-            return false
         end
 
-        ::StartAPP::
-        local islaunched = hs.application.launchOrFocusByBundleID(appBundleID)
-        if not islaunched then
-            skip_cache = true
-            goto GetBundelID
+        ::GetBundleID::
+        for _, appName in ipairs(appNameItems) do
+            appBundleID = getAppIDFromAppName(appName, skip_cache)
+            if appBundleID then
+                local islaunched = hs.application.launchOrFocusByBundleID(appBundleID)
+                if not islaunched then
+                    skip_cache = true
+                    goto GetBundleID
+                end
+                appInfo.bundleId = appBundleID
+            end
         end
-        appInfo.bundleId = appBundleID
+
+        if not appBundleID then
+            for _, v in ipairs(appNameItems) do
+                appWindowObj = hs.window.get(v)
+                if appWindowObj then break end
+            end
+            if not appWindowObj then return false end
+        end
     end
 
+    ::FocusWindow::
     -- 获取 application 对象
-    local applications = hs.application.applicationsForBundleID(appBundleID)
-    if applications[1] then
-        local currentFocusedWindow = applications[1]:focusedWindow()
-        -- print(hs.inspect(applications), currentFocusedWindow)
+    local currentFocusedWindow
+    if appBundleID then
+        local ok = hs.application.launchOrFocusByBundleID(appBundleID)
+        local applications = ok and hs.application.applicationsForBundleID(appBundleID)
+        currentFocusedWindow = applications[1]:focusedWindow()
+    else
+        currentFocusedWindow = appWindowObj and appWindowObj:focus()
+    end
+    if currentFocusedWindow then
         if currentFocusedWindow and mousePositions[currentFocusedWindow:id()] then
             hs.mouse.absolutePosition(mousePositions[currentFocusedWindow:id()])
         else

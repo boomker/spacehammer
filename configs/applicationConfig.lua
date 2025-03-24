@@ -20,18 +20,16 @@ applications = {
         key = "C",
         message = "Code Editor",
         -- bundleId = "com.microsoft.VSCode", -- 支持 App bundleID
-        names = { "com.trae.app", "Cursor", "Visual Studio Code", "Xcode" },
-        alwaysWindowLayout = window_grids.fullScreen,
-        -- anytimeAdjustWindowLayout = true,
-        onPrimaryScreen = true,
+        names = { "trae", "Cursor", "Visual Studio Code", "Xcode" },
+        -- alwaysWindowLayout = window_grids.fullScreen,
+        onPrimaryScreen = false,
     },
     {
         prefix = HyperKey,
         key = "V",
         message = "Neovim",
-        names = { "neovide", "nvide", "goneovim" }, -- 支持多 AppName
-        alwaysWindowLayout = window_grids.fullScreen,
-        anytimeAdjustWindowLayout = true,
+        names = { "Neovide", "goneovim" }, -- 支持多 AppName
+        -- alwaysWindowLayout = window_grids.fullScreen,
         onPrimaryScreen = false,
     },
     {
@@ -39,18 +37,17 @@ applications = {
         key = "M",
         message = "markdown",
         names = { "obsidian", "typora" }, -- 支持 APP 名称
-        initWindowLayout = window_grids.fullScreen,
-        alwaysWindowLayout = window_grids.fullScreen,
-        anytimeAdjustWindowLayout = true,
+        -- initWindowLayout = window_grids.fullScreen,
+        -- alwaysWindowLayout = window_grids.fullScreen,
     },
     {
         prefix = HyperKey,
         key = "T",
         message = "Terminal",
-        names = { "Terminal", "Ghostty", "Alacritty", "Kitty", "wezterm", "iTerm", "Warp" },
+        names = { "Terminal", "Alacritty", "Ghostty", "Kitty", "wezterm", "iTerm", "Warp" },
+        onPrimaryScreen = true,
         initWindowLayout = window_grids.fullScreen,
         alwaysWindowLayout = window_grids.fullScreen,
-        anytimeAdjustWindowLayout = true,
     },
     {
         prefix = HyperKey,
@@ -75,16 +72,14 @@ applications = {
         key = "U",
         message = "Update",
         names = { "Latest", "Applite", "App Store" },
-        anytimeAdjustWindowLayout = true,
         initWindowLayout = window_grids.centeredMedium,
     },
     {
         prefix = HyperKey,
         key = "X",
         message = "FDM",
-        names = { "Progressive Downloader", "fdm", "Folx" }, -- 支持 APP 名称简写
+        names = { "fdm", "NeatDownloadManager", "Progressive Downloader", "Folx" }, -- 支持 APP 名称简写
         alwaysWindowLayout = window_grids.centeredMedium,
-        anytimeAdjustWindowLayout = true,
     },
     {
         prefix = HyperKey,
@@ -97,7 +92,6 @@ applications = {
         key = "E",
         message = "email",
         names = { "Spark Desktop", "Airmail", "Outlook", "Foxmail" },
-        anytimeAdjustWindowLayout = true,
     },
     {
         prefix = HyperKey,
@@ -110,7 +104,6 @@ applications = {
         key = "P",
         message = "PDF, BDPan",
         names = { "PDF Reader Pro", "百度网盘" },
-        anytimeAdjustWindowLayout = true,
         alwaysWindowLayout = window_grids.fullScreen,
         initWindowLayout = window_grids.centeredMedium,
     },
@@ -118,9 +111,9 @@ applications = {
         prefix = HyperKey,
         key = "B",
         message = "Backup Browser",
-        names = { "Firefox", "Zen Browser", "safari" },
+        names = { "Firefox", "Zen", "safari" },
         onBackupScreen = true,
-        alwaysWindowLayout = window_grids.fullScreen,
+        -- alwaysWindowLayout = window_grids.fullScreen,
     },
     {
         prefix = HyperKey,
@@ -167,7 +160,7 @@ applications = {
         key = "9",
         message = "Music",
         names = { "NeteaseMusic", "Music", "Spotify" },
-        anytimeAdjustWindowLayout = true,
+        -- anytimeAdjustWindowLayout = true,
         alwaysWindowLayout = window_grids.fullScreen,
         initWindowLayout = window_grids.centeredMedium,
     },

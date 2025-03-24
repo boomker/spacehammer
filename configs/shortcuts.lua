@@ -51,12 +51,11 @@ superKey_toggle = { HyperKey, "S" }
 superKey_items = {
     -- S: 弹出当前 APP 所有快捷键列表面板
     -- H: 查看(canvas 浮层弹出)本项目所有快捷键配置
-    bartenderMenuSearch = { { "cmd", "alt", "ctrl", "shift" }, "b" },
     EasydictOCR = { { "cmd", "alt", "ctrl", "shift" }, "o" },
-    -- toggleDND = { { "cmd", "alt", "ctrl", "shift"  }, "\\" },
+    bartenderMenuSearch = { { "cmd", "alt", "ctrl", "shift" }, "b" },
 
-    httpProxy = "http://127.0.0.1:7890", -- 可选填写代理服务器配置
-    -- httpProxy = "http://127.0.0.1:1087", -- 可选填写代理服务器配置
+    -- httpProxy = "http://127.0.0.1:7890", -- 可选填写代理服务器配置
+    httpProxy = "http://127.0.0.1:1087", -- 可选填写代理服务器配置
     favoriteBluetoothName = "小爱音箱-4099",
 }
 
@@ -70,7 +69,9 @@ emoji_search = { prefix = HyperKey, key = "`", message = "Search emoji" }
 -- 当选中某窗口按下 ctrl+command+alt+shift+\ 时会显示应用的路径等信息
 hs.hotkey.bind({ "ctrl", "cmd", "alt", "shift" }, "\\", function()
     hs.alert.show(
-        "App path: "
+        "windowID: "
+            .. hs.window.focusedWindow():id()
+            .. "App path: "
             .. hs.window.focusedWindow():application():path()
             .. "\n"
             .. "App name: "
