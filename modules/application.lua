@@ -16,7 +16,9 @@ local AppObjInfo = {
 local mousePositions = {}
 
 local function setMouseToCenter(focusedWindow)
-    if not focusedWindow then return end
+    if not focusedWindow then
+        return
+    end
     local frame = focusedWindow:frame()
     local centerPosition = hs.geometry.point(frame.x + frame.w / 2, frame.y + frame.h / 2)
     hs.mouse.absolutePosition(centerPosition)
@@ -159,7 +161,9 @@ local function launchOrFocusApp(appInfo)
         if appBundleID then
             local appDetails = hs.application.infoForBundleID(appBundleID)
             local isLSUIE = appDetails.LSUIElement
-            if isLSUIE then goto GetBundleID end
+            if isLSUIE then
+                goto GetBundleID
+            end
             if not isLSUIE then
                 appInfo.bundleId = appBundleID
                 goto FocusWindow
@@ -170,21 +174,28 @@ local function launchOrFocusApp(appInfo)
         for _, appName in ipairs(appNameItems) do
             appBundleID = getAppIDFromAppName(appName, skip_cache)
             if appBundleID then
-                local islaunched = hs.application.launchOrFocusByBundleID(appBundleID)
-                if not islaunched then
-                    skip_cache = true
-                    goto GetBundleID
-                end
-                appInfo.bundleId = appBundleID
+                break
             end
+        end
+        if appBundleID then
+            local islaunched = hs.application.launchOrFocusByBundleID(appBundleID)
+            if not islaunched then
+                skip_cache = true
+                goto GetBundleID
+            end
+            appInfo.bundleId = appBundleID
         end
 
         if not appBundleID then
             for _, v in ipairs(appNameItems) do
                 appWindowObj = hs.window.get(v)
-                if appWindowObj then break end
+                if appWindowObj then
+                    break
+                end
             end
-            if not appWindowObj then return false end
+            if not appWindowObj then
+                return false
+            end
         end
     end
 

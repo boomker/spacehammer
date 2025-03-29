@@ -73,6 +73,7 @@ applications = {
         message = "Update",
         names = { "Latest", "Applite", "App Store" },
         initWindowLayout = window_grids.centeredMedium,
+        alwaysWindowLayout = window_grids.centeredMedium,
     },
     {
         prefix = HyperKey,
@@ -111,7 +112,7 @@ applications = {
         prefix = HyperKey,
         key = "B",
         message = "Backup Browser",
-        names = { "Firefox", "Zen", "safari" },
+        names = { "Zen", "Firefox", "safari" },
         onBackupScreen = true,
         -- alwaysWindowLayout = window_grids.fullScreen,
     },
