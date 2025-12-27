@@ -10,10 +10,14 @@ chooser_raw_len = 0
 default_download_tool = "aria2c" -- or aria2c, curl
 base_url = "https://www.doutub.com"
 cache_dir = os.getenv("HOME") .. "/.hammerspoon/.emoji/"
-if not hs.fs.pathToAbsolute(cache_dir) then hs.fs.mkdir(cache_dir) end
+if not hs.fs.pathToAbsolute(cache_dir) then
+    hs.fs.mkdir(cache_dir)
+end
 
 local focusedWindow = hs.window.focusedWindow()
-if not focusedWindow then return end
+if not focusedWindow then
+    return
+end
 local screen = focusedWindow:screen():frame()
 
 -- 占屏幕宽度的 20%（居中）
@@ -31,10 +35,14 @@ emoji_canvas = hs.canvas.new({
 
 local function render_chooser(file_path, resource_origin)
     local image = hs.image.imageFromPath(file_path)
-    if (#choices >= 10) or not image then return end
+    if (#choices >= 10) or not image then
+        return
+    end
     local filename_ext = file_path:match("^.+%.([^%.]+)$")
     local title = file_path:gsub(cache_dir, ""):gsub("." .. filename_ext, "")
-    if (#choices > 0) and (title == choices[#choices]["text"]) then return end
+    if (#choices > 0) and (title == choices[#choices]["text"]) then
+        return
+    end
     local subtext = "来源: " .. ((resource_origin == "local") and "本地" or "网络")
     table.insert(choices, {
         text = title,
@@ -64,7 +72,7 @@ local function download_file(url, file_path)
             },
         },
         ["aria2c"] = {
-            ["path"] = "/usr/local/bin/aria2c",
+            ["path"] = "/opt/homebrew/bin/aria2c",
             ["args"] = {
                 "--header=Referer: " .. base_url,
                 "--enable-rpc=false",
@@ -108,7 +116,9 @@ local function parse_html(body)
                         filename = av
                         -- filename = av and utf8_gsub(av, "[，！？]+", "")
                     elseif ak == "data-src" then
-                        if av then img_url = av end
+                        if av then
+                            img_url = av
+                        end
                     end
                     local is_exist = img_url and hs.fnutils.contains(img_urls, img_url)
                     if filename and img_url and not is_exist then
@@ -123,7 +133,9 @@ local function parse_html(body)
 end
 
 local function preview(path)
-    if not path then return end
+    if not path then
+        return
+    end
     emoji_canvas[1] = {
         type = "image",
         image = hs.image.imageFromPath(path),
@@ -139,7 +151,9 @@ local function request(query_kw)
 
     query_kw = trim(query_kw)
 
-    if query_kw == "" then return end
+    if query_kw == "" then
+        return
+    end
 
     -- local url = api .. hs.http.encodeForQuery(query) .. "&page=" .. page .. "&size=9"
     local url = req_url .. hs.http.encodeForQuery(query_kw) .. "/" .. page
@@ -161,13 +175,19 @@ local function request(query_kw)
 end
 
 local function search_emoji_from_local(query_kw)
-    if not query_kw then return end
+    if not query_kw then
+        return
+    end
     local choices = {}
     local limit_count = 10
     local query = trim(query_kw)
-    local opts = { --[["except"] = {query},--]] ["subdirs"] = true, }
+    local opts = { --[["except"] = {query},--]]
+        ["subdirs"] = true,
+    }
     local filelist, filecount, _dircount = hs.fs.fileListForPath(cache_dir, opts)
-    if filecount == 0 then return false end
+    if filecount == 0 then
+        return false
+    end
     chooser_raw_len = (filecount > 10) and 10 or filecount
     local start_index = (page > 1) and ((page - 1) * 10) or 0
     for i, _f in ipairs(filelist) do
@@ -188,18 +208,24 @@ local function search_emoji_from_local(query_kw)
                 image = hs.image.imageFromPath(file_path),
             })
             limit_count = limit_count - 1
-            if limit_count == 0 then break end
+            if limit_count == 0 then
+                break
+            end
             ::SKIP_LAST_PAGE::
         end
     end
     chooser:choices(choices)
-    if limit_count == 0 then return true end
+    if limit_count == 0 then
+        return true
+    end
 end
 
 chooser = hs.chooser.new(function(selected)
     if selected then
         local image = hs.image.imageFromPath(selected.path)
-        if not image then return end
+        if not image then
+            return
+        end
         hs.pasteboard.writeObjects(image)
         hs.eventtap.keyStroke({ "cmd" }, "v")
     end
@@ -214,7 +240,9 @@ chooser:placeholderText("输入关键词搜索表情包")
 select_key = hs.eventtap
     .new({ hs.eventtap.event.types.keyDown }, function(event)
         -- 只在 chooser 显示时，才监听键盘按下
-        if not chooser:isVisible() then return end
+        if not chooser:isVisible() then
+            return
+        end
         local keycode = event:getKeyCode()
         local key = hs.keycodes.map[keycode]
         if "right" == key then
@@ -240,7 +268,9 @@ select_key = hs.eventtap
             return
         end
 
-        if "down" ~= key and "up" ~= key then return end
+        if "down" ~= key and "up" ~= key then
+            return
+        end
         number = chooser:selectedRow()
         if "down" == key then
             if number < chooser_raw_len then

@@ -78,27 +78,27 @@ applications = {
     {
         prefix = HyperKey,
         key = "X",
-        message = "FDM",
-        names = { "fdm", "NeatDownloadManager", "Progressive Downloader", "Folx" }, -- 支持 APP 名称简写
+        message = "Downloader",
+        names = { "fdm", "Ghost-Downloader-3", "Folx" }, -- 支持 APP 名称简写
         alwaysWindowLayout = window_grids.centeredMedium,
     },
     {
         prefix = HyperKey,
         key = "F",
         message = "Finder",
-        names = { "QSpace Pro", "Path Finder", "访达" },
+        names = { "Path Finder", "访达", "QSpace Pro" },
     },
     {
         prefix = HyperKey,
         key = "E",
         message = "email",
-        names = { "Spark Desktop", "Airmail", "Outlook", "Foxmail" },
+        names = { "Airmail", "Outlook", "Foxmail", "Spark Desktop" },
     },
     {
         prefix = HyperKey,
         key = "R",
         message = "RSS",
-        names = { "NetNewsWire", "Follow", "Feeds" },
+        names = { "Folo", "NetNewsWire", "Feeds" },
     },
     {
         prefix = HyperKey,
@@ -110,7 +110,7 @@ applications = {
     },
     {
         prefix = HyperKey,
-        key = "B",
+        key = "K",
         message = "Backup Browser",
         names = { "Zen", "Firefox", "safari" },
         onBackupScreen = true,
@@ -118,11 +118,11 @@ applications = {
     },
     {
         prefix = HyperKey,
-        key = "K",
+        key = "B",
         message = "Browser",
-        names = { "Arc", "Microsoft Edge", "Google Chrome" },
+        names = { "Microsoft Edge", "Google Chrome" },
         onBackupScreen = true,
-        alwaysWindowLayout = window_grids.fullScreen,
+        -- alwaysWindowLayout = window_grids.fullScreen,
     },
     {
         prefix = HyperKey,
